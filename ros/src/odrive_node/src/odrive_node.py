@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 TODO:
@@ -107,9 +107,16 @@ if __name__ == '__main__':
     else:
         print("Already calibrated, skipping...")
 
-    if not(left_axis.error == 0 and left_axis.motor.error == 0 and left_axis.encoder.error == 0 and left_axis.controller.error == 0):
-        print("Error during calibration.")
-    elif not(right_axis.error == 0 and right_axis.motor.error == 0 and right_axis.encoder.error == 0 and right_axis.controller.error == 0):
+    print("Left axis error code: ", hex(left_axis.error))
+    print("Left motor error code: ", hex(left_axis.motor.error))
+    print("Left encoder error code: ", hex(left_axis.encoder.error))
+    print("Left controller error code: ", hex(left_axis.controller.error))
+    print("Right axis error code: ", hex(right_axis.error))
+    print("Right motor error code: ", hex(right_axis.motor.error))
+    print("Right encoder error code: ", hex(right_axis.encoder.error))
+    print("Right controller error code: ", hex(right_axis.controller.error))
+
+    if not(left_axis.error == 0 and left_axis.motor.error == 0 and left_axis.encoder.error == 0 and left_axis.controller.error == 0 and right_axis.error == 0 and right_axis.motor.error == 0 and right_axis.encoder.error == 0 and right_axis.controller.error == 0):
         print("Error during calibration.")
     else:
         print("Calibration successful. Entering closed-loop control.")
@@ -118,7 +125,19 @@ if __name__ == '__main__':
         left_axis.controller.input_vel = 0
         left_axis.requested_state = 8
     
-    rospy.spin()
-
+    while not rospy.is_shutdown():
+        if not(left_axis.error == 0 and left_axis.motor.error == 0 and left_axis.encoder.error == 0 and left_axis.controller.error == 0 and right_axis.error == 0 and right_axis.motor.error == 0 and right_axis.encoder.error == 0 and right_axis.controller.error == 0):            
+            print("ODrive error.")
+            print("Left axis error code: ", hex(left_axis.error))
+            print("Left motor error code: ", hex(left_axis.motor.error))
+            print("Left encoder error code: ", hex(left_axis.encoder.error))
+            print("Left controller error code: ", hex(left_axis.controller.error))
+            print("Right axis error code: ", hex(right_axis.error))
+            print("Right motor error code: ", hex(right_axis.motor.error))
+            print("Right encoder error code: ", hex(right_axis.encoder.error))
+            print("Right controller error code: ", hex(right_axis.controller.error))
+            break
+    
+    print("ODrive node exiting.")
     right_axis.requested_state = 1
     left_axis.requested_state = 1
