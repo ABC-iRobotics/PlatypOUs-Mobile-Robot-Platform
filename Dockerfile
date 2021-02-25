@@ -1,10 +1,5 @@
 FROM ros:noetic
 
-COPY /ros /root/ros_ws
-WORKDIR /root/ros_ws
-RUN . /opt/ros/noetic/setup.sh && \
-    catkin_make
-
 RUN apt-get update && \
     apt-get install -y \
         libusb-dev \
@@ -12,6 +7,11 @@ RUN apt-get update && \
         ros-noetic-joy \
         ros-noetic-teleop-twist-joy && \
     python3 -m pip install odrive
+
+COPY /ros/src /root/ros_ws/src
+WORKDIR /root/ros_ws
+RUN . /opt/ros/noetic/setup.sh && \
+    catkin_make
 
 WORKDIR /
 COPY /entrypoint.bash /

@@ -69,9 +69,6 @@ if __name__ == '__main__':
     right_axis.motor.error = 0
     right_axis.encoder.error = 0
     right_axis.controller.error = 0
-    
-    right_axis.config.enable_watchdog = True
-    right_axis.config.watchdog_timeout = 0.2
 
     left_axis.motor.config.resistance_calib_max_voltage = 3
     left_axis.motor.config.calibration_current = 5
@@ -127,7 +124,10 @@ if __name__ == '__main__':
     right_axis.requested_state = 8
     left_axis.controller.input_vel = 0
     left_axis.requested_state = 8
-    
+
+    right_axis.config.enable_watchdog = True
+    right_axis.config.watchdog_timeout = 0.2
+
     rate = rospy.Rate(10)
     
     while not rospy.is_shutdown():
