@@ -69,6 +69,9 @@ if __name__ == '__main__':
     right_axis.motor.error = 0
     right_axis.encoder.error = 0
     right_axis.controller.error = 0
+    
+    right_axis.config.enable_watchdog = True
+    right_axis.config.watchdog_timeout = 0.2
 
     left_axis.motor.config.resistance_calib_max_voltage = 3
     left_axis.motor.config.calibration_current = 5
@@ -120,23 +123,34 @@ if __name__ == '__main__':
         print("Error during calibration.")
     else:
         print("Calibration successful. Entering closed-loop control.")
-        right_axis.controller.input_vel = 0
-        right_axis.requested_state = 8
-        left_axis.controller.input_vel = 0
-        left_axis.requested_state = 8
+    right_axis.controller.input_vel = 0
+    right_axis.requested_state = 8
+    left_axis.controller.input_vel = 0
+    left_axis.requested_state = 8
+    
+    rate = rospy.Rate(10)
     
     while not rospy.is_shutdown():
-        if not(left_axis.error == 0 and left_axis.motor.error == 0 and left_axis.encoder.error == 0 and left_axis.controller.error == 0 and right_axis.error == 0 and right_axis.motor.error == 0 and right_axis.encoder.error == 0 and right_axis.controller.error == 0):            
-            print("ODrive error.")
-            print("Left axis error code: ", hex(left_axis.error))
-            print("Left motor error code: ", hex(left_axis.motor.error))
-            print("Left encoder error code: ", hex(left_axis.encoder.error))
-            print("Left controller error code: ", hex(left_axis.controller.error))
-            print("Right axis error code: ", hex(right_axis.error))
-            print("Right motor error code: ", hex(right_axis.motor.error))
-            print("Right encoder error code: ", hex(right_axis.encoder.error))
-            print("Right controller error code: ", hex(right_axis.controller.error))
-            break
+        
+        try:
+            right_axis.watchdog_feed()
+            
+            if not(left_axis.error == 0 and left_axis.motor.error == 0 and left_axis.encoder.error == 0 and left_axis.controller.error == 0 and right_axis.error == 0 and right_axis.motor.error == 0 and right_axis.encoder.error == 0 and right_axis.controller.error == 0):            
+                print("ODrive error.")
+                print("Left axis error code: ", hex(left_axis.error))
+                print("Left motor error code: ", hex(left_axis.motor.error))
+                print("Left encoder error code: ", hex(left_axis.encoder.error))
+                print("Left controller error code: ", hex(left_axis.controller.error))
+                print("Right axis error code: ", hex(right_axis.error))
+                print("Right motor error code: ", hex(right_axis.motor.error))
+                print("Right encoder error code: ", hex(right_axis.encoder.error))
+                print("Right controller error code: ", hex(right_axis.controller.error))
+                right_axis.clear_errors()
+                right_axis.requested_state = 8
+        except:
+            print("Exception.")
+            
+        rate.sleep()
     
     print("ODrive node exiting.")
     right_axis.requested_state = 1
