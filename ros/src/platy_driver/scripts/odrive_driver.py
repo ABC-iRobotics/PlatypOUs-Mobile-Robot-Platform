@@ -33,7 +33,7 @@ class ODriveDriver:
         self.right_axis.motor.config.pole_pairs = 5
         self.right_axis.motor.config.motor_type = MOTOR_TYPE_HIGH_CURRENT
         self.right_axis.motor.config.current_lim = 7.0
-        self.right_axis.motor.config.current_control_bandwidth = 50
+        self.right_axis.motor.config.current_control_bandwidth = 10
 
         self.right_axis.encoder.config.cpr = 2048
         self.right_axis.encoder.config.mode = ENCODER_MODE_INCREMENTAL
@@ -53,7 +53,7 @@ class ODriveDriver:
         self.left_axis.motor.config.pole_pairs = 5
         self.left_axis.motor.config.motor_type = MOTOR_TYPE_HIGH_CURRENT
         self.left_axis.motor.config.current_lim = 7.0
-        self.left_axis.motor.config.current_control_bandwidth = 50
+        self.left_axis.motor.config.current_control_bandwidth = 10
 
         self.left_axis.encoder.config.cpr = 2048
         self.left_axis.encoder.config.mode = ENCODER_MODE_INCREMENTAL
@@ -137,6 +137,6 @@ class ODriveDriver:
             print("Exception.")
     
     def get_vel(self):
-        print("left_vel:  " + self.left_axis.encoder.vel_estimate)
-        print("right_vel: " + self.right_axis.encoder.vel_estimate)
+        print("left_vel:  " + str(self.left_axis.encoder.vel_estimate))
+        print("right_vel: " + str(self.right_axis.encoder.vel_estimate))
         print()
