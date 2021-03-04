@@ -135,3 +135,8 @@ class ODriveDriver:
                 self.right_axis.requested_state = 8
         except:
             print("Exception.")
+    
+    def get_vel(self):
+        print("left_vel:  " + self.left_axis.encoder.vel_estimate)
+        print("right_vel: " + self.right_axis.encoder.vel_estimate)
+        print()

@@ -46,7 +46,8 @@ def main():
     while not rospy.is_shutdown():
         odrive.set_velocity(left_speed, right_speed)
         odrive.update()
-
+        odrive.get_vel()
+        
         rate.sleep()
 
     odrive.disengage()
