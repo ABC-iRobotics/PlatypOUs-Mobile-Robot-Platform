@@ -3,27 +3,30 @@
 import odrive
 from odrive.enums import *
 
+import time
+import sys
+
 class ODriveDriver:
     
-    self.odrv       = None
-    self.left_axis  = None
-    self.right_axis = None
+    odrv       = None
+    left_axis  = None
+    right_axis = None
     
     def __init__(self):
-        odrv = odrive.find_any()
+        self.odrv = odrive.find_any()
 
-        print("\nConnected to " + str(odrv.serial_number))
-        print("HW version:  " + str(odrv.hw_version_major) + "." + str(odrv.hw_version_minor) + " - " + str(odrv.hw_version_variant))
-        print("FW version:  " + str(odrv.fw_version_major) + "." + str(odrv.fw_version_minor) + "." + str(odrv.fw_version_revision))
+        print("\nConnected to " + str(self.odrv.serial_number))
+        print("HW version:  " + str(self.odrv.hw_version_major) + "." + str(self.odrv.hw_version_minor) + " - " + str(self.odrv.hw_version_variant))
+        print("FW version:  " + str(self.odrv.fw_version_major) + "." + str(self.odrv.fw_version_minor) + "." + str(self.odrv.fw_version_revision))
         print("API version: " + odrive.version.get_version_str())
-        print("Voltage:     " + str(odrv.vbus_voltage))
+        print("Voltage:     " + str(self.odrv.vbus_voltage))
         
-        left_axis = odrv.axis0
-        self.right_axis = odrv.axis1
+        self.left_axis = self.odrv.axis0
+        self.right_axis = self.odrv.axis1
 
-        odrv.config.brake_resistance = 5
-        odrv.config.max_regen_current = 10
-        odrv.config.dc_max_negative_current = -10
+        self.odrv.config.brake_resistance = 5
+        self.odrv.config.max_regen_current = 10
+        self.odrv.config.dc_max_negative_current = -10
 
         self.right_axis.motor.config.resistance_calib_max_voltage = 3
         self.right_axis.motor.config.calibration_current = 5

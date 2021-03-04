@@ -19,8 +19,8 @@ import sys
 
 from odrive_driver import ODriveDriver
 
-left_speed = 0
-right_speed = 0
+left_speed = 0.0
+right_speed = 0.0
 
 def cmd_vel_callback(msg):
     global left_speed
@@ -29,11 +29,10 @@ def cmd_vel_callback(msg):
     left_speed  =   msg.linear.x - msg.angular.z
     right_speed = -(msg.linear.x + msg.angular.z)
 
-
-if __name__ == '__main__':
+def main():
     global left_speed
     global right_speed
-    
+
     rospy.init_node("odrive_node")
     rospy.Subscriber("cmd_vel", Twist, cmd_vel_callback, queue_size=2)
 
@@ -47,8 +46,13 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         odrive.set_velocity(left_speed, right_speed)
         odrive.update()
-        
+
         rate.sleep()
-    
+
     odrive.disengage()
+
+if __name__ == '__main__':
+
+    main()
+
     print("ODrive node exiting.")
