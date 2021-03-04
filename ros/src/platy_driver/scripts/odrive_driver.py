@@ -108,19 +108,23 @@ class ODriveDriver:
 
         self.right_axis.config.enable_watchdog = True
         self.right_axis.config.watchdog_timeout = 0.2
+        self.left_axis.config.enable_watchdog = True
+        self.left_axis.config.watchdog_timeout = 0.2
     
     def disengage(self):
         self.right_axis.requested_state = 1
         self.left_axis.requested_state = 1
+        self.right_axis.config.enable_watchdog = False
+        self.left_axis.config.enable_watchdog = False
     
     def set_velocity(self, left_vel, right_vel):
         self.left_axis.controller.input_vel = left_vel
         self.right_axis.controller.input_vel = right_vel
+        self.right_axis.watchdog_feed()
+        self.left_axis.watchdog_feed()
 
     def update(self):
         try:
-            self.right_axis.watchdog_feed()
-            
             if not(self.left_axis.error == 0 and self.left_axis.motor.error == 0 and self.left_axis.encoder.error == 0 and self.left_axis.controller.error == 0 and self.right_axis.error == 0 and self.right_axis.motor.error == 0 and self.right_axis.encoder.error == 0 and self.right_axis.controller.error == 0):            
                 print("ODrive error.")
                 print("Left axis error code: ", hex(self.left_axis.error))
@@ -137,6 +141,6 @@ class ODriveDriver:
             print("Exception.")
     
     def get_vel(self):
-        print("left_vel:  " + str(self.left_axis.encoder.vel_estimate))
-        print("right_vel: " + str(self.right_axis.encoder.vel_estimate))
+        print("left_vel:  " + self.left_axis.encoder.vel_estimate)
+        print("right_vel: " + self.right_axis.encoder.vel_estimate)
         print()
