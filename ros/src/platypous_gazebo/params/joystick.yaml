@@ -1,0 +1,4 @@
+dev: /dev/input/js1
+deadzone: 0.1
+coalesce_interval: 0.05
+autorepeat_rate: 20

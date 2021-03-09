@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="use_sim_time" value="true" />
+  
+  <!-- LAUNCH GAZEBO -->
+  <node name="gazebo" pkg="gazebo_ros" type="gzserver" output="screen" args="-e ode $(find platy_gazebo)/worlds/empty.world" />
+
+  <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" output="screen" />
+
+  <!-- SPAWN ROBOT -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find platy_gazebo)/urdf/platypous.xacro'" />
+  <node name="robot_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model platypous -param robot_description"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <!-- STATIC TRANSFORMS -->
+  <node name="camera_to_optical" ns="static_tf" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 -1.57 0 -1.57 camera_link camera_optical_frame" />
+  <node name="map_to_odom" ns="static_tf" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 map odom" />
+
+  <!-- TELEOP -->
+  <node name="joystick" ns="teleop" pkg="joy" type="joy_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platy_gazebo)/params/joystick.yaml" />
+  </node>
+
+  <node name="teleop" ns="teleop" pkg="teleop_twist_joy" type="teleop_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platy_gazebo)/params/teleop.yaml" />
+  </node>
+
+  <!-- TWIST MUX -->
+  <node name="twist_mux" pkg="twist_mux" type="twist_mux" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platy_gazebo)/params/twist_mux.yaml" />
+    <remap from="cmd_vel_out" to="/platypous/cmd_vel" />
+  </node>
+
+  <!-- LOCALIZATION -->
+  <node name="ekf_localization" ns="localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platy_gazebo)/params/localization.yaml" />
+  </node>
+
+</launch>

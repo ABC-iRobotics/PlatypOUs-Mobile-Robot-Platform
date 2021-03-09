@@ -4,4 +4,4 @@ docker run \
     --privileged \
     -v /dev:/dev \
     --network host \
-    platypous:latest roslaunch platy_bringup basic.launch
+    platypous:latest roslaunch platypous_launch basic.launch

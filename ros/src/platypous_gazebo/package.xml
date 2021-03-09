@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>platy_driver</name>
+  <name>platypous_gazebo</name>
   <version>0.0.0</version>
-  <description>The platy_driver package</description>
+  <description>The platypous_gazebo package</description>
 
-  <maintainer email="ros@todo.todo">ros</maintainer>
+  <maintainer email="borsa@todo.todo">borsa</maintainer>
 
   <license>TODO</license>
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(platy_driver)
+project(platypous_driver)
 
 find_package(catkin REQUIRED)
 
