@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="dev" default="/dev/input/js0" />
+
+
+  <!-- JOYSTICK DRIVER -->
+  <node name="joystick" ns="teleop" pkg="joy" type="joy_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/joystick.yaml" />
+    <param name="dev" value="$(arg dev)" />
+  </node>
+
+  <!-- JOY TELEOP -->
+  <node name="teleop" ns="teleop" pkg="teleop_twist_joy" type="teleop_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/teleop.yaml" />
+  </node>
+
+  <!-- TWIST MUX -->
+  <node name="twist_mux" pkg="twist_mux" type="twist_mux" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/twist_mux.yaml" />
+    <remap from="cmd_vel_out" to="/platypous/cmd_vel" />
+  </node>
+
+</launch>

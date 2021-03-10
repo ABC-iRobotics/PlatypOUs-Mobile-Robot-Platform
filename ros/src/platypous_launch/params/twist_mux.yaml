@@ -1,0 +1,10 @@
+topics:
+- name    : teleop
+  topic   : /teleop/cmd_vel
+  timeout : 1.0
+  priority: 100
+
+- name    : other
+  topic   : /other/cmd_vel
+  timeout : 0.5
+  priority: 10

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- MOTOR DRIVER -->
+  <node pkg="platypous_driver" type="odrive_node.py" name="motor_driver" output="screen">
+    <rosparam command="load" file="$(find platypous_launch)/params/odrive.yaml" />
+  </node>
+  
+  
+  <!-- JOYSTICK TELEOP -->
+  <include file="$(find platypous_launch)/launch/joy_teleop.launch"
+  
+</launch>
