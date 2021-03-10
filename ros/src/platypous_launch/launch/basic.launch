@@ -1,16 +1,13 @@
 <?xml version="1.0"?>
 <launch>
 
+  <!-- MOTOR DRIVER -->
   <node pkg="platypous_driver" type="odrive_node.py" name="motor_driver" output="screen">
     <rosparam command="load" file="$(find platypous_launch)/params/odrive.yaml" />
   </node>
   
-  <node pkg="joy" type="joy_node" name="joystick">
-    <rosparam command="load" file="$(find platypous_launch)/params/joystick.yaml" />
-  </node>
   
-  <node pkg="teleop_twist_joy" name="teleop" type="teleop_node">
-    <rosparam command="load" file="$(find platypous_launch)/params/teleop.yaml" />
-  </node>
-
+  <!-- JOYSTICK TELEOP -->
+  <include file="$(find platypous_launch)/launch/joy_teleop.launch"
+  
 </launch>
