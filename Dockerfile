@@ -3,10 +3,15 @@ FROM ros:noetic
 RUN apt-get update && \
     apt-get install -y \
         libusb-dev \
-        python3-pip \
+        python3-pip
+
+RUN python3 -m pip install odrive
+
+RUN apt-get update && \
+    apt-get install -y \
         ros-noetic-joy \
-        ros-noetic-teleop-twist-joy && \
-    python3 -m pip install odrive
+        ros-noetic-teleop-twist-joy \
+        ros-noetic-twist-mux
 
 COPY /ros/src /root/ros_ws/src
 WORKDIR /root/ros_ws

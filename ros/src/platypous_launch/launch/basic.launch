@@ -8,6 +8,6 @@
   
   
   <!-- JOYSTICK TELEOP -->
-  <include file="$(find platypous_launch)/launch/joy_teleop.launch"
+  <include file="$(find platypous_launch)/launch/joy_teleop.launch" />
   
 </launch>
