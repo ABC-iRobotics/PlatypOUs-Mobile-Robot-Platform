@@ -2,7 +2,7 @@
 <launch>
 
   <!-- MOTOR DRIVER -->
-  <node pkg="platypous_driver" type="odrive_node.py" name="motor_driver" output="screen">
+  <node name="motor_driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true">
     <rosparam command="load" file="$(find platypous_launch)/params/odrive.yaml" />
   </node>
   

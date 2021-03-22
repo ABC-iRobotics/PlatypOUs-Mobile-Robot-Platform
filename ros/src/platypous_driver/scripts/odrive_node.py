@@ -3,12 +3,8 @@
 """
 TODO:
     - config from params
-    - config save
-    - exception, error checking
     - tune controller
-    - watchdog, failsafe
-    - sensor data analyze/publish
-    - odometry calculation
+    - sensor data/odometry publish
 """
 
 import rospy
@@ -19,41 +15,38 @@ import sys
 
 from odrive_driver import ODriveDriver
 
-left_speed = 0.0
-right_speed = 0.0
-
-def cmd_vel_callback(msg):
-    global left_speed
-    global right_speed
+class ODriveNode:
     
-    left_speed  =   msg.linear.x - msg.angular.z
-    right_speed = -(msg.linear.x + msg.angular.z)
-
-def main():
-    global left_speed
-    global right_speed
-
-    rospy.init_node("odrive_node")
-    rospy.Subscriber("cmd_vel", Twist, cmd_vel_callback, queue_size=2)
-
-    odrive = ODriveDriver()
+    left_speed = 0.0
+    right_speed = 0.0
     
-    odrive.calibrate()
-    odrive.engage()
-    
-    rate = rospy.Rate(10)
-    
-    while not rospy.is_shutdown():
-        odrive.set_velocity(left_speed, right_speed)
-        odrive.update()
-        odrive.get_vel()
+    def __init__(self):
+        rospy.init_node("odrive")
+        rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
+
+        odrive = ODriveDriver()
         
-        rate.sleep()
+        while not odrive.connect():
+            time.sleep(0.1)
+        
+        odrive.calibrate()
+        odrive.engage()
+        
+        rate = rospy.Rate(10)
+        
+        while not rospy.is_shutdown():
+            odrive.set_velocity(left_speed, right_speed)
+            odrive.update()
+            odrive.get_vel()
+            
+            rate.sleep()
 
-    odrive.disengage()
+        odrive.disengage()
+    
+    def cmd_vel_callback(self, msg):
+        self.left_speed  =  msg.linear.x - msg.angular.z
+        self.right_speed =  msg.linear.x + msg.angular.z
 
 if __name__ == '__main__':
-
-    main()
-
+    odrvnode = ODriveNode()
     print("ODrive node exiting.")
