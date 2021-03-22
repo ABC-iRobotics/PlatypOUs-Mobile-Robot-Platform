@@ -16,6 +16,9 @@ import sys
 from odrive_driver import ODriveDriver
 
 class ODriveNode:
+
+    wheel_separation = 0.42
+    wheel_radius = 0.05
     
     left_speed = 0.0
     right_speed = 0.0
@@ -35,7 +38,7 @@ class ODriveNode:
         rate = rospy.Rate(10)
         
         while not rospy.is_shutdown():
-            odrive.set_velocity(left_speed, right_speed)
+            odrive.set_velocity(self.left_speed, self.right_speed)
             odrive.update()
             odrive.get_vel()
             
@@ -44,8 +47,8 @@ class ODriveNode:
         odrive.disengage()
     
     def cmd_vel_callback(self, msg):
-        self.left_speed  =  msg.linear.x - msg.angular.z
-        self.right_speed =  msg.linear.x + msg.angular.z
+        self.left_speed  = ((msg.linear.x - (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
+        self.right_speed = ((msg.linear.x + (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
 
 if __name__ == '__main__':
     odrvnode = ODriveNode()

@@ -50,9 +50,9 @@ class ODriveDriver:
             self.left_axis = self.odrv.axis0
             self.right_axis = self.odrv.axis1
 
-            self.odrv.config.brake_resistance = brake_resistance
-            self.odrv.config.max_regen_current = max_regen_current
-            self.odrv.config.dc_max_negative_current = dc_max_negative_current
+            self.odrv.config.brake_resistance = self.brake_resistance
+            self.odrv.config.max_regen_current = self.max_regen_current
+            self.odrv.config.dc_max_negative_current = self.dc_max_negative_current
 
             self.right_axis.motor.config.resistance_calib_max_voltage = self.left_axis.motor.config.resistance_calib_max_voltage = self.motor_resistance_calib_max_voltage
             self.right_axis.motor.config.calibration_current = self.left_axis.motor.config.calibration_current = self.motor_calibration_current
@@ -152,8 +152,8 @@ class ODriveDriver:
             return False
         
         try:
-            self.left_axis.controller.input_vel = left_vel * left_vel_multiplier
-            self.right_axis.controller.input_vel = right_vel * right_vel_multiplier
+            self.left_axis.controller.input_vel = left_vel * self.left_vel_multiplier
+            self.right_axis.controller.input_vel = right_vel * self.right_vel_multiplier
             self.left_axis.watchdog_feed()
             self.right_axis.watchdog_feed()
         except:
@@ -187,7 +187,7 @@ class ODriveDriver:
             return False
         
         try:
-            print(str(self.left_axis.encoder.vel_estimate * left_vel_multiplier) + "   " + str(self.right_axis.encoder.vel_estimate * right_vel_multiplier))
+            print(str(self.left_axis.encoder.vel_estimate * self.left_vel_multiplier) + "   " + str(self.right_axis.encoder.vel_estimate * self.right_vel_multiplier))
         except:
             print("get_vel: Exception occured!")
             return False
