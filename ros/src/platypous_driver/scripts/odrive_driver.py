@@ -78,6 +78,7 @@ class ODriveDriver:
             self.right_axis.controller.error = self.left_axis.controller.error = 0
             
             self.connected = True
+            self.calibrated = False
         except:
             self.connected = False
     

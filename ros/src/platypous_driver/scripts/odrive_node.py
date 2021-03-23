@@ -47,7 +47,11 @@ class ODriveNode:
                 print(str(lv) + "  " + str(rv))
             
             if not odrive.is_ok():
-                odrive.get_errors(clear=True)
+                le, re = odrive.get_errors(clear=True)
+                print("ODrive error:")
+                print(le)
+                print(re)
+                print()
                 
             rate.sleep()
 
