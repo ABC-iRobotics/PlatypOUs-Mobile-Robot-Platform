@@ -85,6 +85,8 @@ class ODriveDriver:
     def calibrate(self):
         if self.connected:
             try:
+                self.left_axis.clear_errors()
+                self.right_axis.clear_errors()
                 if(self.left_axis.motor.is_calibrated == False or self.left_axis.encoder.is_ready == False or self.right_axis.motor.is_calibrated == False or self.right_axis.encoder.is_ready == False):
                     self.left_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
                     self.right_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
@@ -182,3 +184,6 @@ class ODriveDriver:
                 
             except:
                 self.connected = False
+                return None, None
+        else:
+            return None, None
