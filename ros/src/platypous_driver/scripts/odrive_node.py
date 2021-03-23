@@ -41,7 +41,7 @@ class ODriveNode:
             elif not odrive.is_engaged():
                 print("Engaging ODrive.")
                 odrive.engage()
-            else
+            else:
                 odrive.set_velocity(self.left_speed, self.right_speed)
                 lv, rv = odrive.get_velocity()
                 print(str(lv) + "  " + str(rv))
