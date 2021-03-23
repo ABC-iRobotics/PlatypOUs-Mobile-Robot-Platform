@@ -21,7 +21,7 @@ class ODriveDriver:
     motor_pole_pairs = 5
     motor_type = MOTOR_TYPE_HIGH_CURRENT
     motor_current_lim = 7.0
-    motor_current_control_bandwidth = 10
+    motor_current_control_bandwidth = 50
     
     encoder_cpr = 2048
     encoder_mode = ENCODER_MODE_INCREMENTAL
