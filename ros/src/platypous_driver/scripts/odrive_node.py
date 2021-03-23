@@ -28,20 +28,30 @@ class ODriveNode:
         rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
 
         odrive = ODriveDriver()
-        
-        while not odrive.connect():
-            time.sleep(0.1)
-        
+                
         odrive.calibrate()
         odrive.engage()
         
         rate = rospy.Rate(10)
         
         while not rospy.is_shutdown():
-            odrive.set_velocity(self.left_speed, self.right_speed)
-            odrive.update()
-            odrive.get_vel()
+            if not odrive.is_connected():
+                print("Connecting to ODrive.")
+                odrive.connect(timeout=1)
+            else if not odrive.is_calibrated():
+                print("Calibrating ODrive.")
+                odrive.calibrate()
+            else if not odrive.is_engaged():
+                print("Engaging ODrive.")
+                odrive.engage()
+            else
+                odrive.set_velocity(self.left_speed, self.right_speed)
+                lv, rv = odrive.get_velocity()
+                print(str(lv) + "  " + str(rv))
             
+            if not odrive.is_ok():
+                odrive.get_errors(clear=True)
+                
             rate.sleep()
 
         odrive.disengage()

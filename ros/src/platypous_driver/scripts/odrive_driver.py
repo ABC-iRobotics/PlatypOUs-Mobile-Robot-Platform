@@ -12,6 +12,9 @@ class ODriveDriver:
     left_axis  = None
     right_axis = None
     
+    connected = False
+    calibrated = False
+    
     brake_resistance = 5
     max_regen_current = 10
     dc_max_negative_current = -10
@@ -37,9 +40,9 @@ class ODriveDriver:
     #def __init__(self):
     
     
-    def connect(self):
+    def connect(self, timeout=5):
         try:
-            self.odrv = odrive.find_any(timeout=5)
+            self.odrv = odrive.find_any(timeout=timeout)
 
             print("\nConnected to ODrive: " + str(self.odrv.serial_number))
             print("HW version:  " + str(self.odrv.hw_version_major) + "." + str(self.odrv.hw_version_minor) + " - " + str(self.odrv.hw_version_variant))
@@ -73,123 +76,108 @@ class ODriveDriver:
             self.right_axis.motor.error = self.left_axis.motor.error = 0
             self.right_axis.encoder.error = self.left_axis.encoder.error = 0
             self.right_axis.controller.error = self.left_axis.controller.error = 0
+            
+            self.connected = True
         except:
-            print("Failed to connect to ODrive.")
-            return False
-        
-        return True
+            self.connected = False
     
     def calibrate(self):
-        if not self.odrv:
-            print("calibrate: ODrive not connected!")
-            return False
-        
-        try:
-            if(self.left_axis.motor.is_calibrated == False or self.left_axis.encoder.is_ready == False or self.right_axis.motor.is_calibrated == False or self.right_axis.encoder.is_ready == False):
-                print("\nCalibrating...")
+        if self.connected:
+            try:
+                if(self.left_axis.motor.is_calibrated == False or self.left_axis.encoder.is_ready == False or self.right_axis.motor.is_calibrated == False or self.right_axis.encoder.is_ready == False):
+                    self.left_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+                    self.right_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+                    while(self.left_axis.current_state != 1):
+                        time.sleep(0.1)
+                    while(self.right_axis.current_state != 1):
+                        time.sleep(0.1)
 
-                self.left_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
-                self.right_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
-                while(self.left_axis.current_state != 1):
-                    time.sleep(0.2)
-                while(self.right_axis.current_state != 1):
-                    time.sleep(0.2)
-            else:
-                print("Already calibrated, skipping...")
-
-            if not(self.left_axis.error == 0 and self.right_axis.error == 0):
-                print("Error during calibration.")
-                print("Error left:  " + hex(self.left_axis.error) + "  " + hex(self.left_axis.motor.error) + "  " + hex(self.left_axis.encoder.error) + "  " + hex(self.left_axis.controller.error))
-                print("Error right: " + hex(self.right_axis.error) + "  " + hex(self.right_axis.motor.error) + "  " + hex(self.right_axis.encoder.error) + "  " + hex(self.right_axis.controller.error))
-            else:
-                print("Calibration successful. Entering closed-loop control.")
-        except:
-            print("calibrate: Exception occured!")
-            return False
-
-        return True
+                if not self.is_ok():
+                    self.calibrated = False
+                else:
+                    self.calibrated = True
+            except:
+                self.connected = False
 
     def engage(self):
-        if not self.odrv:
-            print("engage: ODrive not connected!")
-            return False
-        
-        try:
-            self.right_axis.controller.input_vel = 0
-            self.right_axis.requested_state = 8
-            self.left_axis.controller.input_vel = 0
-            self.left_axis.requested_state = 8
+        if self.connected and self.calibrated:
+            try:
+                self.right_axis.controller.input_vel = 0
+                self.right_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+                self.left_axis.controller.input_vel = 0
+                self.left_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
 
-            self.right_axis.config.enable_watchdog = True
-            self.right_axis.config.watchdog_timeout = 0.2
-            self.left_axis.config.enable_watchdog = True
-            self.left_axis.config.watchdog_timeout = 0.2
-        except:
-            print("engage: Exception occured!")
-            return False
-
-        return True
+                self.right_axis.config.enable_watchdog = True
+                self.right_axis.config.watchdog_timeout = 0.2
+                self.left_axis.config.enable_watchdog = True
+                self.left_axis.config.watchdog_timeout = 0.2
+            except:
+                self.connected = False
     
     def disengage(self):
-        if not self.odrv:
-            print("disengage: ODrive not connected!")
-            return False
-        
-        try:
-            self.right_axis.requested_state = 1
-            self.left_axis.requested_state = 1
-            self.right_axis.config.enable_watchdog = False
-            self.left_axis.config.enable_watchdog = False
-        except:
-            print("disengage: Exception occured!")
-            return False
-
-        return True
+        if self.connected and self.calibrated and self.is_engaged():
+            try:
+                self.right_axis.requested_state = AXIS_STATE_IDLE
+                self.left_axis.requested_state = AXIS_STATE_IDLE
+                self.right_axis.config.enable_watchdog = False
+                self.left_axis.config.enable_watchdog = False
+            except:
+                self.connected = False
     
     def set_velocity(self, left_vel, right_vel):
-        if not self.odrv:
-            print("set_velocity: ODrive not connected!")
-            return False
-        
-        try:
-            self.left_axis.controller.input_vel = left_vel * self.left_vel_multiplier
-            self.right_axis.controller.input_vel = right_vel * self.right_vel_multiplier
-            self.left_axis.watchdog_feed()
-            self.right_axis.watchdog_feed()
-        except:
-            print("set_velocity: Exception occured!")
-            return False
-
-        return True
-
-    def update(self):
-        if not self.odrv:
-            print("update: ODrive not connected!")
-            return False
-        
-        try:
-            if not(self.left_axis.error == 0 and self.right_axis.error == 0):
-                print("Error left:  " + hex(self.left_axis.error) + "  " + hex(self.left_axis.motor.error) + "  " + hex(self.left_axis.encoder.error) + "  " + hex(self.left_axis.controller.error))
-                print("Error right: " + hex(self.right_axis.error) + "  " + hex(self.right_axis.motor.error) + "  " + hex(self.right_axis.encoder.error) + "  " + hex(self.right_axis.controller.error))
-                self.left_axis.clear_errors()
-                self.left_axis.requested_state = 8
-                self.right_axis.clear_errors()
-                self.right_axis.requested_state = 8
-        except:
-            print("update: Exception occured!")
-            return False
-
-        return True
+        if self.connected and self.calibrated and self.is_engaged() and self.is_ok():
+            try:
+                self.left_axis.controller.input_vel = left_vel * self.left_vel_multiplier
+                self.right_axis.controller.input_vel = right_vel * self.right_vel_multiplier
+                self.left_axis.watchdog_feed()
+                self.right_axis.watchdog_feed()
+            except:
+                self.connected = False
     
-    def get_vel(self):
-        if not self.odrv:
-            print("get_vel: ODrive not connected!")
-            return False
-        
-        try:
-            print(str(self.left_axis.encoder.vel_estimate * self.left_vel_multiplier) + "   " + str(self.right_axis.encoder.vel_estimate * self.right_vel_multiplier))
-        except:
-            print("get_vel: Exception occured!")
-            return False
+    def get_velocity(self):
+        if self.connected and self.calibrated and self.is_engaged() and self.is_ok():
+            try:
+                return (self.left_axis.encoder.vel_estimate * self.left_vel_multiplier), (self.right_axis.encoder.vel_estimate * self.right_vel_multiplier)
+            except:
+                self.connected = False
+    
+    def is_connected(self):
+        return self.connected
 
-        return True
+    def is_calibrated(self):
+        return self.calibrated
+    
+    def is_engaged(self):
+        if self.connected:
+            try:
+                if(self.left_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL and self.right_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL):
+                    return True
+                else:
+                    return False
+            except:
+                self.connected = False
+    
+    def is_ok(self):
+        if self.connected:
+            try:
+                if not(self.left_axis.error == 0 and self.right_axis.error == 0):
+                    return False
+                else:
+                    return True
+            except:
+                self.connected = False
+
+    def get_errors(self, clear=False):
+        if self.connected:
+            try:
+                left_errors  = [self.left_axis.error,  self.left_axis.motor.error,  self.left_axis.encoder.error,  self.left_axis.controller.error]
+                right_errors = [self.right_axis.error, self.right_axis.motor.error, self.right_axis.encoder.error, self.right_axis.controller.error]
+                
+                if clear:
+                    self.left_axis.clear_errors()
+                    self.right_axis.clear_errors()
+            
+                return left_errors, right_errors
+                
+            except:
+                self.connected = False
