@@ -123,7 +123,9 @@ class ODriveDriver:
                 self.right_axis.requested_state = AXIS_STATE_IDLE
                 self.left_axis.requested_state = AXIS_STATE_IDLE
                 self.right_axis.config.enable_watchdog = False
+                self.right_axis.config.watchdog_timeout = 0.0
                 self.left_axis.config.enable_watchdog = False
+                self.left_axis.config.watchdog_timeout = 0.0
             except:
                 self.connected = False
     
