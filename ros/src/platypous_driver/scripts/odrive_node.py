@@ -3,8 +3,8 @@
 """
 TODO:
     - config from params
-    - tune controller
     - sensor data/odometry publish
+    - diagnostics
 """
 
 import rospy
@@ -44,7 +44,10 @@ class ODriveNode:
             else:
                 odrive.set_velocity(self.left_speed, self.right_speed)
                 lv, rv = odrive.get_velocity()
-                print(str(lv) + "  " + str(rv))
+                if not (lv == None or rv == None):
+                    lin = (rv + lv) / 2.0
+                    ang = (rv - lv) / 2.0
+                    print(str(lin) + "  " + str(ang))
             
             if not odrive.is_ok():
                 le, re = odrive.get_errors(clear=True)

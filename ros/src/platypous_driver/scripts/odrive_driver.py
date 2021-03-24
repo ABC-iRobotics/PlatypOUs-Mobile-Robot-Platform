@@ -146,6 +146,7 @@ class ODriveDriver:
                 return (self.left_axis.encoder.vel_estimate * self.left_vel_multiplier), (self.right_axis.encoder.vel_estimate * self.right_vel_multiplier)
             except:
                 self.connected = False
+        return None, None
     
     def is_connected(self):
         return self.connected
