@@ -87,6 +87,7 @@ class ODriveDriver:
             try:
                 self.left_axis.clear_errors()
                 self.right_axis.clear_errors()
+                self.disengage()
                 if(self.left_axis.motor.is_calibrated == False or self.left_axis.encoder.is_ready == False or self.right_axis.motor.is_calibrated == False or self.right_axis.encoder.is_ready == False):
                     self.left_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
                     self.right_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
@@ -118,7 +119,7 @@ class ODriveDriver:
                 self.connected = False
     
     def disengage(self):
-        if self.connected and self.calibrated and self.is_engaged():
+        if self.connected:
             try:
                 self.right_axis.requested_state = AXIS_STATE_IDLE
                 self.left_axis.requested_state = AXIS_STATE_IDLE
