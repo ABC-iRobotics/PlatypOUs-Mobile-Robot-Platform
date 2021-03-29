@@ -45,8 +45,8 @@ class ODriveNode:
                 odrive.set_velocity(self.left_speed, self.right_speed)
                 lv, rv = odrive.get_velocity()
                 if not (lv == None or rv == None):
-                    lin = ((rv + lv) / 2.0) * (self.wheel_radius * (2 * 3.14159265))
-                    ang = (((rv - lv) / 2.0) / (self.wheel_separation / 2)) * (self.wheel_radius * (2 * 3.14159265))
+                    lin = (((rv * 2 * 3.14159265) + (lv * 2 * 3.14159265)) / 2.0) * self.wheel_radius
+                    ang = ((((rv * 2 * 3.14159265) - (lv * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
                     print(str(lin) + "  " + str(ang))
             
             if not odrive.is_ok():
