@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>asd</title>
+    
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+        
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  
+  <body>
+    <div id="app" class="small-container">
+      <b-jumbotron header="PlatypOUs GUI">
+        <b-form>
+          <b-form-input v-model="text" placeholder="Message"></b-form-input>
+          <b-button v-on:click="asdFunc">Send</b-button>
+        </b-form>
+        <b-table caption-top stacked :items="items">
+          <template #table-caption>asd</template>
+        </b-table>
+      </b-jumbotron>
+    </div>
+    
+    <script>    
+      
+    var socket = io();
+    
+    var App = new Vue({
+      el: '#app',
+      data:{
+        message: '',
+        text: '',
+        x_pos: 0.0,
+        y_pos: 0.0,
+        lin_vel: 0.0,
+        ang_vel: 0.0,
+        items: [
+          { x_pos: 0.0, y_pos: 0.0, lin_vel: 0.0, ang_vel: 0.0}
+        ]
+      },
+      methods:
+      {
+        asdFunc: function(){
+          socket.emit('chat message', this.text);
+        }
+      }
+    })
+    
+    socket.on('x_pos', function(msg) {
+      App.items[0].x_pos = msg;
+    });
+    
+    socket.on('y_pos', function(msg) {
+      App.items[0].y_pos = msg;
+    });
+    
+    socket.on('lin_vel', function(msg) {
+      App.items[0].lin_vel = msg;
+    });
+    
+    socket.on('ang_vel', function(msg) {
+      App.items[0].ang_vel = msg;
+    });
+  
+    </script>
+  </body>
+</html>

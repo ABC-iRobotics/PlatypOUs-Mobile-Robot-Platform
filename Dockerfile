@@ -4,7 +4,8 @@ RUN apt-get update && \
     apt-get install -y \
         libusb-dev \
         python3-pip \
-        git
+        git \
+        curl
 
 RUN python3 -m pip install odrive
 
@@ -17,6 +18,9 @@ RUN mkdir -p /root/ros_ws/src && \
     . /opt/ros/noetic/setup.sh && \
     catkin_make
 
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt-get install -y nodejs
+
 RUN apt-get update && \
     apt-get install -y \
         ros-noetic-joy \
@@ -24,6 +28,13 @@ RUN apt-get update && \
         ros-noetic-twist-mux \
         ros-noetic-robot-localization \
         ros-noetic-gmapping
+
+COPY /web /root/web
+RUN cd /root/web && \
+    npm init -y && \
+    npm install express \
+                socket.io \
+                rosnodejs
 
 COPY /ros/src /root/ros_ws/src
 WORKDIR /root/ros_ws
