@@ -3,7 +3,7 @@
 """
 TODO:
     - config from params
-    - sensor data/odometry publish
+    - sensor data publish
     - diagnostics
 """
 
@@ -26,6 +26,8 @@ class ODriveNode:
     def __init__(self):
         rospy.init_node("odrive")
         rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
+        
+        odom_pub = rospy.Publisher("odom", Twist, queue_size=2)
 
         odrive = ODriveDriver()
         
@@ -45,9 +47,10 @@ class ODriveNode:
                 odrive.set_velocity(self.left_speed, self.right_speed)
                 lv, rv = odrive.get_velocity()
                 if not (lv == None or rv == None):
-                    lin = (((rv * 2 * 3.14159265) + (lv * 2 * 3.14159265)) / 2.0) * self.wheel_radius
-                    ang = ((((rv * 2 * 3.14159265) - (lv * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
-                    print(str(lin) + "  " + str(ang))
+                    odom_msg = Twist()
+                    odom_msg.linear.x = (((rv * 2 * 3.14159265) + (lv * 2 * 3.14159265)) / 2.0) * self.wheel_radius
+                    odom_msg.angular.z = ((((rv * 2 * 3.14159265) - (lv * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
+                    odom_pub.publish(odom_msg)
             
             if not odrive.is_ok():
                 le, re = odrive.get_errors(clear=True)

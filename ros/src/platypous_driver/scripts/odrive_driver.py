@@ -143,7 +143,7 @@ class ODriveDriver:
     def get_velocity(self):
         if self.connected and self.calibrated and self.is_engaged() and self.is_ok():
             try:
-                return (self.left_axis.encoder.vel_estimate * self.left_vel_multiplier), (self.right_axis.encoder.vel_estimate * self.right_vel_multiplier)
+                return (self.left_axis.encoder.vel_estimate / self.left_vel_multiplier), (self.right_axis.encoder.vel_estimate / self.right_vel_multiplier)
             except:
                 self.connected = False
         return None, None
