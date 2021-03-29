@@ -9,6 +9,7 @@ TODO:
 
 import rospy
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TwistWithCovarianceStamped
 
 import time
 import sys
@@ -27,7 +28,7 @@ class ODriveNode:
         rospy.init_node("odrive")
         rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
         
-        odom_pub = rospy.Publisher("odom", Twist, queue_size=2)
+        odom_pub = rospy.Publisher("odom", TwistWithCovarianceStamped, queue_size=2)
 
         odrive = ODriveDriver()
         
@@ -47,9 +48,11 @@ class ODriveNode:
                 odrive.set_velocity(self.left_speed, self.right_speed)
                 lv, rv = odrive.get_velocity()
                 if not (lv == None or rv == None):
-                    odom_msg = Twist()
-                    odom_msg.linear.x = (((rv * 2 * 3.14159265) + (lv * 2 * 3.14159265)) / 2.0) * self.wheel_radius
-                    odom_msg.angular.z = ((((rv * 2 * 3.14159265) - (lv * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
+                    odom_msg = TwistWithCovarianceStamped()
+                    odom_msg.header.stamp = rospy.Time.now()
+                    odom_msg.header.frame_id = "base_link"
+                    odom_msg.twist.twist.linear.x = (((rv * 2 * 3.14159265) + (lv * 2 * 3.14159265)) / 2.0) * self.wheel_radius
+                    odom_msg.twist.twist.angular.z = ((((rv * 2 * 3.14159265) - (lv * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
                     odom_pub.publish(odom_msg)
             
             if not odrive.is_ok():

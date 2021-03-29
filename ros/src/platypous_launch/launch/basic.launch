@@ -2,9 +2,42 @@
 <launch>
 
   <!-- MOTOR DRIVER -->
-  <node name="motor_driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true">
+  <node name="motor_driver" ns="driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true">
     <rosparam command="load" file="$(find platypous_launch)/params/odrive.yaml" />
     <remap from="cmd_vel" to="/platypous/cmd_vel" />
+  </node>
+  
+  
+  <!-- LOCALIZATION -->
+  <node name="ekf_localization" ns="localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/localization.yaml" />
+  </node>
+  
+  
+  <!-- LIDAR -->
+  <node name="base_to_laser" ns="static_tf" pkg="tf2_ros" type="static_transform_publisher" args="-0.19 0 0.35 0 0 0 base_link laser_frame" />
+  
+  <node name="ydlidar_node"  pkg="ydlidar_ros"  type="ydlidar_node" output="screen" respawn="false" >
+    <param name="port"         type="string" value="/dev/ydlidar"/>  
+    <param name="baudrate"         type="int" value="128000"/>  
+    <param name="frame_id"     type="string" value="laser_frame"/>
+    <param name="resolution_fixed"    type="bool"   value="true"/>
+    <param name="auto_reconnect"    type="bool"   value="true"/>
+    <param name="reversion"    type="bool"   value="false"/>
+    <param name="angle_min"    type="double" value="-180" />
+    <param name="angle_max"    type="double" value="180" />
+    <param name="range_min"    type="double" value="0.1" />
+    <param name="range_max"    type="double" value="12.0" />
+    <param name="ignore_array" type="string" value="" />
+    <param name="frequency"    type="double" value="8"/>
+    <param name="samp_rate"    type="int"    value="5"/>
+  </node>
+  
+  
+  <!-- GMAPPING -->
+  <node name="gmapping" pkg="gmapping" type="slam_gmapping">
+    <remap from="scan" to="/scan" />
+    <param name="map_update_interval" value="1.0" />
   </node>
   
   
