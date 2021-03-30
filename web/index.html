@@ -57,7 +57,7 @@
         },
         
         twistReset: function(){
-          this.value=0.0;
+          socket.emit('twist_message', 0.0)
         }
       }
     })
