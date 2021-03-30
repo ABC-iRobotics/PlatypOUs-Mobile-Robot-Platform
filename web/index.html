@@ -23,11 +23,12 @@
     <div id="app" class="small-container">
       <b-jumbotron header="PlatypOUs GUI">
         <b-form>
-          <b-form-input v-model="text" placeholder="Message"></b-form-input>
-          <b-button v-on:click="asdFunc">Send</b-button>
+          <b-form-input v-model="value" type="range" min="-2.0" max="2.0" step="0.1" v-on:change="twistFunc"></b-form-input>
+          <div class="mt-2">Value: {{ value }}</div>
+          <b-button v-on:click="twistReset">Reset</b-button>
         </b-form>
         <b-table caption-top stacked :items="items">
-          <template #table-caption>asd</template>
+          <template #table-caption>Odometry</template>
         </b-table>
       </b-jumbotron>
     </div>
@@ -41,6 +42,7 @@
       data:{
         message: '',
         text: '',
+        value: 0.0,
         x_pos: 0.0,
         y_pos: 0.0,
         lin_vel: 0.0,
@@ -49,10 +51,13 @@
           { x_pos: 0.0, y_pos: 0.0, lin_vel: 0.0, ang_vel: 0.0}
         ]
       },
-      methods:
-      {
-        asdFunc: function(){
-          socket.emit('chat message', this.text);
+      methods:{        
+        twistFunc: function(){
+          socket.emit('twist_message', this.value);
+        },
+        
+        twistReset: function(){
+          this.value=0.0;
         }
       }
     })

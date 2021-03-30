@@ -3,6 +3,7 @@ const http = require('http').Server(app);
 const io = require("socket.io")(http);
 const rosnodejs = require('rosnodejs');
 const navMsgs = rosnodejs.require('nav_msgs');
+const geoMsgs = rosnodejs.require('geometry_msgs');
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -11,10 +12,10 @@ app.get('/', (req, res) => {
 var pub;
 
 io.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
-    pub.publish({ data: msg });
+  socket.on('twist_message', (msg) => {
+    var twist = new geoMsgs.msg.Twist();
+    twist.angular.z = msg;
+    pub.publish(twist);
   });
 });
 
@@ -28,7 +29,7 @@ rosnodejs.initNode('/my_node')
       io.emit('ang_vel', msg.twist.twist.angular.z.toFixed(3));
     });
     
-    pub = nh.advertise('/input', 'std_msgs/String');
+    pub = nh.advertise('/other/cmd_vel', geoMsgs.msg.Twist);
   });
 
 http.listen(3000, () => {
