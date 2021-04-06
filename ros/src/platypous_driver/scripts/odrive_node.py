@@ -37,7 +37,7 @@ class ODriveNode:
         while not rospy.is_shutdown():
             if not odrive.is_connected():
                 print("Connecting to ODrive.")
-                odrive.connect(timeout=1)
+                odrive.connect(timeout=5)
             elif not odrive.is_calibrated():
                 print("Calibrating ODrive.")
                 odrive.calibrate()
