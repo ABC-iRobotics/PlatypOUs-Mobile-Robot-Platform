@@ -27,7 +27,8 @@ RUN apt-get update && \
         ros-noetic-teleop-twist-joy \
         ros-noetic-twist-mux \
         ros-noetic-robot-localization \
-        ros-noetic-gmapping
+        ros-noetic-gmapping \
+        ros-noetic-move-base
 
 COPY /web /root/web
 RUN cd /root/web && \
@@ -40,6 +41,8 @@ COPY /ros/src /root/ros_ws/src
 WORKDIR /root/ros_ws
 RUN . /opt/ros/noetic/setup.sh && \
     catkin_make
+
+RUN python3 -m pip install paho-mqtt
 
 WORKDIR /
 COPY /entrypoint.bash /

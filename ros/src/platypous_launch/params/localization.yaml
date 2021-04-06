@@ -3,7 +3,7 @@ silent_tf_failure: false
 sensor_timeout: 0.1
 two_d_mode: true
 
-transform_time_offset: 0.1
+transform_time_offset: 0.0
 predict_to_current_time: true
 transform_timeout: 0.0
 print_diagnostics: true

@@ -44,4 +44,8 @@
   <!-- JOYSTICK TELEOP -->
   <include file="$(find platypous_launch)/launch/joy_teleop.launch" />
   
+  
+  <!-- NAVIGATION -->
+  <!--include file="$(find platypous_navigation)/launch/navigation.launch" /-->
+  
 </launch>
