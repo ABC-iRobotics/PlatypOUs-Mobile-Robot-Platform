@@ -35,7 +35,8 @@ RUN cd /root/web && \
     npm init -y && \
     npm install express \
                 socket.io \
-                rosnodejs
+                rosnodejs \
+                arraybuffer-to-string
 
 COPY /ros/src /root/ros_ws/src
 WORKDIR /root/ros_ws

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>asd</title>
+    <title>PlatypOUs GUI</title>
     
     <link
       type="text/css"
@@ -31,11 +31,22 @@
           <template #table-caption>Odometry</template>
         </b-table>
       </b-jumbotron>
+      
     </div>
+    <canvas id="canvas" width="640" height="360" style="border:1px solid #000000;"></canvas>
+
+<!--
+    <img id="image"/>
+-->
     
     <script>    
       
     var socket = io();
+    
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //~ var ctx = document.getElementById('image');
+    
+    var img = new Image();
     
     var App = new Vue({
       el: '#app',
@@ -77,6 +88,12 @@
     
     socket.on('ang_vel', function(msg) {
       App.items[0].ang_vel = msg;
+    });
+  
+    socket.on('robot-camera', function(data) {
+      img.src = 'data:image/jpeg;base64, ' + data;
+      ctx.drawImage(img, 0, 0);
+      console.log(data);
     });
   
     </script>
