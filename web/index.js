@@ -4,6 +4,7 @@ const io = require("socket.io")(http);
 const rosnodejs = require('rosnodejs');
 const navMsgs = rosnodejs.require('nav_msgs');
 const geoMsgs = rosnodejs.require('geometry_msgs');
+const ab2str = require('arraybuffer-to-string');
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -29,8 +30,15 @@ rosnodejs.initNode('/my_node')
       io.emit('ang_vel', msg.twist.twist.angular.z.toFixed(3));
     });
     
-    pub = nh.advertise('/other/cmd_vel', geoMsgs.msg.Twist);
+    nh.subscribe("/depth_camera/color/image_raw/compressed", "sensor_msgs/CompressedImage", (msg) => {
+      let base64Encoded = ab2str(msg.data, 'base64');
+      io.emit("robot-camera", base64Encoded);
+    });
+    
+    pub = nh.advertise('/platypous/cmd_vel', geoMsgs.msg.Twist);
   });
+  
+
 
 http.listen(3000, () => {
   console.log('listening on *:3000');

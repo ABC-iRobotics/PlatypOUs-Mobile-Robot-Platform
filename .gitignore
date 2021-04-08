@@ -84,3 +84,8 @@ ros/src/CMakeLists.txt
 *.exe
 *.out
 *.app
+
+
+/web/node_modules
+/web/package.json
+/web/package-lock.json
