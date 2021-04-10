@@ -32,21 +32,35 @@
         </b-table>
       </b-jumbotron>
       
-    </div>
-    <canvas id="canvas" width="640" height="360" style="border:1px solid #000000;"></canvas>
+      <label style="font-size: x-large; text-indent: 30pt; line-height: 50px;">
+        Live map:
+      </label><br/>
+      
+      <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
+        Current goal:
+      </label><br/>
+      
+      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">X: {{ mouse_x }}</p>
+      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">Y: {{ mouse_y }}</p>
 
-<!--
-    <img id="image"/>
--->
+      <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
+        Click on the map to give a goal:
+      </label>
+
+      <canvas v-on:click="getMousePos" id="map_live" width="640" height="360" 
+              style="border:1px solid #000000; margin: auto; padding: 0; display: block;"></canvas>
+
+      <label for="camera_live" 
+            style="font-size: x-large; text-indent: 30pt; line-height: 50px;">Live camera footage:</label>
+
+      <canvas id="camera_live" width="640" height="360" 
+              style="border:1px solid #000000; margin: auto; padding: 0; display: block;"></canvas>
+              
+    </div>
     
     <script>    
-      
+    
     var socket = io();
-    
-    var ctx = document.getElementById('canvas').getContext('2d');
-    //~ var ctx = document.getElementById('image');
-    
-    var img = new Image();
     
     var App = new Vue({
       el: '#app',
@@ -58,19 +72,60 @@
         y_pos: 0.0,
         lin_vel: 0.0,
         ang_vel: 0.0,
+        mouse_x: 0.0,
+        mouse_y: 0.0,
+        c: null,
+        ctx: null,
+        c_camera: null,
+        ctx_camera: null,
+        img: new Image(),
         items: [
           { x_pos: 0.0, y_pos: 0.0, lin_vel: 0.0, ang_vel: 0.0}
         ]
       },
-      methods:{        
+      
+      mounted: function(){
+        this.c = document.getElementById('map_live');
+        this.ctx = this.c.getContext('2d');
+        
+        this.c_camera = document.getElementById('camera_live');
+        this.ctx_camera = this.c_camera.getContext('2d');
+      },
+      
+      methods:{
         twistFunc: function(){
           socket.emit('twist_message', this.value);
         },
         
         twistReset: function(){
-          socket.emit('twist_message', 0.0)
-          this.value = 0.0
+          socket.emit('twist_message', 0.0);
+          this.value = 0.0;
+        },
+        
+        getMousePos: function (event) {
+          this.mouse_x = event.offsetX;
+          this.mouse_y = event.offsetY;
+          if(this.mouse_x < 0) this.mouse_x = 0;
+          if(this.mouse_x > 639) this.mouse_x = 639;
+          if(this.mouse_y < 0) this.mouse_y = 0;
+          if(this.mouse_y > 359) this.mouse_y = 359;
+          
+          this.sendGoal();
+        },
+        
+        drawGoal: function(x, y){
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, 10, 0, 2 * Math.PI);
+          this.ctx.stroke();
+        },
+        
+        sendGoal: function(){
+          var goal = new Object();
+          goal.x = this.mouse_x;
+          goal.y = this.mouse_y;
+          socket.emit('goal', JSON.stringify(goal));
         }
+        
       }
     })
     
@@ -91,9 +146,13 @@
     });
   
     socket.on('robot-camera', function(data) {
-      img.src = 'data:image/jpeg;base64, ' + data;
-      ctx.drawImage(img, 0, 0);
+      App.img.src = 'data:image/jpeg;base64, ' + data;
+      App.ctx_camera.drawImage(App.img, 0, 0);
       console.log(data);
+    });
+    
+    socket.on('draw', function(msg) {
+      App.drawGoal(JSON.parse(msg).x, JSON.parse(msg).y);
     });
   
     </script>

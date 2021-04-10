@@ -18,11 +18,20 @@ io.on('connection', (socket) => {
     twist.angular.z = msg;
     pub.publish(twist);
   });
+  socket.on('goal', (msg) => {
+    var goal = JSON.parse(msg);
+    goal.x += 10;
+    socket.emit('draw', JSON.stringify(goal));
+  });
 });
 
 rosnodejs.initNode('/my_node')
 .then(() => {
     const nh = rosnodejs.nh;
+    
+    const client = nh.serviceClient('/add_two_ints', 'beginner_tutorials/AddTwoInts');
+    client.call({a: 1, b: 2});
+    
     const sub = nh.subscribe('/localization/odometry/filtered', navMsgs.msg.Odometry, (msg) => {
       io.emit('x_pos', msg.pose.pose.position.x.toFixed(3));
       io.emit('y_pos', msg.pose.pose.position.y.toFixed(3));
@@ -38,8 +47,6 @@ rosnodejs.initNode('/my_node')
     pub = nh.advertise('/platypous/cmd_vel', geoMsgs.msg.Twist);
   });
   
-
-
 http.listen(3000, () => {
   console.log('listening on *:3000');
 });
