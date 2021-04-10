@@ -10,13 +10,25 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   sensor_msgs
   image_transport
+  message_generation
 )
 
 find_package( OpenCV REQUIRED )
 add_compile_options(-Wall -Wextra -pedantic)
 
+add_service_files(
+  FILES
+  Convert.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
 catkin_package(
   CATKIN_DEPENDS
+  message_runtime
 )
 
 include_directories(
