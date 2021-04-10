@@ -11,6 +11,8 @@ app.get('/', (req, res) => {
 });
 
 var pub;
+var client;
+var client2;
 
 io.on('connection', (socket) => {
   socket.on('twist_message', (msg) => {
@@ -20,8 +22,19 @@ io.on('connection', (socket) => {
   });
   socket.on('goal', (msg) => {
     var goal = JSON.parse(msg);
-    goal.x += 10;
-    socket.emit('draw', JSON.stringify(goal));
+    var mapx = 0, mapy = 0;
+    client.call({input_x: goal.x, input_y: goal.y}).then((resp) => {
+      client2.call({input_x: resp.output_x, input_y: resp.output_y}).then((resp) => { 
+        console.log(resp.output_x);
+        console.log(resp.output_y);
+        
+        var draw = new Object();
+        draw.x = resp.output_x;
+        draw.y = resp.output_y;
+        socket.emit('draw', JSON.stringify(draw));
+      
+      });
+    });
   });
 });
 
@@ -29,8 +42,9 @@ rosnodejs.initNode('/my_node')
 .then(() => {
     const nh = rosnodejs.nh;
     
-    const client = nh.serviceClient('/add_two_ints', 'beginner_tutorials/AddTwoInts');
-    client.call({a: 1, b: 2});
+    client = nh.serviceClient('/convert_image_to_map_coordinate', 'map_to_image/Convert');
+    client2 = nh.serviceClient('/convert_map_to_image_coordinate', 'map_to_image/Convert');
+
     
     const sub = nh.subscribe('/localization/odometry/filtered', navMsgs.msg.Odometry, (msg) => {
       io.emit('x_pos', msg.pose.pose.position.x.toFixed(3));
@@ -42,6 +56,11 @@ rosnodejs.initNode('/my_node')
     nh.subscribe("/depth_camera/color/image_raw/compressed", "sensor_msgs/CompressedImage", (msg) => {
       let base64Encoded = ab2str(msg.data, 'base64');
       io.emit("robot-camera", base64Encoded);
+    });
+    
+    nh.subscribe("/output/compressed", "sensor_msgs/CompressedImage", (msg) => {
+      let base64Encoded = ab2str(msg.data, 'base64');
+      io.emit("robot-map", base64Encoded);
     });
     
     pub = nh.advertise('/platypous/cmd_vel', geoMsgs.msg.Twist);

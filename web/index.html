@@ -79,6 +79,7 @@
         c_camera: null,
         ctx_camera: null,
         img: new Image(),
+        map_img: new Image(),
         items: [
           { x_pos: 0.0, y_pos: 0.0, lin_vel: 0.0, ang_vel: 0.0}
         ]
@@ -148,10 +149,15 @@
     socket.on('robot-camera', function(data) {
       App.img.src = 'data:image/jpeg;base64, ' + data;
       App.ctx_camera.drawImage(App.img, 0, 0);
-      console.log(data);
+    });
+    
+    socket.on('robot-map', function(data) {
+      App.map_img.src = 'data:image/jpeg;base64, ' + data;
+      App.ctx.drawImage(App.map_img, 0, 0);
     });
     
     socket.on('draw', function(msg) {
+      App.ctx.drawImage(App.map_img, 0, 0);
       App.drawGoal(JSON.parse(msg).x, JSON.parse(msg).y);
     });
   
