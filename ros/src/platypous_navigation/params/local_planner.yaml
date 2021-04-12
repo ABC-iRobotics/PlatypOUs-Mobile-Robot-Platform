@@ -1,4 +1,4 @@
-DWAPlannerROS:
+TrajectoryPlannerROS:
     max_vel_x: 0.7
     min_vel_x: 0.5
     max_vel_theta: 2.5
@@ -7,5 +7,11 @@ DWAPlannerROS:
     acc_lim_theta: 10
     acc_lim_x: 10
     acc_lim_y: 0
+    
+    xy_goal_tolerance: 0.5
+    yaw_goal_tolerance: 6.3
 
     holonomic_robot: false
+    
+    publish_cost_grid_pc: true
+    
