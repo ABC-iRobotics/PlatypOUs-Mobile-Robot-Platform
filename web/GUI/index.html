@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PlatypOUs GUI</title>
+    
+    <link
+      type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+        
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  
+  <body>
+    <div id="app" class="small-container">
+      <b-jumbotron header="PlatypOUs GUI">
+        
+        <teleop></teleop>
+        
+        <map-image ref="slam_map_ref"></map-image>
+        
+        <camera-image ref="camera_img_ref"></camera-image>
+        
+      </b-jumbotron>
+    </div>
+    
+    <script src="camera_image.js"></script>
+    <script src="map.js"></script>
+    <script src="teleop.js"></script>
+    <script src="main_vue.js"></script>
+    <script src="socket_io.js"></script>
+  </body>
+</html>

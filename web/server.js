@@ -1,4 +1,5 @@
 const app = require('express')();
+var express = require('express');
 const http = require('http').Server(app);
 const io = require("socket.io")(http);
 const rosnodejs = require('rosnodejs');
@@ -6,9 +7,7 @@ const navMsgs = rosnodejs.require('nav_msgs');
 const geoMsgs = rosnodejs.require('geometry_msgs');
 const ab2str = require('arraybuffer-to-string');
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
+app.use(express.static("GUI"));
 
 var pub;
 var client;
