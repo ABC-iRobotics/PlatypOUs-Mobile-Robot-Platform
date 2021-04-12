@@ -1,0 +1,7 @@
+float64 input_x
+float64 input_y
+float64 input_yaw
+---
+float64 output_x
+float64 output_y
+float64 output_yaw

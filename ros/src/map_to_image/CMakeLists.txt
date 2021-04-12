@@ -19,6 +19,7 @@ add_compile_options(-Wall -Wextra -pedantic)
 add_service_files(
   FILES
   Convert.srv
+  RobotPose.srv
 )
 
 generate_messages(
