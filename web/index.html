@@ -47,7 +47,7 @@
         Click on the map to give a goal:
       </label>
 
-      <canvas v-on:click="getMousePos" id="map_live" width="640" height="360" 
+      <canvas v-on:dblclick="getMousePos" v-on:mousedown="mouseDown" v-on:mouseup="mouseUp" v-on:mousemove="mouseMove" id="map_live" width="640" height="360" 
               style="border:1px solid #000000; margin: auto; padding: 0; display: block;"></canvas>
 
       <label for="camera_live" 
@@ -74,6 +74,11 @@
         ang_vel: 0.0,
         mouse_x: 0.0,
         mouse_y: 0.0,
+        goal_x: 0.0,
+        goal_y: 0.0,
+        map_offset_x: 0.0,
+        map_offset_y: 0.0,
+        map_moving: false,
         c: null,
         ctx: null,
         c_camera: null,
@@ -104,14 +109,29 @@
         },
         
         getMousePos: function (event) {
-          this.mouse_x = event.offsetX;
-          this.mouse_y = event.offsetY;
-          if(this.mouse_x < 0) this.mouse_x = 0;
-          if(this.mouse_x > 639) this.mouse_x = 639;
-          if(this.mouse_y < 0) this.mouse_y = 0;
-          if(this.mouse_y > 359) this.mouse_y = 359;
+          this.mouse_x = event.offsetX - this.map_offset_x;
+          this.mouse_y = event.offsetY - this.map_offset_y;
           
           this.sendGoal();
+        },
+        
+        mouseDown: function (event) {
+          this.mouse_x = event.offsetX - this.map_offset_x;
+          this.mouse_y = event.offsetY - this.map_offset_y;
+          this.map_moving = true;
+        },
+        
+        mouseUp: function (event) {
+          this.map_moving = false;
+        },
+        
+        mouseMove: function (event) {
+          if(this.map_moving){
+            this.map_offset_x = event.offsetX - this.mouse_x;
+            this.map_offset_y = event.offsetY - this.mouse_y;
+            this.ctx.drawImage(this.map_img, this.map_offset_x, this.map_offset_y);
+            this.drawGoal(this.goal_x + this.map_offset_x, this.goal_y + this.map_offset_y);
+          }
         },
         
         drawGoal: function(x, y){
@@ -153,12 +173,15 @@
     
     socket.on('robot-map', function(data) {
       App.map_img.src = 'data:image/jpeg;base64, ' + data;
-      App.ctx.drawImage(App.map_img, 0, 0);
+      App.ctx.drawImage(App.map_img, App.map_offset_x, App.map_offset_y);
+      App.drawGoal(App.goal_x + App.map_offset_x, App.goal_y + App.map_offset_y);
     });
     
     socket.on('draw', function(msg) {
-      App.ctx.drawImage(App.map_img, 0, 0);
-      App.drawGoal(JSON.parse(msg).x, JSON.parse(msg).y);
+      App.goal_x = JSON.parse(msg).x;
+      App.goal_y = JSON.parse(msg).y;
+      //~ App.ctx.drawImage(App.map_img, App.map_offset_x, App.map_offset_y);
+      App.drawGoal(App.goal_x + App.map_offset_x, App.goal_y + App.map_offset_y);
     });
   
     </script>
