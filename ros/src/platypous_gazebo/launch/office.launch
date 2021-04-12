@@ -25,8 +25,8 @@
 
   <!-- GMAPPING -->
   <node name="gmapping" pkg="gmapping" type="slam_gmapping">
-    <remap from="scan" to="/laser/scan" />
-    <param name="map_update_interval" value="1.0" />
+    <remap from="scan" to="/scan" />
+    <param name="map_update_interval" value="0.1" />
     <param name="xmin" value="-10.0" />
     <param name="ymin" value="-10.0" />
     <param name="xmax" value="10.0" />
