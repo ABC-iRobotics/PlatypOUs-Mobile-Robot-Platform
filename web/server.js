@@ -20,18 +20,10 @@ io.on('connection', (socket) => {
     twist.angular.z = msg;
     pub.publish(twist);
   });
-  socket.on('goal', (msg) => {
+  socket.on('navigation-goal', (msg) => {
     var goal = JSON.parse(msg);
-    var mapx = 0, mapy = 0;
-    client.call({input_x: goal.x, input_y: goal.y}).then((resp) => {
-      client2.call({input_x: resp.output_x, input_y: resp.output_y}).then((resp) => { 
-        
-        var draw = new Object();
-        draw.x = resp.output_x;
-        draw.y = resp.output_y;
-        socket.emit('draw', JSON.stringify(draw));
-      
-      });
+    client.call({goal: {x: goal.x, y: goal.y} }).then((resp) => {
+      console.log(resp.success);
     });
   });
 });
@@ -40,9 +32,9 @@ rosnodejs.initNode('/my_node')
 .then(() => {
     const nh = rosnodejs.nh;
     
-    client = nh.serviceClient('/convert_image_to_map_coordinate', 'map_to_image/Convert');
-    client2 = nh.serviceClient('/convert_map_to_image_coordinate', 'map_to_image/Convert');
-    client3 = nh.serviceClient('/get_robot_pose', 'map_to_image/RobotPose');
+    client = nh.serviceClient('/send_nav_goal', 'platypous_msgs/SendGoal');
+    //~ client2 = nh.serviceClient('/convert_map_to_image_coordinate', 'platypous_msgs/Convert');
+    //~ client3 = nh.serviceClient('/get_robot_pose', 'platypous_msgs/RobotPose');
 
     
     const sub = nh.subscribe('/localization/odometry/filtered', navMsgs.msg.Odometry, (msg) => {
@@ -60,16 +52,10 @@ rosnodejs.initNode('/my_node')
     nh.subscribe("/output/compressed", "sensor_msgs/CompressedImage", (msg) => {
       let base64Encoded = ab2str(msg.data, 'base64');
       io.emit("robot-map", base64Encoded);
-      client3.call({input_x: 0.0, input_y: 0.0, input_yaw: 0.0}).then((resp) => {
-          client2.call({input_x: resp.output_x, input_y: resp.output_y}).then((resp) => { 
-        
-            var draw = new Object();
-            draw.x = resp.output_x;
-            draw.y = resp.output_y;
-            io.emit('draw', JSON.stringify(draw));
-          
-          });
-      });
+    });
+    
+    nh.subscribe("/robot_pose_image", "platypous_msgs/Pose2D", (msg) => {
+      io.emit("robot-pose", JSON.stringify(msg));
     });
     
     pub = nh.advertise('/platypous/cmd_vel', geoMsgs.msg.Twist);

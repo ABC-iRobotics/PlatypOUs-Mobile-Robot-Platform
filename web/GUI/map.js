@@ -9,14 +9,17 @@ Vue.component("map-image", {
         Current goal:
       </label><br/>
       
-      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">X: {{ mouse_x }}</p>
-      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">Y: {{ mouse_y }}</p>
+      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">X: {{ click_x }}</p>
+      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">Y: {{ click_y }}</p>
 
       <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
         Click on the map to give a goal:
       </label>
+      
+      <button v-on:click="sendGoal">GO!</button>
 
       <canvas id="map_canvas" 
+              v-on:click="click"
               v-on:mousedown="mouseDown" 
               v-on:mouseup="mouseUp" 
               v-on:mousemove="mouseMove" 
@@ -31,6 +34,8 @@ Vue.component("map-image", {
     return {
       mouse_x: 0.0,
       mouse_y: 0.0,
+      click_x: 0.0,
+      click_y: 0.0,
       robot_pos_x: 0.0,
       robot_pos_y: 0.0,
       robot_yaw: 0.0,
@@ -54,7 +59,15 @@ Vue.component("map-image", {
       this.ctx.drawImage(this.img, this.map_offset_x, this.map_offset_y);
       
       this.ctx.beginPath();
-      this.ctx.arc(this.robot_pos_x, this.robot_pos_y, 10, 0, 2 * Math.PI);
+      this.ctx.translate(this.robot_pos_x + this.map_offset_x, this.robot_pos_y + this.map_offset_y);
+      this.ctx.rotate(-this.robot_yaw);
+      this.ctx.rect(-10, -10, 20, 20);
+      this.ctx.rotate(this.robot_yaw);
+      this.ctx.translate(-(this.robot_pos_x + this.map_offset_x), -(this.robot_pos_y + this.map_offset_y));
+      this.ctx.stroke();
+      
+      this.ctx.beginPath();
+      this.ctx.arc(this.click_x + this.map_offset_x, this.click_y + this.map_offset_y, 10, 0, 2 * Math.PI);
       this.ctx.stroke();
     },
     
@@ -70,9 +83,18 @@ Vue.component("map-image", {
       this.renderMap();
     },
     
+    sendGoal: function () {
+      socket.emit('navigation-goal', JSON.stringify({x: this.click_x, y: this.click_y}));
+    },
+    
+    click: function (event) {
+      this.click_x = event.offsetX - this.map_offset_x;
+      this.click_y = event.offsetY - this.map_offset_y;
+    },
+    
     mouseDown: function (event) {
-      this.mouse_x = event.clientX - this.map_offset_x;
-      this.mouse_y = event.clientY - this.map_offset_y;
+      this.mouse_x = event.offsetX - this.map_offset_x;
+      this.mouse_y = event.offsetY - this.map_offset_y;
       this.map_moving = true;
     },
     
@@ -82,8 +104,8 @@ Vue.component("map-image", {
     
     mouseMove: function (event) {
       if(this.map_moving){
-        this.map_offset_x = event.clientX - this.mouse_x;
-        this.map_offset_y = event.clientY - this.mouse_y;
+        this.map_offset_x = event.offsetX - this.mouse_x;
+        this.map_offset_y = event.offsetY - this.mouse_y;
         this.renderMap();
       }
     },

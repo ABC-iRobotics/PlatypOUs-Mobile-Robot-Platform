@@ -8,5 +8,6 @@ socket.on('robot-map', function(data) {
   App.$refs.slam_map_ref.updateMap(data);
 });
 
-socket.on('draw', function(msg) {
+socket.on('robot-pose', function(msg) {
+  App.$refs.slam_map_ref.updateRobotPos(msg);
 });
