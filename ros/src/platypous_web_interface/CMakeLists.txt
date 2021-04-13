@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(map_to_image)
+project(platypous_web_interface)
 
 add_compile_options(-std=c++11)
 
@@ -10,26 +10,14 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   sensor_msgs
   image_transport
-  message_generation
+  platypous_msgs
 )
 
 find_package( OpenCV REQUIRED )
 add_compile_options(-Wall -Wextra -pedantic)
 
-add_service_files(
-  FILES
-  Convert.srv
-  RobotPose.srv
-)
-
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
-
 catkin_package(
   CATKIN_DEPENDS
-  message_runtime
 )
 
 include_directories(

@@ -6,8 +6,8 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 
-#include <map_to_image/Convert.h>
-#include <map_to_image/RobotPose.h>
+#include <platypous_msgs/Convert.h>
+#include <platypous_msgs/RobotPose.h>
 
 
 static image_transport::Publisher image_pub;
@@ -63,7 +63,7 @@ void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 }
 
 
-bool convert_map_to_image_coordinate(map_to_image::Convert::Request &req, map_to_image::Convert::Response &res)
+bool convert_map_to_image_coordinate(platypous_msgs::Convert::Request &req, platypous_msgs::Convert::Response &res)
 {
     res.output_x = (-map_origin_x + req.input_x) / map_resolution;
     res.output_y = map_height - ((-map_origin_y + req.input_y) / map_resolution);
@@ -71,7 +71,7 @@ bool convert_map_to_image_coordinate(map_to_image::Convert::Request &req, map_to
 }
 
 
-bool convert_image_to_map_coordinate(map_to_image::Convert::Request &req, map_to_image::Convert::Response &res)
+bool convert_image_to_map_coordinate(platypous_msgs::Convert::Request &req, platypous_msgs::Convert::Response &res)
 {
     res.output_x = map_origin_x + (req.input_x * map_resolution);
     res.output_y = map_origin_y + ((map_height - req.input_y) * map_resolution);
@@ -79,7 +79,7 @@ bool convert_image_to_map_coordinate(map_to_image::Convert::Request &req, map_to
 }
 
 
-bool get_robot_pose(map_to_image::RobotPose::Request &req, map_to_image::RobotPose::Response &res)
+bool get_robot_pose(platypous_msgs::RobotPose::Request &req, platypous_msgs::RobotPose::Response &res)
 {
     res.output_x = robot_x;
     res.output_y = robot_y;
