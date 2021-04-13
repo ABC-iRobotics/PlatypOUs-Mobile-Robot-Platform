@@ -8,10 +8,16 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+add_message_files(
+  FILES
+  Pose2D.msg
+)
+
 add_service_files(
   FILES
   Convert.srv
   RobotPose.srv
+  SendGoal.srv
 )
 
 generate_messages(
