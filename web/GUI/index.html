@@ -12,20 +12,17 @@
         
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
   </head>
   
   <body>
     <div id="app" class="small-container">
-      <b-jumbotron header="PlatypOUs GUI">
-        
-        <teleop></teleop>
-        
         <map-image ref="slam_map_ref"></map-image>
         
         <camera-image ref="camera_img_ref"></camera-image>
         
-      </b-jumbotron>
+        <teleop></teleop>
     </div>
     
     <script src="camera_image.js"></script>

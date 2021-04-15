@@ -17,7 +17,8 @@ var client3;
 io.on('connection', (socket) => {
   socket.on('twist_message', (msg) => {
     var twist = new geoMsgs.msg.Twist();
-    twist.angular.z = msg;
+    twist.angular.z = JSON.parse(msg).ang;
+    twist.linear.x = JSON.parse(msg).lin;
     pub.publish(twist);
   });
   socket.on('navigation-goal', (msg) => {

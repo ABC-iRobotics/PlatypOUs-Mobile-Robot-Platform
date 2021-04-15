@@ -16,7 +16,7 @@ Vue.component("map-image", {
         Click on the map to give a goal:
       </label>
       
-      <button v-on:click="sendGoal">GO!</button>
+      <b-button v-on:click="sendGoal">GO!</b-button>
 
       <canvas id="map_canvas" 
               v-on:click="click"
