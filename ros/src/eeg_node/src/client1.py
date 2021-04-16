@@ -6,7 +6,7 @@ import rospy
 from geometry_msgs.msg import Twist
 from paho.mqtt import client as mqtt_client
 
-broker = '192.168.1.168'
+broker = '192.168.1.100'
 port = 1883
 topic = "test"
 #generate client ID with pub prefix randomly 
@@ -41,20 +41,14 @@ def subscribe(client: mqtt_client):
         twist_msg = Twist()
         
         if(data == '1'):
-            direction = direction + 1
-            if(direction == 4):
-                direction = 0
-        
+            twist_msg.linear.x = 0.2
+        if(data == '3'):
+            twist_msg.linear.x = -0.2
         if(data == '2'):
-            if(direction == 0):
-                twist_msg.linear.x = 0.2
-            if(direction == 2):
-                twist_msg.linear.x = -0.2
-            if(direction == 1):
-                twist_msg.angular.z = -0.5
-            if(direction == 3):
-                twist_msg.angular.z = 0.5
-            
+            twist_msg.angular.z = -0.5
+        if(data == '4'):
+            twist_msg.angular.z = 0.5
+        
         pub.publish(twist_msg)
 
     client.subscribe(topic)
