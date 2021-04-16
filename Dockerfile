@@ -28,7 +28,8 @@ RUN apt-get update && \
         ros-noetic-twist-mux \
         ros-noetic-robot-localization \
         ros-noetic-gmapping \
-        ros-noetic-move-base
+        ros-noetic-move-base \
+        ros-noetic-cv-bridge
 
 COPY /web /root/web
 RUN cd /root/web && \
@@ -37,6 +38,8 @@ RUN cd /root/web && \
                 socket.io \
                 rosnodejs \
                 arraybuffer-to-string
+
+RUN apt-get install -y ros-noetic-image-transport ros-noetic-compressed-image-transport
 
 COPY /ros/src /root/ros_ws/src
 WORKDIR /root/ros_ws
@@ -48,4 +51,6 @@ RUN python3 -m pip install paho-mqtt
 WORKDIR /
 COPY /entrypoint.bash /
 RUN chmod +x /entrypoint.bash
+COPY /start_script.bash /
+RUN chmod +x /start_script.bash
 ENTRYPOINT ["/entrypoint.bash"]

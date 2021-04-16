@@ -37,7 +37,11 @@
   <!-- GMAPPING -->
   <node name="gmapping" pkg="gmapping" type="slam_gmapping">
     <remap from="scan" to="/scan" />
-    <param name="map_update_interval" value="1.0" />
+    <param name="map_update_interval" value="0.1" />
+    <param name="xmin" value="-10.0" />
+    <param name="ymin" value="-10.0" />
+    <param name="xmax" value="10.0" />
+    <param name="ymax" value="10.0" />
   </node>
   
   
@@ -46,6 +50,8 @@
   
   
   <!-- NAVIGATION -->
-  <!--include file="$(find platypous_navigation)/launch/navigation.launch" /-->
+  <include file="$(find platypous_navigation)/launch/navigation.launch" />
+
+  <node name="map_to_image" pkg="platypous_web_interface" type="map_to_image_node" />
   
 </launch>
