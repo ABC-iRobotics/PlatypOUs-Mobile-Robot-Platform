@@ -33,11 +33,7 @@ RUN apt-get update && \
 
 COPY /web /root/web
 RUN cd /root/web && \
-    npm init -y && \
-    npm install express \
-                socket.io \
-                rosnodejs \
-                arraybuffer-to-string
+    npm install
 
 RUN apt-get install -y ros-noetic-image-transport ros-noetic-compressed-image-transport
 
