@@ -1,33 +1,36 @@
 Vue.component("map-image", {
   template: `
   <div>
-    <label style="font-size: x-large; text-indent: 30pt; line-height: 50px;">
-        Live map:
-      </label><br/>
-      
-      <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
-        Current goal:
-      </label><br/>
-      
-      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">X: {{ click_x }}</p>
-      <p style="font-size: large; text-indent: 30pt; line-height: 20px;">Y: {{ click_y }}</p>
+    <b-container>
+      <label style="font-size: x-large; text-indent: 30pt; line-height: 50px;">
+          Live map:
+        </label><br/>
+        
+        <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
+          Current goal:
+        </label><br/>
+        
+        <p style="font-size: large; text-indent: 30pt; line-height: 20px;">X: {{ click_x }}</p>
+        <p style="font-size: large; text-indent: 30pt; line-height: 20px;">Y: {{ click_y }}</p>
 
-      <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
-        Click on the map to give a goal:
-      </label>
-      
-      <b-button v-on:click="sendGoal">GO!</b-button>
+        <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
+          Click on the map to give a goal:
+        </label>
+        
+        <b-button v-on:click="sendGoal">GO!</b-button>
 
-      <canvas id="map_canvas" 
-              v-on:click="click"
-              v-on:mousedown="mouseDown" 
-              v-on:mouseup="mouseUp" 
-              v-on:mousemove="mouseMove" 
-              v-on:touchstart="touchDown" 
-              v-on:touchend="touchUp" 
-              v-on:touchmove="touchMove"
-              width="720" height="720" 
-              style="border:1px solid #000000; margin: auto; padding: 0; display: block;"></canvas>
+        <canvas id="map_canvas" 
+                v-on:click="click"
+                v-on:mousedown="mouseDown" 
+                v-on:mouseup="mouseUp" 
+                v-on:mousemove="mouseMove" 
+                v-on:touchstart="touchDown" 
+                v-on:touchend="touchUp" 
+                v-on:touchmove="touchMove"
+                width="720" height="720" 
+                style="border:1px solid #000000; margin: auto; padding: 0; display: block;">
+        </canvas>
+      </b-container>
   </div>`,
   
   data(){
