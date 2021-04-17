@@ -1,40 +1,41 @@
 Vue.component("map-image", {
   template: `
   <div>
-    <b-container>
-      <label style="font-size: x-large; text-indent: 30pt; line-height: 50px;">
-          Live map:
-        </label><br/>
-        
-        <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
+    <b-container fluid >
+      <b-card align="center" v-bind:style="{ backgroundColor: color_yellow}">
+        <b-card-text>
           Current goal:
-        </label><br/>
-        
-        <p style="font-size: large; text-indent: 30pt; line-height: 20px;">X: {{ click_x }}</p>
-        <p style="font-size: large; text-indent: 30pt; line-height: 20px;">Y: {{ click_y }}</p>
-
-        <label style="font-size: large; text-indent: 30pt; line-height: 20px;">
+          {{ click_x }}
+          {{ click_y }}<br>
           Click on the map to give a goal:
-        </label>
+          <b-button v-on:click="sendGoal">GO!</b-button></p>
+        </b-card-text>
+      </b-card>
         
-        <b-button v-on:click="sendGoal">GO!</b-button>
-
-        <canvas id="map_canvas" 
-                v-on:click="click"
-                v-on:mousedown="mouseDown" 
-                v-on:mouseup="mouseUp" 
-                v-on:mousemove="mouseMove" 
-                v-on:touchstart="touchDown" 
-                v-on:touchend="touchUp" 
-                v-on:touchmove="touchMove"
-                width="720" height="720" 
-                style="border:1px solid #000000; margin: auto; padding: 0; display: block;">
-        </canvas>
-      </b-container>
+      <canvas id="map_canvas" 
+              v-on:click="click"
+              v-on:mousedown="mouseDown" 
+              v-on:mouseup="mouseUp" 
+              v-on:mousemove="mouseMove" 
+              v-on:touchstart="touchDown" 
+              v-on:touchend="touchUp" 
+              v-on:touchmove="touchMove"
+              width="850" 
+              height="600" 
+              style="
+                border:1px solid #000000; 
+                margin: auto; 
+                padding: 0; 
+                display: block;
+                ">
+      </canvas>
+    </b-container>
   </div>`,
   
   data(){
     return {
+      color_blue: '#1e2b4e',
+      color_yellow: '#fab001',
       mouse_x: 0.0,
       mouse_y: 0.0,
       click_x: 0.0,
@@ -45,19 +46,21 @@ Vue.component("map-image", {
       map_offset_x: 0.0,
       map_offset_y: 0.0,
       map_moving: false,
+      map_canvas: null,
       ctx: null,
       img: new Image()
     };
   },
   
   mounted: function(){
-    this.ctx = document.getElementById('map_canvas').getContext('2d');
+    this.map_canvas = document.getElementById('map_canvas');
+    this.ctx = map_canvas.getContext('2d');
   },
   
   methods: {
     renderMap: function(){
       this.ctx.fillStyle = "#000000";
-      this.ctx.fillRect(0, 0, 720, 720);
+      this.ctx.fillRect(0, 0, map_canvas.width, map_canvas.height);
       
       this.ctx.drawImage(this.img, this.map_offset_x, this.map_offset_y);
       
