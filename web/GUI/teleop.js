@@ -2,24 +2,26 @@ Vue.component("teleop", {
   template: `
   <div >
     <b-container fluid>
-      <b-row>
-        <b-col>
-          <label for="lin_vel_range" style="font-size: 30px">Linear velocity: {{ lin_value }} </label>
-        </b-col>
-        <b-col cols="8">
-          <b-form-input id="lin_vel_range" v-model="lin_value" type="range" 
-                        min="0.05" max="0.7" step="0.01"></b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <label for="ang_vel_range" style="font-size: 30px">Linear velocity: {{ ang_value }}</label>
-        </b-col>
-        <b-col cols="8">
-          <b-form-input id="ang_vel_range" v-model="ang_value" type="range" 
-                        min="0.05" max="1.0" step="0.01" size="lg"></b-form-input>
-        </b-col>
-      </b-row>
+      <b-card v-bind:style="{ backgroundColor: color_yellow}">
+        <b-row>
+          <b-col>
+            <label for="lin_vel_range" style="font-size: 30px">Linear velocity: {{ lin_value }} </label>
+          </b-col>
+          <b-col cols="8">
+            <b-form-input id="lin_vel_range" v-model="lin_value" type="range" 
+                          min="0.05" max="0.7" step="0.01"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
+            <label for="ang_vel_range" style="font-size: 30px">Linear velocity: {{ ang_value }}</label>
+          </b-col>
+          <b-col cols="8">
+            <b-form-input id="ang_vel_range" v-model="ang_value" type="range" 
+                          min="0.05" max="1.0" step="0.01" size="lg"></b-form-input>
+          </b-col>
+        </b-row>
+      </b-card>
     </b-container>
     <b-container >
       <b-row class="mb-4" >
@@ -78,6 +80,8 @@ Vue.component("teleop", {
   
   data(){
     return {
+      color_blue: '#1e2b4e',
+      color_yellow: '#fab001',
       lin_value: 0.5,
       ang_value: 0.5,
       velocities: {
