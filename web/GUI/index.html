@@ -18,30 +18,76 @@
   
   <body >
     <div id="app" class="small-container">
-       <b-tabs content-class="mt-3" justified style="font-size: 30px">
-        <b-tab title="Map" active >
-          <map-image ref="slam_map_ref"></map-image>
-        </b-tab>
-        <b-tab title="Camera">
-          <camera-image ref="camera_img_ref"></camera-image>
-        </b-tab>
-        <b-tab title="Teleoperation">
-          <teleop></teleop>
-        </b-tab>
-      </b-tabs>
-      
+      <b-card >
+        <b-container fluid >
+          <b-row style="font-size: 20px;">
+            <b-col>
+              <b-card body-text-variant="white" style="backgroundColor: #1e2b4e;">
+                <b-row>
+                  <b-col cols="8">
+                    <b-img src="/images/header-09.png" fluid ></b-img>
+                  </b-col>
+                  <b-col></b-col>
+                  <b-col cols="1">
+                    <template v-if="ping_timeout < 5">
+                      <b-icon  font-scale="2.5" icon="wifi" class="bg-success rounded"></b-icon>
+                    </template>
+                    <template v-else>
+                      <b-icon animation="throb" font-scale="2.5" icon="wifi-off" class="bg-danger rounded"></b-icon>
+                    </template>
+                    
+                    <template v-if="">
+                      <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>
+                      100%
+                    </template>
+                    <template v-else>
+                      <b-icon animation="throb" font-scale="2.5" icon="battery-half" class="bg-warning rounded"></b-icon>
+                    </template>
+                    <template v-else>
+                      <b-icon animation="throb" font-scale="2.5" icon="battery" class="bg-danger rounded"></b-icon>
+                    </template>
+                    
+                    
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+        </b-container>
+   
+        <b-tabs pills card  justified style="font-size: 30px;">
+          <b-tab title="Teleoperation" active :title-link-class="'tab-title-class'">
+            <teleop></teleop>
+          </b-tab>
+          <b-tab title="Map" :title-link-class="'tab-title-class'">
+            <map-image ref="slam_map_ref"></map-image>
+          </b-tab>
+          <b-tab title="Camera" :title-link-class="'tab-title-class'">
+            <camera-image ref="camera_img_ref"></camera-image>
+          </b-tab>
+          <b-tab title="Diagnostics" :title-link-class="'tab-title-class'">
+            <diagnostics></diagnostics>
+            
+          </b-tab>
+        </b-tabs>
+      </b-card>
     </div>
     
-    <script src="dashboard.js"></script>
     <script src="camera_image.js"></script>
     <script src="map.js"></script>
     <script src="teleop.js"></script>
+    <script src="diagnostics.js"></script>
     <script src="main_vue.js"></script>
     <script src="socket_io.js"></script>
     
     <style>
-      .tab-title-color {
-        color: #fab001;  
+      .tab-title-class{
+        color: #fab001 ;
+        background-color: #1e2b4e ;
+      }
+      
+      .nav-pills .nav-link.active, .nav-pills .show > .nav_link > a {
+        background-color: #fab001;
       }
     </style>
     

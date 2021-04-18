@@ -2,13 +2,15 @@ Vue.component("map-image", {
   template: `
   <div>
     <b-container fluid >
-      <b-card align="center" v-bind:style="{ backgroundColor: color_yellow}">
+      <b-card body-text-variant="white" align="center" v-bind:style="{ backgroundColor: color_blue}">
         <b-card-text>
           Current goal:
           {{ click_x }}
           {{ click_y }}<br>
           Click on the map to give a goal:
-          <b-button v-on:click="sendGoal">GO!</b-button></p>
+          <b-button v-on:click="sendGoal" style="backgroundColor: #fab001;">
+            <b-icon icon="play-fill" rounded style="width: 1.5em; height: 1.5em;"></b-icon>
+          </b-button></p>
         </b-card-text>
       </b-card>
         
