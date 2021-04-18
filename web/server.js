@@ -27,6 +27,9 @@ io.on('connection', (socket) => {
       console.log(resp.success);
     });
   });
+  socket.on('ping', (msg) => {
+    socket.emit('pong', null);
+  });
 });
 
 rosnodejs.initNode('/my_node')
@@ -37,7 +40,6 @@ rosnodejs.initNode('/my_node')
     //~ client2 = nh.serviceClient('/convert_map_to_image_coordinate', 'platypous_msgs/Convert');
     //~ client3 = nh.serviceClient('/get_robot_pose', 'platypous_msgs/RobotPose');
 
-    
     const sub = nh.subscribe('/localization/odometry/filtered', navMsgs.msg.Odometry, (msg) => {
       io.emit('x_pos', msg.pose.pose.position.x.toFixed(3));
       io.emit('y_pos', msg.pose.pose.position.y.toFixed(3));

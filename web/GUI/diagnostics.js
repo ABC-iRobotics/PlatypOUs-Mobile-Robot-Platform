@@ -1,4 +1,4 @@
-Vue.component("dashboard", {
+Vue.component("diagnostics", {
   template: `
   <div>
     <b-container>

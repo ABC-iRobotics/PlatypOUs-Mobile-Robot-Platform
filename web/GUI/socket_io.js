@@ -11,3 +11,7 @@ socket.on('robot-map', function(data) {
 socket.on('robot-pose', function(msg) {
   App.$refs.slam_map_ref.updateRobotPos(msg);
 });
+
+socket.on('pong', function(msg) {
+  App.resetPingTimeout();
+});
