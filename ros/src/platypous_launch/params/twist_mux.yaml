@@ -1,10 +1,37 @@
 topics:
-- name    : teleop
-  topic   : /teleop/cmd_vel
+- name    : joy_teleop
+  topic   : joy_teleop
   timeout : 1.0
   priority: 100
 
+- name    : web_teleop
+  topic   : web_teleop
+  timeout : 1.0
+  priority: 90
+
+- name    : nav
+  topic   : nav
+  timeout : 1.0
+  priority: 50
+
+- name    : eeg
+  topic   : eeg
+  timeout : 1.0
+  priority: 40
+
 - name    : other
-  topic   : /other/cmd_vel
-  timeout : 0.5
+  topic   : other
+  timeout : 1.0
   priority: 10
+
+
+locks:
+- name    : stop_navigation
+  topic   : disable_nav
+  timeout : 0.0
+  priority: 60
+
+- name    : stop_eeg
+  topic   : disable_eeg
+  timeout : 0.0
+  priority: 45
