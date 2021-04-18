@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- BASIC -->
+  <include file="$(find platypous_launch)/launch/basic.launch" />
+  
+  
+  <!-- LIDAR -->
+  <include file="$(find platypous_launch)/launch/lidar.launch" />
+  
+  
+  <!-- GMAPPING -->
+  <include file="$(find platypous_launch)/launch/gmapping.launch" />
+  
+  
+  <!-- NAVIGATION -->
+  <include file="$(find platypous_launch)/launch/navigation.launch" />
+
+
+  <node name="map_to_image" pkg="platypous_web_interface" type="map_to_image_node" />
+  
+</launch>

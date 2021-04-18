@@ -21,6 +21,9 @@ RUN mkdir -p /root/ros_ws/src && \
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
 
+RUN python3 -m pip install \
+    paho-mqtt
+
 RUN apt-get update && \
     apt-get install -y \
         ros-noetic-joy \
@@ -29,24 +32,20 @@ RUN apt-get update && \
         ros-noetic-robot-localization \
         ros-noetic-gmapping \
         ros-noetic-move-base \
-        ros-noetic-cv-bridge
+        ros-noetic-cv-bridge \
+        ros-noetic-image-transport \
+        ros-noetic-compressed-image-transport
 
 COPY /web /root/web
 RUN cd /root/web && \
-    npm install
-
-RUN apt-get install -y ros-noetic-image-transport ros-noetic-compressed-image-transport
+    npm ci
 
 COPY /ros/src /root/ros_ws/src
-WORKDIR /root/ros_ws
 RUN . /opt/ros/noetic/setup.sh && \
+    cd /root/ros_ws && \
     catkin_make
 
-RUN python3 -m pip install paho-mqtt
-
-WORKDIR /
-COPY /entrypoint.bash /
-RUN chmod +x /entrypoint.bash
-COPY /start_script.bash /
-RUN chmod +x /start_script.bash
-ENTRYPOINT ["/entrypoint.bash"]
+COPY /scripts/start_basic.bash /
+RUN chmod +x /start_basic.bash
+COPY /scripts/start_full.bash /
+RUN chmod +x /start_full.bash

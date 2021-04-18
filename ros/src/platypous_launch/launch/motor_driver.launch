@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <!-- MOTOR DRIVER -->
+  <node name="motor_driver" ns="driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/odrive.yaml" />
+  </node>
+  
+  
+  <!-- TWIST MUX -->
+  <node name="twist_mux" ns="cmd_vel" pkg="twist_mux" type="twist_mux" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/twist_mux.yaml" />
+    <remap from="cmd_vel_out" to="/driver/cmd_vel" />
+  </node>
+
+</launch>

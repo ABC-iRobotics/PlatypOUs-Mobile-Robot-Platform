@@ -1,11 +1,11 @@
 #!/bin/bash
 
 docker run \
-    -i \
+    -it \
     --rm \
     --privileged \
     -v /dev:/dev \
     --network host \
     --name platypous_container \
     platypous:latest \
-    bash /start_script.bash
+    /start_basic.bash
