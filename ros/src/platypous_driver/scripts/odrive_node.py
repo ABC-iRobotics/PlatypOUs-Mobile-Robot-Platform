@@ -29,38 +29,30 @@ class ODriveNode:
         rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
         
         odom_pub = rospy.Publisher("odom", TwistWithCovarianceStamped, queue_size=2)
+        
+        odom_msg = TwistWithCovarianceStamped()
+        odom_msg.header.frame_id = "base_link"
 
         odrive = ODriveDriver()
         
         rate = rospy.Rate(10)
         
         while not rospy.is_shutdown():
-            if not odrive.is_connected():
-                print("Connecting to ODrive.")
-                odrive.connect(timeout=5)
-            elif not odrive.is_calibrated():
-                print("Calibrating ODrive.")
-                odrive.calibrate()
-            elif not odrive.is_engaged():
-                print("Engaging ODrive.")
-                odrive.engage()
-            else:
-                odrive.set_velocity(self.left_speed, self.right_speed)
-                lv, rv = odrive.get_velocity()
-                if not (lv == None or rv == None):
-                    odom_msg = TwistWithCovarianceStamped()
-                    odom_msg.header.stamp = rospy.Time.now()
-                    odom_msg.header.frame_id = "base_link"
-                    odom_msg.twist.twist.linear.x = (((rv * 2 * 3.14159265) + (lv * 2 * 3.14159265)) / 2.0) * self.wheel_radius
-                    odom_msg.twist.twist.angular.z = ((((rv * 2 * 3.14159265) - (lv * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
-                    odom_pub.publish(odom_msg)
+
+            print(odrive.get_status_string())
+            print(odrive.get_errors())
+            print()
             
-            if not odrive.is_ok():
-                le, re = odrive.get_errors(clear=True)
-                print("ODrive error:")
-                print(le)
-                print(re)
-                print()
+            odrive.make_ready()
+
+            odrive.set_velocity(self.left_speed, self.right_speed)
+
+            vels = odrive.get_velocity()
+
+            odom_msg.header.stamp = rospy.Time.now()
+            odom_msg.twist.twist.linear.x = (((vels[1] * 2 * 3.14159265) + (vels[0] * 2 * 3.14159265)) / 2.0) * self.wheel_radius
+            odom_msg.twist.twist.angular.z = ((((vels[1] * 2 * 3.14159265) - (vels[0] * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
+            odom_pub.publish(odom_msg)
                 
             rate.sleep()
 
