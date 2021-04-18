@@ -2,7 +2,4 @@
 
 source ros/devel/setup.bash
 
-roslaunch platypous_launch simulation_full.launch &
-sleep 5 && cd web && node server.js &
-
-wait
+roslaunch platypous_launch simulation_full.launch
