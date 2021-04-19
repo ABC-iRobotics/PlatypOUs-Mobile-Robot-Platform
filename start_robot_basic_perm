@@ -5,11 +5,11 @@ if docker ps -a | grep -q "platypous_container"; then
 fi
 
 docker run \
-    -it \
-    --rm \
+    -d \
+    --restart always \
     --privileged \
     -v /dev:/dev \
     --network host \
     --name platypous_container \
     platypous:latest \
-    /start_full.bash
+    /start_basic.bash
