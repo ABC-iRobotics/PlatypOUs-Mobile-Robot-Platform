@@ -44,6 +44,7 @@ class ODriveNode:
             print()
             
             odrive.make_ready()
+            odrive.clear_errors()
 
             odrive.set_velocity(self.left_speed, self.right_speed)
 
