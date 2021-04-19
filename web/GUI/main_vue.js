@@ -3,7 +3,8 @@ var App = new Vue({
   data:{
     color_blue: '#1e2b4e',
     color_yellow: '#fab001',
-    ping_timeout: 0
+    ping_timeout: 0,
+    battery_voltage: 0.0
   },
   
   mounted: function(){
@@ -17,6 +18,10 @@ var App = new Vue({
     sendPing: function(){
       this.ping_timeout++;
       socket.emit("ping", null);
+    },
+    
+    updateBatteryVoltage: function(voltage){
+      this.battery_voltage = voltage.toFixed(2);
     }
   }
 });

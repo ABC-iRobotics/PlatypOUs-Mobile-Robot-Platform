@@ -61,6 +61,10 @@ rosnodejs.initNode('/my_node')
       io.emit("robot-pose", JSON.stringify(msg));
     });
     
+    nh.subscribe("/driver/voltage", "std_msgs/Float64", (msg) => {
+      io.emit("battery-voltage", msg.data);
+    });
+    
     pub = nh.advertise('/cmd_vel/web_teleop', geoMsgs.msg.Twist);
   });
   

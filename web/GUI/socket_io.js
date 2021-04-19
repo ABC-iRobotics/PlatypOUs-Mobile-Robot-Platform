@@ -15,3 +15,7 @@ socket.on('robot-pose', function(msg) {
 socket.on('pong', function(msg) {
   App.resetPingTimeout();
 });
+
+socket.on('battery-voltage', function(msg) {
+  App.updateBatteryVoltage(msg);
+});

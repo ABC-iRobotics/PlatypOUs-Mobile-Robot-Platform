@@ -40,17 +40,17 @@
                       <b-icon animation="throb" font-scale="2.5" icon="wifi-off" class="bg-danger rounded"></b-icon>
                     </template>
                     
-                    <template v-if="">
-                      <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>100%
+                    <template v-if="battery_voltage > 24.0">
+                      <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>
                     </template>
-<!--
+                    <template v-else-if="battery_voltage > 22.5">
+                      <b-icon icon="battery-half" class="bg-warning rounded" font-scale="2.5"></b-icon>
+                    </template>
                     <template v-else>
-                      <b-icon animation="throb" font-scale="2.5" icon="battery-half" class="bg-warning rounded"></b-icon>
+                      <b-icon icon="battery" class="bg-danger rounded" font-scale="2.5" animation="throb"></b-icon>
                     </template>
-                    <template v-else>
-                      <b-icon animation="throb" font-scale="2.5" icon="battery" class="bg-danger rounded"></b-icon>
-                    </template>
--->
+                    <p align="right" class="mr-2">{{ battery_voltage }} V </p>
+                    
                     
                     
                   </b-col>
