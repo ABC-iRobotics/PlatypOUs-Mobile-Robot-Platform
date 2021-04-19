@@ -8,6 +8,7 @@ TODO:
 """
 
 import rospy
+from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TwistWithCovarianceStamped
 
@@ -29,9 +30,11 @@ class ODriveNode:
         rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
         
         odom_pub = rospy.Publisher("odom", TwistWithCovarianceStamped, queue_size=2)
-        
         odom_msg = TwistWithCovarianceStamped()
         odom_msg.header.frame_id = "base_link"
+        
+        voltage_pub = rospy.Publisher("voltage", Float64, queue_size=2)
+        voltage_msg = Float64()
 
         odrive = ODriveDriver()
         
@@ -39,11 +42,12 @@ class ODriveNode:
         
         while not rospy.is_shutdown():
 
-            print(odrive.get_status_string())
-            print(odrive.get_errors())
-            print()
+            # ~ print(odrive.get_status_string())
+            # ~ print(odrive.get_errors())
+            # ~ print()
             
             odrive.make_ready()
+            odrive.clear_errors()
 
             odrive.set_velocity(self.left_speed, self.right_speed)
 
@@ -53,6 +57,9 @@ class ODriveNode:
             odom_msg.twist.twist.linear.x = (((vels[1] * 2 * 3.14159265) + (vels[0] * 2 * 3.14159265)) / 2.0) * self.wheel_radius
             odom_msg.twist.twist.angular.z = ((((vels[1] * 2 * 3.14159265) - (vels[0] * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
             odom_pub.publish(odom_msg)
+            
+            voltage_msg.data = odrive.get_voltage()
+            voltage_pub.publish(voltage_msg)
                 
             rate.sleep()
 

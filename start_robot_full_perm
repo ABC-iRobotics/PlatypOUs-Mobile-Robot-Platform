@@ -5,8 +5,8 @@ if docker ps -a | grep -q "platypous_container"; then
 fi
 
 docker run \
-    -it \
-    --rm \
+    -d \
+    --restart always \
     --privileged \
     -v /dev:/dev \
     --network host \
