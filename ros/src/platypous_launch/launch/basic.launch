@@ -13,5 +13,7 @@
   <node name="ekf_localization" ns="localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
     <rosparam command="load" file="$(find platypous_launch)/params/localization.yaml" />
   </node>
+
+  <node name="eeg_node" pkg="eeg_node" type="client1.py" respawn="true" />
   
 </launch>
