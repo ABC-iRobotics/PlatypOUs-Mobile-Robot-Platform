@@ -61,7 +61,7 @@ rosnodejs.initNode('/my_node')
       io.emit("robot-pose", JSON.stringify(msg));
     });
     
-    pub = nh.advertise('/platypous/cmd_vel', geoMsgs.msg.Twist);
+    pub = nh.advertise('/cmd_vel/web_teleop', geoMsgs.msg.Twist);
   });
   
 http.listen(3000, () => {
