@@ -6,7 +6,7 @@ import rospy
 from geometry_msgs.msg import Twist
 from paho.mqtt import client as mqtt_client
 
-broker = '192.168.1.100'
+broker = '192.168.1.53'
 port = 1883
 topic = "test"
 #generate client ID with pub prefix randomly 
@@ -57,7 +57,7 @@ def subscribe(client: mqtt_client):
 def run():
     global pub
     rospy.init_node('talker', anonymous=True)
-    pub = rospy.Publisher ('/other/cmd_vel', Twist, queue_size=10)
+    pub = rospy.Publisher ('/cmd_vel/eeg', Twist, queue_size=10)
     
     client = connect_mqtt()
     subscribe(client)
