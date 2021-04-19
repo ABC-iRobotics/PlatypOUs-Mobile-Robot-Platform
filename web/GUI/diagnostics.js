@@ -1,10 +1,9 @@
 Vue.component("diagnostics", {
   template: `
   <div>
-    <b-container>
       
-    </b-container>
-  </div>`,
+  </div>
+  `,
   
   data(){
     return {};

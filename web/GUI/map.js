@@ -4,10 +4,11 @@ Vue.component("map-image", {
     <b-container fluid >
       <b-card body-text-variant="white" align="center" v-bind:style="{ backgroundColor: color_blue}">
         <b-card-text>
-          Current goal:
-          {{ click_x }}
-          {{ click_y }}<br>
-          Click on the map to give a goal:
+          Current goal coordinates<br>
+          X: {{ click_x }}
+          Y: {{ click_y }}<br>
+          Click on the map to give a goal<br>
+          Start:
           <b-button v-on:click="sendGoal" style="backgroundColor: #fab001;">
             <b-icon icon="play-fill" rounded style="width: 1.5em; height: 1.5em;"></b-icon>
           </b-button></p>
@@ -61,7 +62,7 @@ Vue.component("map-image", {
   
   methods: {
     renderMap: function(){
-      this.ctx.fillStyle = "#000000";
+      this.ctx.fillStyle = "#ffffff";
       this.ctx.fillRect(0, 0, map_canvas.width, map_canvas.height);
       
       this.ctx.drawImage(this.img, this.map_offset_x, this.map_offset_y);

@@ -14,9 +14,11 @@
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
     <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    
+    <meta content="user-scalable=no">
   </head>
   
-  <body >
+  <body> <!--style="overflow: hidden;position: fixed;"-->
     <div id="app" class="small-container">
       <b-card >
         <b-container fluid >
@@ -27,8 +29,10 @@
                   <b-col cols="8">
                     <b-img src="/images/header-09.png" fluid ></b-img>
                   </b-col>
-                  <b-col></b-col>
-                  <b-col cols="1">
+                  <b-col cols="2">
+                    <b-img src="/images/ou-logo.png" fluid ></b-img>
+                  </b-col>
+                  <b-col cols="2">
                     <template v-if="ping_timeout < 5">
                       <b-icon  font-scale="2.5" icon="wifi" class="bg-success rounded"></b-icon>
                     </template>
@@ -37,15 +41,16 @@
                     </template>
                     
                     <template v-if="">
-                      <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>
-                      100%
+                      <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>100%
                     </template>
+<!--
                     <template v-else>
                       <b-icon animation="throb" font-scale="2.5" icon="battery-half" class="bg-warning rounded"></b-icon>
                     </template>
                     <template v-else>
                       <b-icon animation="throb" font-scale="2.5" icon="battery" class="bg-danger rounded"></b-icon>
                     </template>
+-->
                     
                     
                   </b-col>
@@ -54,12 +59,12 @@
             </b-col>
           </b-row>
         </b-container>
-   
+        
         <b-tabs pills card  justified style="font-size: 30px;">
           <b-tab title="Teleoperation" active :title-link-class="'tab-title-class'">
             <teleop></teleop>
           </b-tab>
-          <b-tab title="Map" :title-link-class="'tab-title-class'">
+          <b-tab title="Navigation" :title-link-class="'tab-title-class'">
             <map-image ref="slam_map_ref"></map-image>
           </b-tab>
           <b-tab title="Camera" :title-link-class="'tab-title-class'">
@@ -72,7 +77,10 @@
         </b-tabs>
       </b-card>
     </div>
+<!--
     
+    <script src="joystick_test.js"></script>
+-->
     <script src="camera_image.js"></script>
     <script src="map.js"></script>
     <script src="teleop.js"></script>

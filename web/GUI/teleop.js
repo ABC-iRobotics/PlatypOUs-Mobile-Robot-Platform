@@ -22,8 +22,7 @@ Vue.component("teleop", {
           </b-col>
         </b-row>
       </b-card>
-    </b-container>
-    <b-container >
+      
       <b-row class="mb-4 mt-4" >
         <b-col cols="4">
           <b-button block v-on:click="flFunc" style="backgroundColor: #1e2b4e;">
@@ -85,7 +84,23 @@ Vue.component("teleop", {
         </b-col>
       </b-row>
     </b-container>
-  </div>`,
+  </div>
+  
+  `,
+  
+  //~ <b-container fluid>
+      //~ <b-card>
+        //~ <b-card-text>
+          //~ X: {{ x_coordinate }}
+          //~ Y: {{ y_coordinate }}
+          //~ Speed: {{ speed }} %
+          //~ Angle: {{ angle }}
+        //~ </b-card-text>
+        //~ <canvas id="canvas" name="game"></canvas>
+      //~ </b-card>
+    //~ </b-container>
+  //~ </div>
+    
   
   data(){
     return {
@@ -97,10 +112,19 @@ Vue.component("teleop", {
         lin: 0.0,
         ang: 0.0
       }
+      
+      //~ x_coordinate: 0.0,
+      //~ y_coordinate: 0.0,
+      //~ speed: 0.0,
+      //~ angle: 0.0
+      
     };
   },
   
-  methods: {    
+  methods: {
+        
+    
+    
     flFunc: function(){
       this.velocities.lin = this.lin_value;
       this.velocities.ang = this.ang_value;
@@ -156,3 +180,12 @@ Vue.component("teleop", {
     }
   }
 });
+
+
+//~ sendFunc: function(x,y,speed,angle){
+      //~ this.x_coordinate = x;
+      //~ this.y_coordinate = y;
+      //~ this.speed = speed;
+      //~ this.angle = angle;
+      //~ socket.emit();
+    //~ }
