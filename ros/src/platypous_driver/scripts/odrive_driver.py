@@ -138,6 +138,13 @@ class ODriveDriver:
         return [(self.left_axis.encoder.vel_estimate / self.left_vel_multiplier), (self.right_axis.encoder.vel_estimate / self.right_vel_multiplier)]
 
 
+    def get_voltage(self):
+        if not self.is_connected():
+            return 0
+        
+        return self.odrv.vbus_voltage
+
+
     def make_ready(self):
         if not self.is_ready():
             self.connect()
