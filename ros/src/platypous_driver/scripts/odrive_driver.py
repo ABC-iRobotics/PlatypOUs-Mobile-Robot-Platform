@@ -131,11 +131,18 @@ class ODriveDriver:
         self.right_axis.watchdog_feed()
 
 
-    def get_velocity(self):
+    def get_velocity_left(self):
         if not self.is_ready():
             return [0, 0]
         
-        return [(self.left_axis.encoder.vel_estimate / self.left_vel_multiplier), (self.right_axis.encoder.vel_estimate / self.right_vel_multiplier)]
+        return (self.left_axis.encoder.vel_estimate / self.left_vel_multiplier)
+
+
+    def get_velocity_right(self):
+        if not self.is_ready():
+            return [0, 0]
+        
+        return (self.right_axis.encoder.vel_estimate / self.right_vel_multiplier)
 
 
     def get_voltage(self):
@@ -143,6 +150,27 @@ class ODriveDriver:
             return 0
         
         return self.odrv.vbus_voltage
+
+
+    def get_current(self):
+        if not self.is_connected():
+            return 0
+        
+        return self.odrv.ibus
+
+
+    def get_temperature_left(self):
+        if not self.is_connected():
+            return 0
+        
+        return self.odrv.left_axis.fet_thermistor.temp
+
+
+    def get_temperature_right(self):
+        if not self.is_connected():
+            return 0
+        
+        return self.odrv.right_axis.fet_thermistor.temperature
 
 
     def make_ready(self):
