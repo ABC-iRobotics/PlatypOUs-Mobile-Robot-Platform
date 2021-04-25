@@ -5,9 +5,6 @@ Vue.component("teleop", {
       <b-row>
         <b-col >
           <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
-            <b-card-text >
-              Camera image:
-            </b-card-text>
             <canvas id="camera_image" 
                     width="640" 
                     height="360"
@@ -26,9 +23,7 @@ Vue.component("teleop", {
           <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
             <b-card-text>
               Linear velocity: {{ velocities.lin }}
-              Angular velocity: {{ velocities.ang }}<br>
-              Speed: {{ speed }} %
-              Angle: {{ angle_in_degrees }}
+              Angular velocity: {{ velocities.ang }}
             </b-card-text>
             <canvas id="canvas"
                     v-on:mousedown="startDrawing" 

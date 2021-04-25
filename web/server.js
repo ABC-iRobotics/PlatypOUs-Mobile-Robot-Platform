@@ -9,23 +9,23 @@ const ab2str = require('arraybuffer-to-string');
 
 app.use(express.static("GUI"));
 
-var pub;
-var client;
-var client2;
-var client3;
+var cmd_vel_pub;
+var nav_goal_pub;
 
 io.on('connection', (socket) => {
   socket.on('twist_message', (msg) => {
     var twist = new geoMsgs.msg.Twist();
     twist.angular.z = JSON.parse(msg).ang;
     twist.linear.x = JSON.parse(msg).lin;
-    pub.publish(twist);
+    cmd_vel_pub.publish(twist);
   });
   socket.on('navigation-goal', (msg) => {
-    var goal = JSON.parse(msg);
-    client.call({goal: {x: goal.x, y: goal.y} }).then((resp) => {
-      console.log(resp.success);
-    });
+    var pose = new geoMsgs.msg.PoseStamped();
+    pose.pose.position.x = JSON.parse(msg).x;
+    pose.pose.position.y = JSON.parse(msg).y;
+    pose.pose.orientation.w = 1;
+    pose.header.frame_id = "map";
+    nav_goal_pub.publish(pose);
   });
   socket.on('ping', (msg) => {
     socket.emit('pong', null);
@@ -35,37 +35,27 @@ io.on('connection', (socket) => {
 rosnodejs.initNode('/my_node')
 .then(() => {
     const nh = rosnodejs.nh;
-    
-    client = nh.serviceClient('/send_nav_goal', 'platypous_msgs/SendGoal');
-    //~ client2 = nh.serviceClient('/convert_map_to_image_coordinate', 'platypous_msgs/Convert');
-    //~ client3 = nh.serviceClient('/get_robot_pose', 'platypous_msgs/RobotPose');
-
-    const sub = nh.subscribe('/localization/odometry/filtered', navMsgs.msg.Odometry, (msg) => {
-      io.emit('x_pos', msg.pose.pose.position.x.toFixed(3));
-      io.emit('y_pos', msg.pose.pose.position.y.toFixed(3));
-      io.emit('lin_vel', msg.twist.twist.linear.x.toFixed(3));
-      io.emit('ang_vel', msg.twist.twist.angular.z.toFixed(3));
-    });
-    
+        
     nh.subscribe("/depth_camera/color/image_raw/compressed", "sensor_msgs/CompressedImage", (msg) => {
       let base64Encoded = ab2str(msg.data, 'base64');
       io.emit("robot-camera", base64Encoded);
     });
     
-    nh.subscribe("/output/compressed", "sensor_msgs/CompressedImage", (msg) => {
+    nh.subscribe("/map_image/compressed", "sensor_msgs/CompressedImage", (msg) => {
       let base64Encoded = ab2str(msg.data, 'base64');
-      io.emit("robot-map", base64Encoded);
+      io.emit("map-image", base64Encoded);
     });
     
-    nh.subscribe("/robot_pose_image", "platypous_msgs/Pose2D", (msg) => {
-      io.emit("robot-pose", JSON.stringify(msg));
+    nh.subscribe("/map_image_data", "platypous_msgs/MapImageData", (msg) => {
+      io.emit("map-image-data", JSON.stringify(msg));
     });
     
     nh.subscribe("/driver/voltage", "std_msgs/Float64", (msg) => {
       io.emit("battery-voltage", msg.data);
     });
     
-    pub = nh.advertise('/cmd_vel/web_teleop', geoMsgs.msg.Twist);
+    cmd_vel_pub = nh.advertise('/cmd_vel/web_teleop', "geometry_msgs/Twist");
+    nav_goal_pub = nh.advertise('/move_base_simple/goal', "geometry_msgs/PoseStamped");
   });
   
 http.listen(3000, () => {

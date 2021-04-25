@@ -4,12 +4,12 @@ socket.on('robot-camera', function(data) {
   App.$refs.teleop_ref.renderImage(data);
 });
 
-socket.on('robot-map', function(data) {
+socket.on('map-image', function(data) {
   App.$refs.slam_map_ref.updateMap(data);
 });
 
-socket.on('robot-pose', function(msg) {
-  App.$refs.slam_map_ref.updateRobotPos(msg);
+socket.on('map-image-data', function(data) {
+  App.$refs.slam_map_ref.updateMapData(data);
 });
 
 socket.on('pong', function(msg) {

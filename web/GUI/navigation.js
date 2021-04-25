@@ -51,8 +51,6 @@ Vue.component("map-image", {
   
   data(){
     return {
-      color_blue: '#1e2b4e',
-      color_yellow: '#fab001',
       mouse_x: 0.0,
       mouse_y: 0.0,
       click_x: 0.0,
@@ -65,7 +63,9 @@ Vue.component("map-image", {
       map_moving: false,
       map_canvas: null,
       ctx: null,
-      img: new Image()
+      img: new Image(),
+      
+      map_image_data: new Object()
     };
   },
   
@@ -87,16 +87,24 @@ Vue.component("map-image", {
       
       this.ctx.drawImage(this.img, this.map_offset_x, this.map_offset_y);
       
+      //~ this.ctx.beginPath();
+      //~ this.ctx.translate(this.robot_pos_x + this.map_offset_x, this.robot_pos_y + this.map_offset_y);
+      //~ this.ctx.rotate(-this.robot_yaw);
+      //~ this.ctx.rect(-10, -10, 20, 20);
+      //~ this.ctx.rotate(this.robot_yaw);
+      //~ this.ctx.translate(-(this.robot_pos_x + this.map_offset_x), -(this.robot_pos_y + this.map_offset_y));
+      //~ this.ctx.stroke();
+      
       this.ctx.beginPath();
-      this.ctx.translate(this.robot_pos_x + this.map_offset_x, this.robot_pos_y + this.map_offset_y);
-      this.ctx.rotate(-this.robot_yaw);
+      this.ctx.translate(this.map_image_data.map_frame_image_x + this.map_offset_x,
+                         this.map_image_data.map_frame_image_y + this.map_offset_y);
       this.ctx.rect(-10, -10, 20, 20);
-      this.ctx.rotate(this.robot_yaw);
-      this.ctx.translate(-(this.robot_pos_x + this.map_offset_x), -(this.robot_pos_y + this.map_offset_y));
+      this.ctx.translate(-(this.map_image_data.map_frame_image_x + this.map_offset_x), 
+                         -(this.map_image_data.map_frame_image_y + this.map_offset_y));
       this.ctx.stroke();
       
       this.ctx.beginPath();
-      this.ctx.arc(this.click_x + this.map_offset_x, this.click_y + this.map_offset_y, 10, 0, 2 * Math.PI);
+      this.ctx.arc(this.map_to_image_x(this.click_x) + this.map_offset_x, this.map_to_image_y(this.click_y) + this.map_offset_y, 10, 0, 2 * Math.PI);
       this.ctx.stroke();
     },
     
@@ -110,11 +118,8 @@ Vue.component("map-image", {
       this.renderMap();
     },
     
-    updateRobotPos: function(data){
-      this.robot_pos_x = JSON.parse(data).x;
-      this.robot_pos_y = JSON.parse(data).y;
-      this.robot_yaw = JSON.parse(data).yaw;
-      this.renderMap();
+    updateMapData: function(data){
+      this.map_image_data = JSON.parse(data);
     },
     
     sendGoal: function () {
@@ -122,8 +127,8 @@ Vue.component("map-image", {
     },
     
     click: function (event) {
-      this.click_x = event.offsetX - this.map_offset_x;
-      this.click_y = event.offsetY - this.map_offset_y;
+      this.click_x = this.image_to_map_x(event.offsetX - this.map_offset_x).toFixed(2);
+      this.click_y = this.image_to_map_y(event.offsetY - this.map_offset_y).toFixed(2);
     },
     
     mouseDown: function (event) {
@@ -162,39 +167,20 @@ Vue.component("map-image", {
       }
     },
     
-    convert_map_to_image_coordinate: function(input_x, input_y){
-      var output = new Object();
-      output.x = (-map_origin_x + input.x) / map_resolution;
-      output.y = map_height - ((-map_origin_y + input.y) / map_resolution);
-      output.yaw = input.yaw;
-      return output;
+    map_to_image_x: function(input){
+      return input / this.map_image_data.resolution + this.map_image_data.map_frame_image_x;
     },
     
-    convert_image_to_map: function(){
-      var output = new Object();
-      output.x = map_origin_x + (input.x * map_resolution);
-      output.y = map_origin_y + ((map_height - input.y) * map_resolution);
-      output.yaw = input.yaw;
-      return output;
+    map_to_image_y: function(input){
+      return -input / this.map_image_data.resolution + this.map_image_data.map_frame_image_y;
+    },
+    
+    image_to_map_x: function(input){
+      return ((input - this.map_image_data.map_frame_image_x) * this.map_image_data.resolution);
+    },
+    
+    image_to_map_y: function(input){
+      return -((input - this.map_image_data.map_frame_image_y) * this.map_image_data.resolution);
     }
   }
 });
-
-
-//~ platypous_msgs::Pose2D convert_map_to_image_coordinate(platypous_msgs::Pose2D input)
-//~ {
-    //~ platypous_msgs::Pose2D output;
-    //~ output.x = (-map_origin_x + input.x) / map_resolution;
-    //~ output.y = map_height - ((-map_origin_y + input.y) / map_resolution);
-    //~ output.yaw = input.yaw;
-    //~ return output;
-//~ }
-
-//~ platypous_msgs::Pose2D convert_image_to_map_coordinate(platypous_msgs::Pose2D input)
-//~ {
-    //~ platypous_msgs::Pose2D output;
-    //~ output.x = map_origin_x + (input.x * map_resolution);
-    //~ output.y = map_origin_y + ((map_height - input.y) * map_resolution);
-    //~ output.yaw = input.yaw;
-    //~ return output;
-//~ }
