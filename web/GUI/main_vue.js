@@ -4,7 +4,11 @@ var App = new Vue({
     color_blue: '#1e2b4e',
     color_yellow: '#fab001',
     ping_timeout: 0,
-    battery_voltage: 0.0
+    battery_voltage: 0.0,
+
+    meta: {
+      requiresAuth: true
+    }
   },
   
   mounted: function(){

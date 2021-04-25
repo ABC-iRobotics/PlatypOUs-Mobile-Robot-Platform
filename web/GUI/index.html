@@ -3,12 +3,11 @@
   <head>
     <title>PlatypOUs GUI</title>
     
-    <link
-      type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
-    />
-    <link
-      type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
-    />
+    <link type="text/css" rel="stylesheet" 
+          href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    
+    <link type="text/css" rel="stylesheet" 
+          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
         
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
@@ -20,45 +19,35 @@
   
   <body> <!--style="overflow: hidden;position: fixed;"-->
     <div id="app" class="small-container">
-      <b-card >
-        <b-container fluid >
-          <b-row style="font-size: 20px;">
-            <b-col>
-              <b-card body-text-variant="white" style="backgroundColor: #1e2b4e;">
-                <b-row>
-                  <b-col cols="8">
-                    <b-img src="/images/header-09.png" fluid ></b-img>
-                  </b-col>
-                  <b-col cols="2">
-                    <b-img src="/images/ou-logo.png" fluid ></b-img>
-                  </b-col>
-                  <b-col cols="2">
-                    <template v-if="ping_timeout < 5">
-                      <b-icon  font-scale="2.5" icon="wifi" class="bg-success rounded"></b-icon>
-                    </template>
-                    <template v-else>
-                      <b-icon animation="throb" font-scale="2.5" icon="wifi-off" class="bg-danger rounded"></b-icon>
-                    </template>
-                    
-                    <template v-if="battery_voltage > 24.0">
-                      <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>
-                    </template>
-                    <template v-else-if="battery_voltage > 22.5">
-                      <b-icon icon="battery-half" class="bg-warning rounded" font-scale="2.5"></b-icon>
-                    </template>
-                    <template v-else>
-                      <b-icon icon="battery" class="bg-danger rounded" font-scale="2.5" animation="throb"></b-icon>
-                    </template>
-                    <p align="right" class="mr-2">{{ battery_voltage }} V </p>
-                    
-                    
-                    
-                  </b-col>
-                </b-row>
-              </b-card>
+      <b-container fluid="xl" >
+        <b-card body-text-variant="white" style="backgroundColor: #1e2b4e;">
+          <b-row md="3">
+            <b-col cols="2">
+              <b-img src="/images/ou-logo.png" fluid ></b-img>
+            </b-col>
+            <b-col cols="8">
+              <b-img src="/images/header-09.png" fluid ></b-img>
+            </b-col>
+            <b-col cols="2">
+              <template v-if="ping_timeout < 5">
+                <b-icon  font-scale="2.5" icon="wifi" class="bg-success rounded"></b-icon>
+              </template>
+              <template v-else>
+                <b-icon animation="throb" font-scale="2.5" icon="wifi-off" class="bg-danger rounded"></b-icon>
+              </template>
+              <template v-if="battery_voltage > 24.0">
+                <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>
+              </template>
+              <template v-else-if="battery_voltage > 22.5">
+                <b-icon icon="battery-half" class="bg-warning rounded" font-scale="2.5"></b-icon>
+              </template>
+              <template v-else>
+                <b-icon icon="battery" class="bg-danger rounded" font-scale="2.5" animation="throb"></b-icon>
+              </template>
+              <p align="right" class="mr-2">{{ battery_voltage }} V </p>
             </b-col>
           </b-row>
-        </b-container>
+        </b-card>
         
         <b-tabs pills card  justified style="font-size: 30px;">
           <b-tab title="Teleoperation" active :title-link-class="'tab-title-class'">
@@ -67,22 +56,21 @@
           <b-tab title="Navigation" :title-link-class="'tab-title-class'">
             <map-image ref="slam_map_ref"></map-image>
           </b-tab>
+<!--
           <b-tab title="Camera" :title-link-class="'tab-title-class'">
             <camera-image ref="camera_img_ref"></camera-image>
           </b-tab>
+-->
           <b-tab title="Diagnostics" :title-link-class="'tab-title-class'">
             <diagnostics></diagnostics>
             
           </b-tab>
         </b-tabs>
-      </b-card>
+        
+      </b-container>
     </div>
-<!--
-    
-    <script src="joystick_test.js"></script>
--->
-    <script src="camera_image.js"></script>
-    <script src="map.js"></script>
+
+    <script src="navigation.js"></script>
     <script src="teleop.js"></script>
     <script src="diagnostics.js"></script>
     <script src="main_vue.js"></script>
