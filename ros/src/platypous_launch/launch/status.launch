@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="map_to_image" pkg="platypous_status" type="map_to_image" />
+
+</launch>

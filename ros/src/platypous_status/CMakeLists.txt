@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(platypous_web_interface)
+project(platypous_status)
 
 add_compile_options(-std=c++11)
 
@@ -26,6 +26,6 @@ include_directories(
  ${OpenCV_INCLUDE_DIRS}
 )
 
-add_executable(map_to_image_node src/map_to_image_node.cpp)
+add_executable(map_to_image src/map_to_image.cpp)
 
-target_link_libraries(map_to_image_node ${catkin_LIBRARIES})
+target_link_libraries(map_to_image ${catkin_LIBRARIES})

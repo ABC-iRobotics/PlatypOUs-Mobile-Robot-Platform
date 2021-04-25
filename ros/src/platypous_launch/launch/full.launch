@@ -17,6 +17,7 @@
   <include file="$(find platypous_launch)/launch/navigation.launch" />
 
 
-  <node name="map_to_image" pkg="platypous_web_interface" type="map_to_image_node" />
+  <!-- WEB INTERFACE -->
+  <include file="$(find platypous_launch)/launch/status.launch" />
   
 </launch>

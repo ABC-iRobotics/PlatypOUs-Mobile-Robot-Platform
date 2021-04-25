@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>platypous_web_interface</name>
+  <name>platypous_status</name>
   <version>0.0.0</version>
-  <description>The platypous_web_interface package</description>
+  <description>The platypous_status package</description>
 
   <maintainer email="borsa@todo.todo">borsa</maintainer>
 
