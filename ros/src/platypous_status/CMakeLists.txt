@@ -27,5 +27,7 @@ include_directories(
 )
 
 add_executable(map_to_image src/map_to_image.cpp)
+add_executable(status_publisher src/status_publisher.cpp)
 
 target_link_libraries(map_to_image ${catkin_LIBRARIES})
+target_link_libraries(status_publisher ${catkin_LIBRARIES})

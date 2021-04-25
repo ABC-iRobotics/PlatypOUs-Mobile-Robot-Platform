@@ -1,0 +1,11 @@
+float32 battery_voltage
+float32 motor_current
+string motor_driver_status
+string motor_driver_errors
+
+float32 robot_pos_x
+float32 robot_pos_y
+float64 robot_heading
+float32 robot_lin_vel
+float32 robot_ang_vel
+
