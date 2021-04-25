@@ -1,7 +1,7 @@
 var socket = io();
 
 socket.on('robot-camera', function(data) {
-  App.$refs.camera_img_ref.renderImage(data);
+  App.$refs.teleop_ref.renderImage(data);
 });
 
 socket.on('robot-map', function(data) {

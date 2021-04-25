@@ -51,19 +51,13 @@
         
         <b-tabs pills card  justified style="font-size: 30px;">
           <b-tab title="Teleoperation" active :title-link-class="'tab-title-class'">
-            <teleop></teleop>
+            <teleop ref="teleop_ref"></teleop>
           </b-tab>
           <b-tab title="Navigation" :title-link-class="'tab-title-class'">
             <map-image ref="slam_map_ref"></map-image>
           </b-tab>
-<!--
-          <b-tab title="Camera" :title-link-class="'tab-title-class'">
-            <camera-image ref="camera_img_ref"></camera-image>
-          </b-tab>
--->
           <b-tab title="Diagnostics" :title-link-class="'tab-title-class'">
             <diagnostics></diagnostics>
-            
           </b-tab>
         </b-tabs>
         

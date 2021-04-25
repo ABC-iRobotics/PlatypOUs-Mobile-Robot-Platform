@@ -4,7 +4,7 @@ Vue.component("map-image", {
     <b-container fluid >
       <b-row>
         <b-col>
-          <b-card body-text-variant="white" v-bind:style="{ backgroundColor: color_blue}">
+          <b-card style="backgroundColor: #1e2b4e; color: #fab001;">
             <b-row>
               <b-col cols="10">
                 <b-card-text>
@@ -15,7 +15,7 @@ Vue.component("map-image", {
                 </b-card-text>
               </b-col>
               <b-col cols="2">
-                <b-button v-on:click="sendGoal" v-bind:style="{ backgroundColor: color_yellow}">
+                <b-button v-on:click="sendGoal" style="backgroundColor: #fab001;">
                     <b-icon icon="play-fill" rounded style="width: 3em; height: 3em;"></b-icon>
                   </b-button>
               </b-col>
@@ -25,7 +25,7 @@ Vue.component("map-image", {
       </b-row>
       <b-row>
         <b-col>
-          <b-card>
+          <b-card style="backgroundColor: #1e2b4e; color: #fab001;">
             <canvas id="map_canvas" 
                     v-on:click="click"
                     v-on:mousedown="mouseDown" 
@@ -35,7 +35,12 @@ Vue.component("map-image", {
                     v-on:touchend="touchUp" 
                     v-on:touchmove="touchMove"
                     style="
-                      width: 100%;
+                      display: block;
+                      padding-left: 0;
+                      padding-right: 0;
+                      margin-left: auto;
+                      margin-right: auto;
+                      border:3px solid #fab001;
                     ">
             </canvas>
           </b-card>
@@ -77,7 +82,7 @@ Vue.component("map-image", {
   
   methods: {
     renderMap: function(){
-      this.ctx.fillStyle = "#ffffff";
+      this.ctx.fillStyle = "#1e2b4e";
       this.ctx.fillRect(0, 0, this.map_canvas.width, this.map_canvas.height);
       
       this.ctx.drawImage(this.img, this.map_offset_x, this.map_offset_y);
@@ -96,8 +101,8 @@ Vue.component("map-image", {
     },
     
     resize: function(){
-      this.map_canvas.width = window.innerWidth;
-      this.map_canvas.height = window.innerWidth;
+      this.map_canvas.width = 800;
+      this.map_canvas.height = 800;
     },
     
     updateMap: function(image_data){

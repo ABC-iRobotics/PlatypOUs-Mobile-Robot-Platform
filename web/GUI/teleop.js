@@ -3,19 +3,30 @@ Vue.component("teleop", {
   <div v-on:mouseup="stopDrawing" v-on:mousemove="Draw" >
     <b-container fluid>
       <b-row>
-        <b-col cols="12" xl="6">
-          <b-card>
+        <b-col >
+          <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
+            <b-card-text >
+              Camera image:
+            </b-card-text>
             <canvas id="camera_image" 
                     width="640" 
-                    height="360">
+                    height="360"
+                    style="
+                      display: block;
+                      padding-left: 0;
+                      padding-right: 0;
+                      margin-left: auto;
+                      margin-right: auto;
+                      border:3px solid #fab001;
+                      ">
             </canvas>
           </b-card>
         </b-col>
-        <b-col cols="12" xl="6">
-          <b-card>
+        <b-col >
+          <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
             <b-card-text>
-              Linear velocity: {{ vel_lin }}
-              Angular velocity: {{ vel_ang }}<br>
+              Linear velocity: {{ velocities.lin }}
+              Angular velocity: {{ velocities.ang }}<br>
               Speed: {{ speed }} %
               Angle: {{ angle_in_degrees }}
             </b-card-text>
@@ -28,7 +39,6 @@ Vue.component("teleop", {
                     v-on:touchcancel="stopDrawing"
                     v-on:touchmove="Draw"
                     style="
-                      align: center;
                       display: block;
                       padding-left: 0;
                       padding-right: 0;
@@ -45,10 +55,8 @@ Vue.component("teleop", {
 
   data(){
     return {
-      color_blue: '#1e2b4e',
-      color_yellow: '#fab001',
-      lin_value: 0.5,
-      ang_value: 0.5,
+      lin_value: 0.7,
+      ang_value: 1.2,
       velocities: {
         lin: 0.0,
         ang: 0.0
@@ -71,8 +79,6 @@ Vue.component("teleop", {
       mouse_y: 0.0,
       joy_x: 0.0,
       joy_y: 0.0,
-      vel_lin: 0.0,
-      vel_ang: 0.0,
       angle_in_degrees: 0.0,
       is_joy_used: false
     };
@@ -104,7 +110,7 @@ Vue.component("teleop", {
     //~ camera
     renderImage: function(image_data){
       this.img_camera.src = 'data:image/jpeg;base64, ' + image_data;
-      this.ctx_camera.drawImage(this.img, 0, 0);
+      this.ctx_camera.drawImage(this.img_camera, 0, 0);
     },
     
     
@@ -152,7 +158,7 @@ Vue.component("teleop", {
         // background
         this.ctx.beginPath();
         this.ctx.arc(this.width / 2, this.height / 2, this.bg_radius, 0, Math.PI * 2, true);
-        this.ctx.fillStyle = '#ECE5E5';
+        this.ctx.fillStyle = '#485987';
         this.ctx.fill();
         
         this.angle = Math.atan2((this.mouse_y - this.height / 2), (this.mouse_x - this.width / 2));
@@ -177,8 +183,8 @@ Vue.component("teleop", {
           this.joy_y = this.bg_radius * Math.sin(this.angle) + this.height / 2;
         }
         
-        this.vel_ang = ( 1.2 * ((this.width / 2 - this.joy_x) / this.bg_radius)).toFixed(2);
-        this.vel_lin = ( 0.7 * ((this.height / 2 - this.joy_y) / this.bg_radius)).toFixed(2);
+        this.velocities.ang = ( this.ang_value * ((this.width / 2 - this.joy_x) / this.bg_radius)).toFixed(2);
+        this.velocities.lin = ( this.lin_value * ((this.height / 2 - this.joy_y) / this.bg_radius)).toFixed(2);
         
         this.ctx.beginPath();
         this.ctx.arc(this.joy_x, this.joy_y, this.radius, 0, Math.PI * 2, true);
@@ -190,147 +196,8 @@ Vue.component("teleop", {
 
         this.speed =  Math.round(100 * Math.sqrt(Math.pow(this.joy_x - this.width / 2, 2) + 
                       Math.pow(this.joy_y - this.height / 2, 2)) / this.bg_radius);
-    },
-    
-    flFunc: function(){
-      this.velocities.lin = this.lin_value;
-      this.velocities.ang = this.ang_value;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    fFunc: function(){
-      this.velocities.lin = this.lin_value;
-      this.velocities.ang = 0.0;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    frFunc: function(){
-      this.velocities.lin = this.lin_value;
-      this.velocities.ang = -this.ang_value;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    lFunc: function(){
-      this.velocities.ang = this.ang_value;
-      this.velocities.lin = 0.0;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    sFunc: function(){
-      this.velocities.lin = 0.0;
-      this.velocities.ang = 0.0;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    rFunc: function(){
-      this.velocities.ang = -this.ang_value;
-      this.velocities.lin = 0.0;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    blFunc: function(){
-      this.velocities.lin = -this.lin_value;
-      this.velocities.ang = this.ang_value;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    bFunc: function(){
-      this.velocities.lin = -this.lin_value;
-      this.velocities.ang = 0.0;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
-    },
-    
-    brFunc: function(){
-      this.velocities.lin = -this.lin_value;
-      this.velocities.ang = -this.ang_value;
-      socket.emit('twist_message', JSON.stringify(this.velocities));
+                      
+        socket.emit('twist_message', JSON.stringify(this.velocities));
     }
   }
 });
-
-//~ <!--
-
-
-    //~ <b-card body-text-variant="white" v-bind:style="{ backgroundColor: color_blue}">
-        //~ <b-row>
-          //~ <b-col>
-            //~ <label for="lin_vel_range" style="font-size: 30px">Linear velocity: {{ lin_value }} </label>
-          //~ </b-col>
-          //~ <b-col cols="7">
-            //~ <b-form-input id="lin_vel_range" v-model="lin_value" type="range" 
-                          //~ min="0.05" max="0.7" step="0.01"></b-form-input>
-          //~ </b-col>
-        //~ </b-row>
-        //~ <b-row>
-          //~ <b-col>
-            //~ <label for="ang_vel_range" style="font-size: 30px">Angular velocity: {{ ang_value }}</label>
-          //~ </b-col>
-          //~ <b-col cols="7">
-            //~ <b-form-input id="ang_vel_range" v-model="ang_value" type="range" 
-                          //~ min="0.05" max="1.0" step="0.01" size="lg"></b-form-input>
-          //~ </b-col>
-        //~ </b-row>
-      //~ </b-card>
-      
-      //~ <b-row class="mb-4 mt-4" >
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="flFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-up-left-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="fFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-up-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="frFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-up-right-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-      //~ </b-row >
-      //~ <b-row class="mb-4">
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="lFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-left-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="sFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="stop-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="rFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-right-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-      //~ </b-row>
-      //~ <b-row class="mb-4">
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="blFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-down-left-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="bFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-down-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-        //~ <b-col cols="4">
-          //~ <b-button block v-on:click="brFunc" style="backgroundColor: #1e2b4e;">
-            //~ <b-icon icon="arrow-down-right-circle" 
-                    //~ style="width: 100%; height: 100%;"></b-icon>
-          //~ </b-button>
-        //~ </b-col>
-      //~ </b-row>
-//~ -->
-
