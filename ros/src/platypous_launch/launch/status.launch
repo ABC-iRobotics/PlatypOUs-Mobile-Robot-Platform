@@ -2,5 +2,9 @@
 <launch>
 
   <node name="map_to_image" pkg="platypous_status" type="map_to_image" />
+  
+  <node name="status_publisher" pkg="platypous_status" type="status_publisher">
+    <remap from="odom" to="/localization/odometry/filtered" />
+  </node>
 
 </launch>
