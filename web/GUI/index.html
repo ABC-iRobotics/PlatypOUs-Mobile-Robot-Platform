@@ -17,37 +17,45 @@
     <meta content="user-scalable=no">
   </head>
   
-  <body> <!--style="overflow: hidden;position: fixed;"-->
+  <body>
     <div id="app" class="small-container">
       <b-container fluid >
         <b-card body-text-variant="white" style="backgroundColor: #1e2b4e;">
-          <b-row md="3">
+          <b-row >
             <b-col cols="2">
-              <b-img src="/images/ou-logo.png" fluid ></b-img>
+              <b-img src="/images/ou-logo-cut.png"  center height="60"></b-img>
             </b-col>
-            <b-col cols="8">
-              <b-img src="/images/header-09.png" fluid ></b-img>
+            <b-col></b-col>
+            <b-col cols="6" >
+              <b-img src="/images/header-09-cut.png"  center height="60"></b-img>
             </b-col>
-            <b-col cols="2">
+            <b-col></b-col>
+            <b-col cols="2" class="text-right">
               <template v-if="ping_timeout < 5">
-                <b-icon  font-scale="2.5" icon="wifi" class="bg-success rounded"></b-icon>
+                <b-icon  font-scale="3" icon="wifi" class="bg-success rounded"></b-icon>
               </template>
               <template v-else>
-                <b-icon animation="throb" font-scale="2.5" icon="wifi-off" class="bg-danger rounded"></b-icon>
+                <b-icon animation="throb" font-scale="3" icon="wifi-off" class="bg-danger rounded"></b-icon>
               </template>
               <template v-if="battery_voltage > 24.0">
-                <b-icon icon="battery-full" class="bg-success rounded" font-scale="2.5"></b-icon>
+                <b-icon icon="battery-full" class="bg-success rounded" font-scale="3"></b-icon>
               </template>
               <template v-else-if="battery_voltage > 22.5">
-                <b-icon icon="battery-half" class="bg-warning rounded" font-scale="2.5"></b-icon>
+                <b-icon icon="battery-half" class="bg-warning rounded" font-scale="3"></b-icon>
               </template>
               <template v-else>
-                <b-icon icon="battery" class="bg-danger rounded" font-scale="2.5" animation="throb"></b-icon>
+                <b-icon id="battery_popover" icon="battery" class="bg-danger rounded" font-scale="3" animation="throb"></b-icon>
               </template>
-              <p align="right" class="mr-2">{{ battery_voltage }} V </p>
             </b-col>
           </b-row>
         </b-card>
+          
+        <b-popover target="battery_popover" triggers="hover focus " placement="auto">
+          <template #title>Battery Voltage</template>
+          {{ battery_voltage }} V
+        </b-popover>
+          
+        </b-toast>
         
         <b-tabs pills card  justified style="font-size: 30px;">
           <b-tab title="Teleoperation" active :title-link-class="'tab-title-class'">
