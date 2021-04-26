@@ -38,10 +38,10 @@
                 <b-icon animation="throb" font-scale="3" icon="wifi-off" class="bg-danger rounded"></b-icon>
               </template>
               <template v-if="battery_voltage > 24.0">
-                <b-icon icon="battery-full" class="bg-success rounded" font-scale="3"></b-icon>
+                <b-icon id="battery_popover" icon="battery-full" class="bg-success rounded" font-scale="3"></b-icon>
               </template>
               <template v-else-if="battery_voltage > 22.5">
-                <b-icon icon="battery-half" class="bg-warning rounded" font-scale="3"></b-icon>
+                <b-icon id="battery_popover" icon="battery-half" class="bg-warning rounded" font-scale="3"></b-icon>
               </template>
               <template v-else>
                 <b-icon id="battery_popover" icon="battery" class="bg-danger rounded" font-scale="3" animation="throb"></b-icon>
@@ -62,10 +62,10 @@
             <teleop ref="teleop_ref"></teleop>
           </b-tab>
           <b-tab title="Navigation" :title-link-class="'tab-title-class'">
-            <map-image ref="slam_map_ref"></map-image>
+            <navigation ref="navigation_ref"></navigation>
           </b-tab>
           <b-tab title="Diagnostics" :title-link-class="'tab-title-class'">
-            <diagnostics></diagnostics>
+            <diagnostics ref="diagnostics_ref"></diagnostics>
           </b-tab>
         </b-tabs>
         

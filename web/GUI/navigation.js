@@ -1,4 +1,4 @@
-Vue.component("map-image", {
+Vue.component("navigation", {
   template: `
   <div>
     <b-container fluid >
@@ -9,8 +9,8 @@ Vue.component("map-image", {
               <b-col cols="10">
                 <b-card-text>
                   Current goal coordinates: 
-                  X: {{ click_x }}
-                  Y: {{ click_y }}<br>
+                  X: {{ goal_x }}
+                  Y: {{ goal_y }}<br>
                   Click on the map to give a goal!
                 </b-card-text>
               </b-col>
@@ -27,7 +27,6 @@ Vue.component("map-image", {
         <b-col>
           <b-card style="backgroundColor: #1e2b4e; color: #fab001;">
             <canvas id="map_canvas" 
-                    v-on:click="click"
                     v-on:mousedown="mouseDown" 
                     v-on:mouseup="mouseUp" 
                     v-on:mousemove="mouseMove" 
@@ -51,10 +50,13 @@ Vue.component("map-image", {
   
   data(){
     return {
-      mouse_x: 0.0,
-      mouse_y: 0.0,
-      click_x: 0.0,
-      click_y: 0.0,
+      mouse_down_x: 0.0,
+      mouse_down_y: 0.0,
+      mouse_down_map_offset_x: 0.0,
+      mouse_down_map_offset_y: 0.0,
+      goal_x: 0.0,
+      goal_y: 0.0,
+      draw_goal: false,
       robot_pos_x: 0.0,
       robot_pos_y: 0.0,
       robot_yaw: 0.0,
@@ -64,7 +66,7 @@ Vue.component("map-image", {
       map_canvas: null,
       ctx: null,
       img: new Image(),
-      
+      robot_status: new Object(),
       map_image_data: new Object()
     };
   },
@@ -82,29 +84,55 @@ Vue.component("map-image", {
   
   methods: {
     renderMap: function(){
+      // background
       this.ctx.fillStyle = "#1e2b4e";
       this.ctx.fillRect(0, 0, this.map_canvas.width, this.map_canvas.height);
       
+      // map
       this.ctx.drawImage(this.img, this.map_offset_x, this.map_offset_y);
       
-      //~ this.ctx.beginPath();
-      //~ this.ctx.translate(this.robot_pos_x + this.map_offset_x, this.robot_pos_y + this.map_offset_y);
-      //~ this.ctx.rotate(-this.robot_yaw);
-      //~ this.ctx.rect(-10, -10, 20, 20);
-      //~ this.ctx.rotate(this.robot_yaw);
-      //~ this.ctx.translate(-(this.robot_pos_x + this.map_offset_x), -(this.robot_pos_y + this.map_offset_y));
-      //~ this.ctx.stroke();
+      // robot on map
+      this.ctx.translate(this.map_to_image_x(this.robot_status.robot_pos_x) + this.map_offset_x, this.map_to_image_y(this.robot_status.robot_pos_y) + this.map_offset_y);
+      this.ctx.rotate(-this.robot_status.robot_heading);
       
       this.ctx.beginPath();
+      this.ctx.rect(-9, -5, 11, 10);
+      this.ctx.fillStyle = "blue";
+      this.ctx.fill();
+      
+      this.ctx.beginPath();
+      this.ctx.arc(2, 0, 4.5, Math.PI / 2 * 3, Math.PI / 2);
+      this.ctx.stroke();
+      
+      this.ctx.rotate(this.robot_status.robot_heading);
+      this.ctx.translate(-(this.map_to_image_x(this.robot_status.robot_pos_x) + this.map_offset_x), -(this.map_to_image_y(this.robot_status.robot_pos_y) + this.map_offset_y));
+      
+      // map frame
       this.ctx.translate(this.map_image_data.map_frame_image_x + this.map_offset_x,
                          this.map_image_data.map_frame_image_y + this.map_offset_y);
-      this.ctx.rect(-10, -10, 20, 20);
-      this.ctx.translate(-(this.map_image_data.map_frame_image_x + this.map_offset_x), 
-                         -(this.map_image_data.map_frame_image_y + this.map_offset_y));
+      this.ctx.lineWidth = 3;
+                         
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, 0);
+      this.ctx.lineTo(20, 0);
+      this.ctx.strokeStyle = '#ff0000';
       this.ctx.stroke();
       
       this.ctx.beginPath();
-      this.ctx.arc(this.map_to_image_x(this.click_x) + this.map_offset_x, this.map_to_image_y(this.click_y) + this.map_offset_y, 10, 0, 2 * Math.PI);
+      this.ctx.moveTo(0, 0);
+      this.ctx.lineTo(0, -20);
+      this.ctx.strokeStyle = '#00ff00';
+      this.ctx.stroke();
+      
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeStyle = '#000000';
+      this.ctx.translate(-(this.map_image_data.map_frame_image_x + this.map_offset_x), 
+                         -(this.map_image_data.map_frame_image_y + this.map_offset_y));
+      
+      
+      // goal on map
+      this.ctx.beginPath();
+      this.ctx.arc(this.map_to_image_x(this.goal_x) + this.map_offset_x, this.map_to_image_y(this.goal_y) + this.map_offset_y, 10, 0, 2 * Math.PI);
       this.ctx.stroke();
     },
     
@@ -123,35 +151,37 @@ Vue.component("map-image", {
     },
     
     sendGoal: function () {
-      socket.emit('navigation-goal', JSON.stringify({x: this.click_x, y: this.click_y}));
-    },
-    
-    click: function (event) {
-      this.click_x = this.image_to_map_x(event.offsetX - this.map_offset_x).toFixed(2);
-      this.click_y = this.image_to_map_y(event.offsetY - this.map_offset_y).toFixed(2);
+      socket.emit('navigation-goal', JSON.stringify({x: this.goal_x, y: this.goal_y}));
     },
     
     mouseDown: function (event) {
-      this.mouse_x = event.offsetX - this.map_offset_x;
-      this.mouse_y = event.offsetY - this.map_offset_y;
+      this.mouse_down_x = event.offsetX;
+      this.mouse_down_y = event.offsetY;
+      this.mouse_down_map_offset_x = this.map_offset_x;
+      this.mouse_down_map_offset_y = this.map_offset_y;
       this.map_moving = true;
     },
     
     mouseUp: function (event) {
+      if (Math.abs(event.offsetX - this.mouse_down_x) < 5 && Math.abs(event.offsetY - this.mouse_down_y) < 5)
+      {
+        this.goal_x = this.image_to_map_x(event.offsetX - this.map_offset_x).toFixed(2);
+        this.goal_y = this.image_to_map_y(event.offsetY - this.map_offset_y).toFixed(2);
+      }
       this.map_moving = false;
     },
     
     mouseMove: function (event) {
       if(this.map_moving){
-        this.map_offset_x = event.offsetX - this.mouse_x;
-        this.map_offset_y = event.offsetY - this.mouse_y;
+        this.map_offset_x = this.mouse_down_map_offset_x + event.offsetX - this.mouse_down_x;
+        this.map_offset_y = this.mouse_down_map_offset_y + event.offsetY - this.mouse_down_y;
         this.renderMap();
       }
     },
     
     touchDown: function (event) {
-      this.mouse_x = event.touches[0].clientX - this.map_offset_x;
-      this.mouse_y = event.touches[0].clientY - this.map_offset_y;
+      this.mouse_down_x = event.touches[0].clientX - this.map_offset_x;
+      this.mouse_down_y = event.touches[0].clientY - this.map_offset_y;
       this.map_moving = true;
     },
     
@@ -161,8 +191,8 @@ Vue.component("map-image", {
     
     touchMove: function (event) {
       if(this.map_moving){
-        this.map_offset_x = event.touches[0].clientX - this.mouse_x;
-        this.map_offset_y = event.touches[0].clientY - this.mouse_y;
+        this.map_offset_x = event.touches[0].clientX - this.mouse_down_x;
+        this.map_offset_y = event.touches[0].clientY - this.mouse_down_y;
         this.renderMap();
       }
     },
@@ -181,6 +211,10 @@ Vue.component("map-image", {
     
     image_to_map_y: function(input){
       return -((input - this.map_image_data.map_frame_image_y) * this.map_image_data.resolution);
+    },
+    
+    updateRobotStatus: function(data){
+      this.robot_status = data;
     }
   }
 });
