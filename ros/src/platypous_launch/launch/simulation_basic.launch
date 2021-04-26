@@ -41,4 +41,8 @@
     <remap from="cmd_vel_out" to="/driver/cmd_vel" />
   </node>
 
+
+  <!-- MOTOR DRIVER DUMMY SENSOR DATA PUBLISHER -->
+  <node name="dummy_motor_driver" ns="driver" pkg="platypous_gazebo" type="dummy_motor_driver.py" />
+
 </launch>
