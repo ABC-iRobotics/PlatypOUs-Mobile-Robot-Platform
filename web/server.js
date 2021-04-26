@@ -50,8 +50,8 @@ rosnodejs.initNode('/my_node')
       io.emit("map-image-data", JSON.stringify(msg));
     });
     
-    nh.subscribe("/driver/voltage", "std_msgs/Float64", (msg) => {
-      io.emit("battery-voltage", msg.data);
+    nh.subscribe("/robot_status", "platypous_msgs/PlatypousStatus", (msg) => {
+      io.emit("robot-status", msg);
     });
     
     cmd_vel_pub = nh.advertise('/cmd_vel/web_teleop', "geometry_msgs/Twist");
