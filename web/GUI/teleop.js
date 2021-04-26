@@ -80,10 +80,10 @@ Vue.component("teleop", {
   },
   
   mounted: function(){
-    
     this.width = 500;
     this.height = this.width;
     
+    setInterval(this.sendVelocityCommand, 100);
     
     window.addEventListener('load', () => {
       
@@ -134,7 +134,10 @@ Vue.component("teleop", {
     stopDrawing: function(event){
       this.mouse_x = this.width / 2;
       this.mouse_y = this.height / 2;
+      this.velocities.lin = 0.0;
+      this.velocities.ang = 0.0;
       
+      this.sendVelocityCommand();
       this.is_joy_used = false;
       this.Draw(event);
     },
@@ -191,8 +194,13 @@ Vue.component("teleop", {
 
         this.speed =  Math.round(100 * Math.sqrt(Math.pow(this.joy_x - this.width / 2, 2) + 
                       Math.pow(this.joy_y - this.height / 2, 2)) / this.bg_radius);
-                      
+    },
+    
+    sendVelocityCommand: function(){
+      if (this.is_joy_used)
+      {
         socket.emit('twist_message', JSON.stringify(this.velocities));
+      }
     }
   }
 });
