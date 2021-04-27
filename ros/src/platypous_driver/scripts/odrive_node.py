@@ -26,6 +26,12 @@ class ODriveNode:
     left_speed = 0.0
     right_speed = 0.0
     
+    topic_timer = 0.0
+    topic_timeout = 0.5
+    is_timed_out = True
+    
+    frequency = 10.0
+    
     def __init__(self):
         rospy.init_node("odrive")
         rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
@@ -54,15 +60,22 @@ class ODriveNode:
 
         odrive = ODriveDriver()
         
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(self.frequency)
         
         while not rospy.is_shutdown():
             
             try:
                 odrive.make_ready()
                 odrive.clear_errors()
-
-                odrive.set_velocity(self.left_speed, self.right_speed)
+                
+                if self.topic_timer < self.topic_timeout:
+                    odrive.set_velocity(self.left_speed, self.right_speed)
+                    self.is_timed_out = False
+                else:
+                    odrive.set_velocity(0, 0)
+                    self.is_timed_out = True
+                
+                self.topic_timer += 1.0 / self.frequency
 
                 odom_msg.header.stamp = rospy.Time.now()
                 odom_msg.twist.twist.linear.x = (((odrive.get_velocity_right() * 2 * 3.14159265) + (odrive.get_velocity_left() * 2 * 3.14159265)) / 2.0) * self.wheel_radius
@@ -82,6 +95,10 @@ class ODriveNode:
                 # ~ temp_r_pub.publish(temp_r_msg)
                 
                 status_msg.data = odrive.get_status_string()
+                if not self.is_timed_out:
+                    status_msg.data += " (Active)"
+                else:
+                    status_msg.data += " (Timed out)"
                 status_pub.publish(status_msg)
                 
                 error_msg.data = str(odrive.get_errors())
@@ -99,6 +116,7 @@ class ODriveNode:
     def cmd_vel_callback(self, msg):
         self.left_speed  = ((msg.linear.x - (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
         self.right_speed = ((msg.linear.x + (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
+        self.topic_timer = 0.0
 
 if __name__ == '__main__':
     odrvnode = ODriveNode()
