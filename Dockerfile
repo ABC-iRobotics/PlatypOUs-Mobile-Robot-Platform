@@ -34,7 +34,8 @@ RUN apt-get update && \
         ros-noetic-move-base \
         ros-noetic-cv-bridge \
         ros-noetic-image-transport \
-        ros-noetic-compressed-image-transport
+        ros-noetic-compressed-image-transport \
+        ros-noetic-realsense2-camera
 
 COPY /web /root/web
 RUN cd /root/web && \
