@@ -40,11 +40,11 @@ class ODriveNode:
         current_pub = rospy.Publisher("status/current", Float64, queue_size=2)
         current_msg = Float64()
         
-        temp_l_pub = rospy.Publisher("status/temperature_left", Float64, queue_size=2)
-        temp_l_msg = Float64()
+        # ~ temp_l_pub = rospy.Publisher("status/temperature_left", Float64, queue_size=2)
+        # ~ temp_l_msg = Float64()
         
-        temp_r_pub = rospy.Publisher("status/temperature_right", Float64, queue_size=2)
-        temp_r_msg = Float64()
+        # ~ temp_r_pub = rospy.Publisher("status/temperature_right", Float64, queue_size=2)
+        # ~ temp_r_msg = Float64()
         
         status_pub = rospy.Publisher("status/status", String, queue_size=2)
         status_msg = String()
@@ -75,11 +75,11 @@ class ODriveNode:
                 current_msg.data = odrive.get_current()
                 current_pub.publish(current_msg)
                 
-                temp_l_msg.data = odrive.get_temperature_left()
-                temp_l_pub.publish(temp_l_msg)
+                # ~ temp_l_msg.data = odrive.get_temperature_left()
+                # ~ temp_l_pub.publish(temp_l_msg)
 
-                temp_r_msg.data = odrive.get_temperature_right()
-                temp_r_pub.publish(temp_r_msg)
+                # ~ temp_r_msg.data = odrive.get_temperature_right()
+                # ~ temp_r_pub.publish(temp_r_msg)
                 
                 status_msg.data = odrive.get_status_string()
                 status_pub.publish(status_msg)
@@ -87,9 +87,10 @@ class ODriveNode:
                 error_msg.data = str(odrive.get_errors())
                 error_pub.publish(error_msg)
             
-            except:                
+            except Exception as e:
                 status_msg.data = "Connection error."
                 status_pub.publish(status_msg)
+                raise
             
             rate.sleep()
 
