@@ -16,4 +16,8 @@
 
   <node name="eeg_node" pkg="eeg_node" type="eeg_node.py" respawn="true" respawn_delay="10"/>
   
+  
+  <!-- STATUS PUBLISHER -->
+  <include file="$(find platypous_launch)/launch/status.launch" />
+
 </launch>
