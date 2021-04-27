@@ -15,9 +15,5 @@
   
   <!-- NAVIGATION -->
   <include file="$(find platypous_launch)/launch/navigation.launch" />
-
-
-  <!-- WEB INTERFACE -->
-  <include file="$(find platypous_launch)/launch/status.launch" />
   
 </launch>
