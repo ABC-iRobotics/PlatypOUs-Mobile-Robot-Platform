@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>  
 
-  <node name="gmapping" pkg="gmapping" type="slam_gmapping">
+  <node name="gmapping" pkg="gmapping" type="slam_gmapping" respawn="true">
     <rosparam file="$(find platypous_launch)/params/gmapping.yaml" command="load" />
     <remap from="scan" to="/scan" />
   </node>
