@@ -1,6 +1,10 @@
 Vue.component("teleop", {
   template: `
-  <div v-on:mouseup="stopDrawing" v-on:mousemove="Draw" >
+  <div 
+    v-on:mouseup="stopDrawing" 
+    v-on:mousemove="Draw" 
+    
+  >
     <b-container fluid>
       <b-row>
         <b-col >
@@ -48,6 +52,11 @@ Vue.component("teleop", {
   </div>
   `,
 
+//~ v-on:keydown.up="keyUp"
+    //~ v-on:keydown.down="keyDown"
+    //~ v-on:keydown.left="keyLeft"
+    //~ v-on:keydown.right="keyRight"
+
   data(){
     return {
       lin_value: 0.7,
@@ -75,7 +84,8 @@ Vue.component("teleop", {
       joy_x: 0.0,
       joy_y: 0.0,
       angle_in_degrees: 0.0,
-      is_joy_used: false
+      is_joy_used: false,
+      is_keyboard_used: false
     };
   },
   
@@ -196,8 +206,28 @@ Vue.component("teleop", {
                       Math.pow(this.joy_y - this.height / 2, 2)) / this.bg_radius);
     },
     
+    //~ keyUp: function(){
+      //~ this.velocities.lin = 0.35;
+      //~ this.is_keyboard_used = true;
+    //~ },
+    
+    //~ keyDown: function(){
+      //~ this.velocities.lin = -0.35;
+      //~ this.is_keyboard_used = true;
+    //~ },
+    
+    //~ keyLeft: function(){
+      //~ this.velocities.ang = 0.6;
+      //~ this.is_keyboard_used = true;
+    //~ },
+    
+    //~ keyRight: function(){
+      //~ this.velocities.ang = -0.6;
+      //~ this.is_keyboard_used = true;
+    //~ },
+    
     sendVelocityCommand: function(){
-      if (this.is_joy_used)
+      if (this.is_joy_used || this.is_keyboard_used)
       {
         socket.emit('twist_message', JSON.stringify(this.velocities));
       }
