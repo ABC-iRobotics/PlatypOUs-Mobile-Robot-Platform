@@ -3,15 +3,22 @@ Vue.component("teleop", {
   <div 
     v-on:mouseup="stopDrawing" 
     v-on:mousemove="Draw" 
-    
+    v-on:keydown.up="keyUp"
+    v-on:keydown.down="keyDown"
+    v-on:keydown.left="keyLeft"
+    v-on:keydown.right="keyRight"
+    v-on:keyup.up="Up"
+    v-on:keyup.down="Down"
+    v-on:keyup.left="Left"
+    v-on:keyup.right="Right"
   >
     <b-container fluid>
       <b-row>
         <b-col >
           <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
             <canvas id="camera_image" 
-                    width="640" 
-                    height="360"
+                    width="848" 
+                    height="800"
                     style="
                       display: block;
                       padding-left: 0;
@@ -52,10 +59,7 @@ Vue.component("teleop", {
   </div>
   `,
 
-//~ v-on:keydown.up="keyUp"
-    //~ v-on:keydown.down="keyDown"
-    //~ v-on:keydown.left="keyLeft"
-    //~ v-on:keydown.right="keyRight"
+
 
   data(){
     return {
@@ -118,20 +122,18 @@ Vue.component("teleop", {
       this.ctx_camera.drawImage(this.img_camera, 0, 0);
     },
     
-    
     resize: function(){
       //~ this.width = this.canvas.width;
       //~ this.height = this.canvas.width;
       this.canvas.height = this.height;
       this.canvas.width = this.width;
-            
+      
       this.joy_x = this.width / 2;
       this.joy_y = this.height / 2;
       this.mouse_x = this.width / 2;
       this.mouse_y = this.height / 2;
       this.bg_radius = this.width / 3;
       this.radius = this.bg_radius / 2;
-      
       
       this.Draw();
     },
@@ -149,6 +151,7 @@ Vue.component("teleop", {
       
       this.sendVelocityCommand();
       this.is_joy_used = false;
+      this.is_keyboard_used = false;
       this.Draw(event);
     },
 
@@ -206,25 +209,34 @@ Vue.component("teleop", {
                       Math.pow(this.joy_y - this.height / 2, 2)) / this.bg_radius);
     },
     
-    //~ keyUp: function(){
-      //~ this.velocities.lin = 0.35;
-      //~ this.is_keyboard_used = true;
-    //~ },
+    Up: function(){
+      this.velocities.lin = 0.35;
+      this.velocities.ang = 0;
+      this.is_keyboard_used = true;
+      console.log("asd");
+      this.Draw();
+    },
     
-    //~ keyDown: function(){
-      //~ this.velocities.lin = -0.35;
-      //~ this.is_keyboard_used = true;
-    //~ },
+    Down: function(){
+      this.velocities.lin = -0.35;
+      this.velocities.ang = 0;
+      this.is_keyboard_used = true;
+      this.Draw();
+    },
     
-    //~ keyLeft: function(){
-      //~ this.velocities.ang = 0.6;
-      //~ this.is_keyboard_used = true;
-    //~ },
+    Left: function(){
+      this.velocities.ang = 0.6;
+      this.velocities.lin = 0;
+      this.is_keyboard_used = true;
+      this.Draw();
+    },
     
-    //~ keyRight: function(){
-      //~ this.velocities.ang = -0.6;
-      //~ this.is_keyboard_used = true;
-    //~ },
+    Right: function(){
+      this.velocities.ang = -0.6;
+      this.velocities.lin = 0;
+      this.is_keyboard_used = true;
+      this.Draw();
+    },
     
     sendVelocityCommand: function(){
       if (this.is_joy_used || this.is_keyboard_used)
