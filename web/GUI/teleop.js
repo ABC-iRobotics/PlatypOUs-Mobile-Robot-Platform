@@ -3,14 +3,14 @@ Vue.component("teleop", {
   <div 
     v-on:mouseup="stopDrawing" 
     v-on:mousemove="Draw" 
-    v-on:keydown.up="keyUp"
-    v-on:keydown.down="keyDown"
-    v-on:keydown.left="keyLeft"
-    v-on:keydown.right="keyRight"
-    v-on:keyup.up="Up"
-    v-on:keyup.down="Down"
-    v-on:keyup.left="Left"
-    v-on:keyup.right="Right"
+    v-on:keydown.u="Up"
+    v-on:keydown.j="Down"
+    v-on:keydown.h="Left"
+    v-on:keydown.k="Right"
+    v-on:keyup.u="stopDrawing"
+    v-on:keyup.j="stopDrawing"
+    v-on:keyup.h="stopDrawing"
+    v-on:keyup.k="stopDrawing"
   >
     <b-container fluid>
       <b-row>
