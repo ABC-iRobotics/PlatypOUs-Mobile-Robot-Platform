@@ -1,47 +1,71 @@
-# Simulation
+# PlatypOUs ROS workspace
+This document contains the descriptions of the packages in the workspace, as well as the instructions on using the robot in a simulated environment.
+
+## Packages
+The packages can contain source code, launch and parameter files, message definitions, URDF, etc.
+
+#### platypous_driver
+This package contains the driver class and the ROS node for controlling the ODrive motor controller board. It is based on the ODrive firmware version v0.5.1.
+
+#### platypous_gazebo
+This package contains the URDF for the robot to use in the Gazebo simulator. It also has some premade worlds, rviz preset, and extra stuff needed for the simulation.
+
+#### platypous_launch
+In this package, there are the launch files for the ROS nodes used by the robot. It also contains the YAML files for the parameters. There are separate launch files for individual parts of the system, as well as different configurations for system startup.
+
+#### platypous_msgs
+Contains custom message definitions used by some nodes in the system.
+
+#### platypous_status
+This package contains the sources of custom nodes for the collection of robot status data, as well as the node converting the map to image format.
+
+#### eeg_node
+Node for using the robot with the MindRove EEG headset, getting commands from MQTT topics, and publishing velocity commands to the motor controller based on the information.
+
+## Simulation
 
 This guide describes how to use the simulated PlatypOUs robot on your local machine.
 
-## Requirements
+### Requirements
 
 - Ubuntu 20.04 Focal Fossa or Debian 10 Buster
 - ROS Noetic
 - Gazebo 11
 - other ROS packages: robot_localization, gmapping
 
-## Instructions
+### Instructions
 
-#### 1. Clone the repository or download and unzip it.
-```bash= !
-git clone https://github.com/ABC-iRobotics/PlatypOUs-Mobile-Robot-Platform.git
+#### 1. Install dependencies
+If you do not have ROS installed, follow the instructions at http://wiki.ros.org/noetic/Installation.
+
+After ROS is installed, install the other needed ROS packages if not installed already:
 ```
-
-#### 2. Navigate into the *ros* directory.
-```bash= !
-cd PlatypOUs-Mobile-Robot-Platform/ros
-```
-
-#### 3. Build the workspace.
-```bash= !
-catkin_make
-```
-
-#### 4. Source the setup script.
-```bash= !
-source devel/setup.bash
-```
-- Note: to be able to use the workspace, you have to source this script every time you open a new terminal, or add `source ~/PlatypOUs-Mobile-Robot-Platform/ros/devel/setup.bash` to the end of the **~/.bashrc** file.
-
-#### 5. Install needed packages
-```bash= !
 sudo apt install ros-noetic-robot-localization ros-noetic-gmapping
 ```
 
-#### 6. Launch the simulation
-- Empty world: `roslaunch platypous_gazebo empty.launch`
-- Office (with SLAM): `roslaunch platypous_gazebo office.launch`
+#### 2. Build the workspace
+In the cloned or downloaded repository directory, build the workspace by running the *build_workspace* script.
+```
+./build_workspace
+```
 
-After that, Gazebo should start with the robot spawned in the selected environment.
+#### 3. Start the simulation
+The simulated environment can be launched by one of the following scripts.
+
+Basic configuration, only with essential features to move the robot:
+```
+./start_simulation_basic
+```
+
+Full functionality *without* the web server and GUI:
+```
+./start_simulation_full
+```
+
+Full functionality *with* the web server and GUI:
+```
+./start_simulation_full_web
+```
 
 ### Using the simulated robot
 
