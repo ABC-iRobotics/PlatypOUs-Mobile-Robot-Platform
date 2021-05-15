@@ -17,8 +17,8 @@ Vue.component("teleop", {
         <b-col >
           <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
             <canvas id="camera_image" 
-                    width="848" 
-                    height="800"
+                    width="640" 
+                    height="360"
                     style="
                       display: block;
                       padding-left: 0;
@@ -68,6 +68,8 @@ Vue.component("teleop", {
       velocities: {
         lin: 0.0,
         ang: 0.0
+        //~ 640 x 360 --> szimulációs kamera kép
+        //~ 848 x 800 --> valódi kamera kép
       },
       
       //~ camera
@@ -140,6 +142,7 @@ Vue.component("teleop", {
     
     startDrawing: function(event){
       this.is_joy_used = true;
+      this.is_keyboard_used = true;
       this.Draw(event);
     },
 
@@ -156,7 +159,7 @@ Vue.component("teleop", {
     },
 
     Draw: function(event){
-      if (this.is_joy_used)
+      if (this.is_joy_used || this.is_keyboard_used)
       {
         var rect = this.canvas.getBoundingClientRect();
         
@@ -212,30 +215,26 @@ Vue.component("teleop", {
     Up: function(){
       this.velocities.lin = 0.35;
       this.velocities.ang = 0;
-      this.is_keyboard_used = true;
       console.log("asd");
-      this.Draw();
+      this.startDrawing();
     },
     
     Down: function(){
       this.velocities.lin = -0.35;
       this.velocities.ang = 0;
-      this.is_keyboard_used = true;
-      this.Draw();
+      this.startDrawing();
     },
     
     Left: function(){
       this.velocities.ang = 0.6;
       this.velocities.lin = 0;
-      this.is_keyboard_used = true;
-      this.Draw();
+      this.startDrawing();
     },
     
     Right: function(){
       this.velocities.ang = -0.6;
       this.velocities.lin = 0;
-      this.is_keyboard_used = true;
-      this.Draw();
+      this.startDrawing();
     },
     
     sendVelocityCommand: function(){

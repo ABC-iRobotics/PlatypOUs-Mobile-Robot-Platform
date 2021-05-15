@@ -16,8 +16,8 @@ Vue.component("navigation", {
               </b-col>
               <b-col cols="2">
                 <b-button v-on:click="sendGoal" style="backgroundColor: #fab001;">
-                    <b-icon icon="play-fill" rounded style="width: 3em; height: 3em;"></b-icon>
-                  </b-button>
+                   <b-icon icon="play-fill" rounded style="width: 3em; height: 3em;"></b-icon>
+                </b-button>
               </b-col>
             </b-row>
           </b-card>
