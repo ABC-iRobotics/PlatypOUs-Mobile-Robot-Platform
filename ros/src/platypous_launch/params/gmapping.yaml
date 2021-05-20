@@ -1,0 +1,9 @@
+map_update_interval: 0.1
+xmin: -10.0
+ymin: -10.0
+xmax: 10.0
+ymax: 10.0
+
+linearUpdate: 0.3
+angularUpdate: 0.3
+temporalUpdate: 1.0

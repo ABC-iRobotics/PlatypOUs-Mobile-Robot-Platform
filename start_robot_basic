@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if docker ps -a | grep -q "platypous_container"; then
+    docker rm -f platypous_container
+fi
+
+docker run \
+    -it \
+    --rm \
+    --privileged \
+    -v /dev:/dev \
+    --network host \
+    --name platypous_container \
+    platypous:latest \
+    /start_basic.bash

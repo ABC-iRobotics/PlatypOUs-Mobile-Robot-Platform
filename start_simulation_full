@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source ros/devel/setup.bash
+
+roslaunch platypous_launch simulation_full.launch

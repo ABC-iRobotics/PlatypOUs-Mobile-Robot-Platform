@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- BASIC -->
+  <include file="$(find platypous_launch)/launch/basic.launch" />
+  
+  
+  <!-- LIDAR -->
+  <include file="$(find platypous_launch)/launch/lidar.launch" />
+  
+  
+  <!-- GMAPPING -->
+  <include file="$(find platypous_launch)/launch/gmapping.launch" />
+  
+  
+  <!-- NAVIGATION -->
+  <include file="$(find platypous_launch)/launch/navigation.launch" />
+  
+</launch>

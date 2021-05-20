@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PlatypOUs GUI</title>
+    
+    <link type="text/css" rel="stylesheet" 
+          href="dependencies/bootstrap.css"/>
+    
+    <link type="text/css" rel="stylesheet" 
+          href="dependencies/bootstrap-vue.css"/>
+        
+    <script src="dependencies/vue.js"></script>
+    <script src="dependencies/bootstrap-vue.js"></script>
+    <script src="dependencies/bootstrap-icons.js"></script>
+    <script src="dependencies/socket-io.js"></script>
+    
+    <meta content="user-scalable=no">
+  </head>
+  
+  <body>
+    <div id="app" class="small-container">
+      <b-container fluid >
+        <b-card body-text-variant="white" style="backgroundColor: #1e2b4e;">
+          <b-row >
+            <b-col cols="2">
+              <b-img src="/images/ou-logo-cut.png"  center height="60"></b-img>
+            </b-col>
+            <b-col></b-col>
+            <b-col cols="6" >
+              <b-img src="/images/header-09-cut.png"  center height="60"></b-img>
+            </b-col>
+            <b-col></b-col>
+            <b-col cols="2" class="text-right">
+              <template v-if="ping_timeout < 5">
+                <b-icon  font-scale="3" icon="wifi" class="bg-success rounded"></b-icon>
+              </template>
+              <template v-else>
+                <b-icon animation="throb" font-scale="3" icon="wifi-off" class="bg-danger rounded"></b-icon>
+              </template>
+              <template v-if="battery_voltage > 24.0">
+                <b-icon id="battery_popover" icon="battery-full" class="bg-success rounded" font-scale="3"></b-icon>
+              </template>
+              <template v-else-if="battery_voltage > 22.5">
+                <b-icon id="battery_popover" icon="battery-half" class="bg-warning rounded" font-scale="3"></b-icon>
+              </template>
+              <template v-else>
+                <b-icon id="battery_popover" icon="battery" class="bg-danger rounded" font-scale="3" animation="throb"></b-icon>
+              </template>
+            </b-col>
+          </b-row>
+        </b-card>
+          
+        <b-popover target="battery_popover" triggers="hover focus " placement="auto">
+          <template #title>Battery Voltage</template>
+          {{ battery_voltage }} V
+        </b-popover>
+          
+<!--
+        </b-toast>
+-->
+        
+        <b-tabs pills card  justified style="font-size: 30px;">
+          <b-tab title="Teleoperation" active :title-link-class="'tab-title-class'">
+            <teleop ref="teleop_ref"></teleop>
+          </b-tab>
+          <b-tab title="Navigation" :title-link-class="'tab-title-class'">
+            <navigation ref="navigation_ref"></navigation>
+          </b-tab>
+          <b-tab title="Diagnostics" :title-link-class="'tab-title-class'">
+            <diagnostics ref="diagnostics_ref"></diagnostics>
+          </b-tab>
+        </b-tabs>
+        
+      </b-container>
+    </div>
+
+    <script src="navigation.js"></script>
+    <script src="teleop.js"></script>
+    <script src="diagnostics.js"></script>
+    <script src="main_vue.js"></script>
+    <script src="socket_io.js"></script>
+    
+    <style>
+      .tab-title-class{
+        color: #fab001 ;
+        background-color: #1e2b4e ;
+      }
+      
+      .nav-pills .nav-link.active, .nav-pills .show > .nav_link > a {
+        background-color: #fab001;
+      }
+    </style>
+    
+  </body>
+</html>

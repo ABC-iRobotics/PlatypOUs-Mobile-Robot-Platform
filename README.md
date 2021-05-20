@@ -1,67 +1,51 @@
-# PlatypOUs-Mobile-Robot-Platform
+# PlatypOUs Mobile Robot Platform
 
 ROS based software of the PlatypOUs differential drive mobile robot platform.
 
-## Simulation
+This repository has two main parts:
 
-### Requirements
+ - **ros**: the ROS workspace
+ - **web**: the web server and the web GUI
 
-- Ubuntu 20.04 Focal Fossa or Debian 10 Buster
-- ROS Noetic
-- Gazebo 11
-- other ROS packages: robot_localization, gmapping
+### ROS workspace
+The ROS workspace contains the packages needed for robot operation. This includes launch files, YAML files for the parameters, source of custom made nodes, etc.
 
-### Instructions
+The documentation for the ROS stuff can be found at [here](ros/src/README.md).
 
-#### 1. Clone the repository or download and unzip it.
+### WEB server and GUI
+This section contains the source and documentation of the Node.js web server, and the graphical interface for the robot.
+
+More detailed description can be found at [here](web/README.md).
+
+## Using the repository
+
+### Simulation
+For using the simulated version of the robot on your computer, please see the [ROS workspace documentation](ros/src/README.md).
+
+### Real robot
+On the real robot, the software can be used with Docker. For building up the environment, the Dockerfile contains all necessary information. The building process can be started with the *build_docker_image* script:
 ```bash= !
-git clone https://github.com/ABC-iRobotics/PlatypOUs-Mobile-Robot-Platform.git
+./build_docker_image
 ```
+This should generate the docker image with everything needed to run the robot.
 
-#### 2. Navigate into the *ros* directory.
+When the building finishes, the image can be started using one of the available start scripts.
+
+The *start_robot_basic* script starts the robot with only basic functionality, like the motor control, and teleoperation. The *start_robot_full* version starts the robot with all currently available features.
 ```bash= !
-cd PlatypOUs-Mobile-Robot-Platform/ros
+./start_robot_basic
 ```
-
-#### 3. Build the workspace.
+or
 ```bash= !
-catkin_make
+./start_robot_full
 ```
+For more information on the features, and the different start configurations, see the [ROS workspace documentation](ros/src/README.md).
 
-#### 4. Source the setup script.
+The previous methods only start the image in the current terminal, and stops when it is closed, or interrupted with CTRL+C. To run the robot independently, there exists a version of the sripts with *_perm* after their names. These start the process in the background, and after that, it will also start automatically when the robot is turned on. Running any of the scripts will remove the already running container, and restart the process in the selected way.
 ```bash= !
-source devel/setup.bash
+./start_robot_basic_perm
 ```
-- Note: to be able to use the workspace, you have to source this script every time you open a new terminal, or add `source ~/PlatypOUs-Mobile-Robot-Platform/ros/devel/setup.bash` to the end of the **~/.bashrc** file.
-
-#### 5. Install needed packages
+or
 ```bash= !
-sudo apt install ros-noetic-robot-localization ros-noetic-gmapping
+./start_robot_full_perm
 ```
-
-#### 6. Launch the simulation
-- Empty world: `roslaunch platypous_gazebo empty.launch`
-- Office (with SLAM): `roslaunch platypous_gazebo office.launch`
-
-After that, Gazebo should start with the robot spawned in the selected environment.
-
-### Using the simulated robot
-
-The robot has 2 wheels that can be controlled to move the platform. The wheels produce encoder-like odometry. The robot has a LIDAR on the top, and a depth camera on the front.
-
-- The robot can be moved by **geometry_msgs/Twist** messages on the **/platypous/cmd_vel** topic. This can come from any source, for example:
-  - **teleop_twist_keyboard**: `rosrun teleop_twist_keyboard teleop_twist_keyboard.py cmd_vel:=/platypous/cmd_vel`
-  - **rqt** robot steering plugin: run `rqt` and select Plugins->Robot tools->Robot Steering, then change the topic to **/platypous/cmd_vel**
-  - game controller/joystick: `roslaunch platypous_launch joy_teleop.launch`. For this, the packages **joy**, **teleop_twist_joy**, and **twist_mux** have to be installed (`sudo apt install ros-noetic-joy ros-noetic-teleop-twist-joy ros-noetic-twist-mux`). If the joystick is *not* connected at **/dev/input/js0**, add the correct path to the launch command as the **dev** argument (`dev:=/path/to/joy`).
-
-- Wheel encoder odometry is published to the **/differential_drive/odom** topic as **nav_msgs/Odometry**.
-
-- An EKF state estimation node from **robot_localization** publishes the **odom->base_link** transform based on the wheel odometry.
-
-- The laser scan from the LIDAR is published to the **/laser/scan** topic, as **sensor_msgs/LaserScan**.
-
-- In the empty world, the **odom** frame is fixed to the **map** frame by a static transform. In the office environment, **gmapping** is started automatically, and publishes the **map->odom** transform. It also publishes the created map to the **/map** topic as **nav_msgs/OccupancyGrid**.
-
-- The camera color image is published to the **/depth_camera/color/image_raw** topic, the depth image to the **/depth_camera/depth/image_raw** topic, both as **sensor_msgs/Image**. The depth camera point cloud is published to the **/depth_camera/depth/points** topic as **sensor_msgs/PointCloud2**.
-
-- To view the state of the robot, and the result of the SLAM and the odometry, run `roslaunch platypous_gazebo rviz_slam.launch` for a premade RVIZ setup.

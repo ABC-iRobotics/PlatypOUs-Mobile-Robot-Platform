@@ -84,3 +84,6 @@ ros/src/CMakeLists.txt
 *.exe
 *.out
 *.app
+
+
+/web/node_modules

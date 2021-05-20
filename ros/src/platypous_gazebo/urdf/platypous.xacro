@@ -238,7 +238,7 @@
 
             <wheelAcceleration>0.0</wheelAcceleration>
             <wheelTorque>${wheelTorque}</wheelTorque>
-            <commandTopic>/platypous/cmd_vel</commandTopic>
+            <commandTopic>/driver/cmd_vel</commandTopic>
             <odometryTopic>/differential_drive/odom</odometryTopic>
             <odometryFrame>odom</odometryFrame>
             <robotBaseFrame>base_link</robotBaseFrame>
@@ -330,7 +330,7 @@
                 </noise>
             </ray>
             <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
-                <topicName>/laser/scan</topicName>
+                <topicName>/scan</topicName>
                 <frameName>laser_link</frameName>
             </plugin>
         </sensor>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+        
+  <arg name="world" default="office" />
+  <arg name="gui" default="true" />
+        
+  <include file="$(find platypous_launch)/launch/simulation_basic.launch">
+    <arg name="world" value="$(arg world)" />
+    <arg name="gui"   value="$(arg gui)" />
+  </include>
+
+  
+  <!-- GMAPPING -->
+  <include file="$(find platypous_launch)/launch/gmapping.launch" />
+  
+  
+  <!-- NAVIGATION -->
+  <include file="$(find platypous_launch)/launch/navigation.launch" />
+
+
+  <!-- WEB INTERFACE -->
+  <include file="$(find platypous_launch)/launch/status.launch" />
+
+</launch>

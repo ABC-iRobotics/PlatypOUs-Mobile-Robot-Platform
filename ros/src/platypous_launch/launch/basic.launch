@@ -2,12 +2,33 @@
 <launch>
 
   <!-- MOTOR DRIVER -->
-  <node pkg="platypous_driver" type="odrive_node.py" name="motor_driver" output="screen">
-    <rosparam command="load" file="$(find platypous_launch)/params/odrive.yaml" />
-  </node>
+  <include file="$(find platypous_launch)/launch/motor_driver.launch" />
   
   
   <!-- JOYSTICK TELEOP -->
   <include file="$(find platypous_launch)/launch/joy_teleop.launch" />
   
+  
+  <!-- LOCALIZATION -->
+  <node name="ekf_localization" ns="localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/localization.yaml" />
+  </node>
+
+  <node name="eeg_node" pkg="eeg_node" type="eeg_node.py" respawn="true" respawn_delay="10"/>
+  
+  
+  <!-- STATUS PUBLISHER -->
+  <include file="$(find platypous_launch)/launch/status.launch" />
+
+  <include file="$(find realsense2_camera)/launch/rs_t265.launch">
+    <arg name="enable_fisheye1" value="true" /> 
+    <arg name="device_type" value="t265" /> 
+    <arg name="enable_fisheye2" value="true" /> 
+    <arg name="fisheye_width" value="848" />
+    <arg name="fisheye_height" value="800" />
+    <arg name="fisheye_fps" value="30" />
+  </include>
+
+  <node name="image_relay" pkg="topic_tools" type="relay" args="/camera/fisheye1/image_raw/compressed /depth_camera/color/image_raw/compressed" />
+
 </launch>
