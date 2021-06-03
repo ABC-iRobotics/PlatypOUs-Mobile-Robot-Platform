@@ -29,6 +29,9 @@ io.on('connection', (socket) => {
   socket.on('ping', (msg) => {
     socket.emit('pong', null);
   });
+  socket.on("connect_error", (err) => {
+    console.log(`connect_error due to ${err.message}`);
+  });
 });
 
 rosnodejs.initNode('/my_node')
