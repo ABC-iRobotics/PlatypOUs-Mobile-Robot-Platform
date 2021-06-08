@@ -17,8 +17,8 @@ Vue.component("teleop", {
         <b-col >
           <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
             <canvas id="camera_image" 
-                    width="640" 
-                    height="360"
+                    width="424" 
+                    height="400"
                     style="
                       display: block;
                       padding-left: 0;
