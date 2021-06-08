@@ -29,6 +29,5 @@
     <arg name="fisheye_fps" value="30" />
   </include>
 
-  <node name="image_relay" pkg="topic_tools" type="relay" args="/camera/fisheye1/image_raw/compressed /depth_camera/color/image_raw/compressed" />
-
+  <node name="img_throttle" type="throttle" pkg="topic_tools" args="messages /camera/fisheye1/image_raw/compressed 1 /depth_camera/color/image_raw/compressed" />
 </launch>
