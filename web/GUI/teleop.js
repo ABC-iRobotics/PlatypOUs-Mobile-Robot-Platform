@@ -121,7 +121,12 @@ Vue.component("teleop", {
     //~ camera
     renderImage: function(image_data){
       this.img_camera.src = 'data:image/jpeg;base64, ' + image_data;
+      
+      this.ctx_camera.scale(0.5, 0.5);
+      
       this.ctx_camera.drawImage(this.img_camera, 0, 0);
+      
+      this.ctx_camera.scale(2, 2);
     },
     
     resize: function(){
