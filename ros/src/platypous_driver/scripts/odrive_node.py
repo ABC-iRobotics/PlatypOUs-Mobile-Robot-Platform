@@ -30,7 +30,7 @@ class ODriveNode:
     topic_timeout = 0.5
     is_timed_out = True
     
-    frequency = 10.0
+    frequency = 100.0
     
     def __init__(self):
         rospy.init_node("odrive")
