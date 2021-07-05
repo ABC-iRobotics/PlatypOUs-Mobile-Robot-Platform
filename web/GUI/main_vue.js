@@ -31,8 +31,9 @@ var App = new Vue({
       this.ping_count++;
       if ( this.ping_count == 100)
       {
-        this.ping_avg = this.ping_sum / 100;
+        this.ping_avg = (this.ping_sum / 100).toFixed(0);
         this.ping_sum = 0;
+        this.ping_count = 0;
       }
     },
     
