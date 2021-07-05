@@ -34,7 +34,7 @@ var App = new Vue({
         this.ping_avg = this.ping_sum / 100;
         this.ping_sum = 0;
       }
-    }
+    },
     
     updateBatteryVoltage: function(voltage){
       this.battery_voltage = voltage.toFixed(2);
