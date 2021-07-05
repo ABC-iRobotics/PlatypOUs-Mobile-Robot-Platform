@@ -33,7 +33,7 @@
             <b-col cols="2" class="text-right">
               
               <b-card-text>
-                Delay: {{ ping_delay }} ms
+                Delay: {{ ping_timeout * 200 }} ms
               </b-card-text>
               
               <template v-if="ping_timeout < 5">
