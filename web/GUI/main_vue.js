@@ -4,6 +4,7 @@ var App = new Vue({
     color_blue: '#1e2b4e',
     color_yellow: '#fab001',
     ping_timeout: 0,
+    ping_delay: 0,
     battery_voltage: 0.0,
     meta: {
       requiresAuth: true
@@ -15,6 +16,7 @@ var App = new Vue({
   
   methods:{
     resetPingTimeout: function(){
+      this.ping_delay = this.ping_timeout;
       this.ping_timeout = 0;
     },
     

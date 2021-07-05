@@ -18,7 +18,7 @@ Vue.component("diagnostics", {
           Motor driver errors: {{ robot_status.motor_driver_errors }} 
         </b-card-text>
         <b-card-text>
-          Delay: {{ round(robot_status.ping_timeout, 2) }} ms
+          Delay: {{ round(robot_status.ping_delay, 2) }} ms
         </b-card-text>
       </b-card>
       
