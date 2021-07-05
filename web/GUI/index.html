@@ -31,6 +31,11 @@
             </b-col>
             <b-col></b-col>
             <b-col cols="2" class="text-right">
+              
+              <b-card-text>
+                Delay: {{ ping_delay }} ms
+              </b-card-text>
+              
               <template v-if="ping_timeout < 5">
                 <b-icon  font-scale="3" icon="wifi" class="bg-success rounded"></b-icon>
               </template>

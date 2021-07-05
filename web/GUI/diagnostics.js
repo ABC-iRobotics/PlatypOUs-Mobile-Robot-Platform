@@ -17,9 +17,7 @@ Vue.component("diagnostics", {
         <b-card-text>
           Motor driver errors: {{ robot_status.motor_driver_errors }} 
         </b-card-text>
-        <b-card-text>
-          Delay: {{ round(robot_status.ping_delay, 2) }} ms
-        </b-card-text>
+
       </b-card>
       
       <b-card class="mb-2" style="backgroundColor: #1e2b4e; color: #fab001;">

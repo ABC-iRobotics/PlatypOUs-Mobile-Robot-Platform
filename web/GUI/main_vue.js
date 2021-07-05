@@ -16,7 +16,7 @@ var App = new Vue({
   
   methods:{
     resetPingTimeout: function(){
-      this.ping_delay = this.ping_timeout;
+      this.ping_delay = round(this.ping_timeout, 2);
       this.ping_timeout = 0;
     },
     
