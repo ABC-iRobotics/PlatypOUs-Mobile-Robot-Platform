@@ -9,6 +9,10 @@
   <include file="$(find platypous_launch)/launch/lidar.launch" />
   
   
+  <!-- CAMERA -->
+  <include file="$(find platypous_launch)/launch/camera_d455.launch" />
+  
+  
   <!-- GMAPPING -->
   <include file="$(find platypous_launch)/launch/gmapping.launch" />
   
