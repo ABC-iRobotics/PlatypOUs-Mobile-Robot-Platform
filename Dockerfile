@@ -3,11 +3,13 @@ FROM ros:noetic
 RUN apt-get update && \
     apt-get install -y \
         libusb-dev \
+        libusb-1.0-0-dev \
         python3-pip \
+        python3-catkin-tools \
         git \
         curl
 
-RUN python3 -m pip install odrive
+RUN python3 -m pip install --upgrade odrive
 
 RUN mkdir -p /root/ros_ws/src && \
     cd /root/ros_ws/src && \
@@ -16,7 +18,7 @@ RUN mkdir -p /root/ros_ws/src && \
     git checkout master && \
     cd ../.. && \
     . /opt/ros/noetic/setup.sh && \
-    catkin_make
+    catkin build
 
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
@@ -44,7 +46,7 @@ RUN cd /root/web && \
 COPY /ros/src /root/ros_ws/src
 RUN . /opt/ros/noetic/setup.sh && \
     cd /root/ros_ws && \
-    catkin_make
+    catkin build
 
 COPY /scripts/start_basic.bash /
 RUN chmod +x /start_basic.bash

@@ -49,8 +49,9 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
-.catkin_workspace
+ros/.catkin_workspace
 ros/src/CMakeLists.txt
+ros/.catkin_tools
 
 # Prerequisites
 *.d
