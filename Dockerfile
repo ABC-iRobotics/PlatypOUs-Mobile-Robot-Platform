@@ -35,7 +35,8 @@ RUN apt-get update && \
         ros-noetic-cv-bridge \
         ros-noetic-image-transport \
         ros-noetic-compressed-image-transport \
-        ros-noetic-realsense2-camera
+        ros-noetic-realsense2-camera \
+        ros-noetic-imu-filter-madgwick
 
 COPY /web /root/web
 RUN cd /root/web && \
