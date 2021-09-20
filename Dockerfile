@@ -26,8 +26,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 RUN python3 -m pip install \
     paho-mqtt
 
-RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-
 RUN apt-get update && \
     apt-get install -y \
         ros-noetic-joy \
