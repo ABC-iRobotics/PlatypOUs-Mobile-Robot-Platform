@@ -26,6 +26,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 RUN python3 -m pip install \
     paho-mqtt
 
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+
 RUN apt-get update && \
     apt-get install -y \
         ros-noetic-joy \
@@ -37,7 +39,8 @@ RUN apt-get update && \
         ros-noetic-cv-bridge \
         ros-noetic-image-transport \
         ros-noetic-compressed-image-transport \
-        ros-noetic-realsense2-camera
+        ros-noetic-realsense2-camera \
+        ros-noetic-imu-filter-madgwick
 
 COPY /web /root/web
 RUN cd /root/web && \

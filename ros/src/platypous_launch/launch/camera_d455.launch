@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <launch>
+
+  <!-- CAMERA TRANSFORM -->
+  <node name="base_to_camera" ns="static_tf" pkg="tf2_ros" type="static_transform_publisher" args="0.07 0 0.25 0 0 0 base_link camera_link" />
+
+  <!-- REALSENSE NODE -->
   <include file="$(find realsense2_camera)/launch/rs_camera.launch">
     <arg name="enable_accel" value="true" /> 
     <arg name="enable_gyro" value="true" /> 
@@ -10,5 +15,13 @@
     <arg name="filters" value="pointcloud" />
     <arg name="unite_imu_method" value="copy" />
   </include>
+  
+  <!-- IMU MADGWICK FILTER -->
+  <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node">
+    <remap from="imu/data_raw" to="/camera/imu" />
+    <remap from="imu/data" to="/camera/imu/filtered" />
+    <param name="use_mag" value="false" />
+    <param name="publish_tf" value="false" />
+  </node>
 
 </launch>
