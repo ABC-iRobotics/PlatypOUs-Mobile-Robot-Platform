@@ -222,8 +222,7 @@ class ODriveDriver:
         if not self.is_connected():
             return
         
-        self.left_axis.clear_errors()
-        self.right_axis.clear_errors()
+        self.odrv.clear_errors()
 
 
     def get_status_string(self):
