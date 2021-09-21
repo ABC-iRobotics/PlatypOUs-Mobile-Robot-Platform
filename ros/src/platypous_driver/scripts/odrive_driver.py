@@ -209,7 +209,7 @@ class ODriveDriver:
         if not self.is_connected():
             return False
         
-        return self.left_axis.current_state == AXIS_STATE_FULL_CALIBRATION_SEQUENCE or self.right_axis.current_state == AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+        return (not (self.left_axis.current_state == AXIS_STATE_IDLE or self.left_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL)) or (not (self.right_axis.current_state == AXIS_STATE_IDLE or self.right_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL))
 
 
     def is_engaged(self):
