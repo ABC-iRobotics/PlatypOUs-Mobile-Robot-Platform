@@ -30,7 +30,7 @@ class ODriveNode:
     topic_timeout = 0.5
     is_timed_out = True
     
-    frequency = 100.0
+    frequency = 15.0
     
     def __init__(self):
         rospy.init_node("odrive")
@@ -65,7 +65,7 @@ class ODriveNode:
         while not rospy.is_shutdown():
             
             try:
-                odrive.engage()
+                odrive.update()
                 
                 if self.topic_timer < self.topic_timeout:
                     odrive.set_velocity(self.left_speed, self.right_speed)
@@ -106,7 +106,7 @@ class ODriveNode:
             except Exception as e:
                 status_msg.data = "Connection error."
                 status_pub.publish(status_msg)
-                raise
+                print(e)
             
             rate.sleep()
 

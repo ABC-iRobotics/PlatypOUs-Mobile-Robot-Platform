@@ -36,8 +36,7 @@ class ODriveDriver:
     
     
     def __init__(self):
-        self.connect()
-        self.calibrate()
+        self.update()
     
     
     def connect(self, timeout=5):
@@ -79,7 +78,7 @@ class ODriveDriver:
 
     
     def calibrate(self):
-        if not self.is_connected():
+        if (not self.is_connected()) or self.is_calibrating():
             return
         
         self.clear_errors()
@@ -122,6 +121,12 @@ class ODriveDriver:
         self.right_axis.config.enable_watchdog = False
         self.right_axis.config.watchdog_timeout = 0.0
         self.right_axis.requested_state = AXIS_STATE_IDLE
+
+
+    def update(self):
+        self.connect()
+        self.calibrate()
+        self.engage()
 
 
     def set_velocity(self, left_vel, right_vel):
@@ -200,6 +205,13 @@ class ODriveDriver:
         return self.left_axis.motor.is_calibrated and self.left_axis.encoder.is_ready and self.right_axis.motor.is_calibrated and self.right_axis.encoder.is_ready
 
 
+    def is_calibrating(self):
+        if not self.is_connected():
+            return False
+        
+        return self.left_axis.current_state == AXIS_STATE_FULL_CALIBRATION_SEQUENCE or self.right_axis.current_state == AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+
+
     def is_engaged(self):
         if not self.is_connected():
             return False
@@ -232,8 +244,8 @@ class ODriveDriver:
             return "Engaged"
         elif self.is_calibrated():
             return "Calibrated"
-        # ~ elif self.is_calibrating():
-            # ~ return "Calibrating"
+        elif self.is_calibrating():
+            return "Calibrating"
         elif self.is_connected():
             return "Connected"
         else:
