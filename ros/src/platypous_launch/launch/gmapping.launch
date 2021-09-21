@@ -5,5 +5,7 @@
     <rosparam file="$(find platypous_launch)/params/gmapping.yaml" command="load" />
     <remap from="scan" to="/scan" />
   </node>
+  
+  <node name="map_to_image" pkg="platypous_status" type="map_to_image" />
 
 </launch>

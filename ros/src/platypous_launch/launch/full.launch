@@ -20,4 +20,8 @@
   <!-- NAVIGATION -->
   <include file="$(find platypous_launch)/launch/navigation.launch" />
   
+  
+  <!-- RTABMAP -->
+  <include file="$(find platypous_launch)/launch/rtabmap_odom.launch" />
+  
 </launch>
