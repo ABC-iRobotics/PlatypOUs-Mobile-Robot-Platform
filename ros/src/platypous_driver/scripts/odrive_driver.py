@@ -12,8 +12,6 @@ class ODriveDriver:
     left_axis  = None
     right_axis = None
     
-    calibrating = False
-    
     brake_resistance = 5
     max_regen_current = 10
     dc_max_negative_current = -10
@@ -53,6 +51,7 @@ class ODriveDriver:
         except:
             return
 
+        self.odrv.config.enable_brake_resistor = True
         self.odrv.config.brake_resistance = self.brake_resistance
         self.odrv.config.max_regen_current = self.max_regen_current
         self.odrv.config.dc_max_negative_current = self.dc_max_negative_current
@@ -79,10 +78,9 @@ class ODriveDriver:
 
     
     def calibrate(self):
-        if (not self.is_connected()) or self.is_calibrated() or self.is_calibrating():
+        if (not self.is_connected()) or self.is_calibrated():
             return
         
-        self.calibrating = True
         self.clear_errors()
         self.disengage()
         self.left_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
@@ -93,19 +91,20 @@ class ODriveDriver:
         if (not self.is_calibrated()) or self.is_engaged():
             return
         
-        self.right_axis.controller.input_vel = 0
-        self.right_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+        self.left_axis.error = 0
         self.left_axis.controller.input_vel = 0
         self.left_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+        
+        self.right_axis.error = 0
+        self.right_axis.controller.input_vel = 0
+        self.right_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
 
         self.left_axis.config.enable_watchdog = True
         self.left_axis.config.watchdog_timeout = 0.25
-        self.left_axis.error = 0
         self.left_axis.watchdog_feed()
         
         self.right_axis.config.enable_watchdog = True
         self.right_axis.config.watchdog_timeout = 0.25
-        self.right_axis.error = 0
         self.right_axis.watchdog_feed()
 
 
@@ -198,18 +197,7 @@ class ODriveDriver:
         if not self.is_connected():
             return False
         
-        result = self.left_axis.motor.is_calibrated and self.left_axis.encoder.is_ready and self.right_axis.motor.is_calibrated and self.right_axis.encoder.is_ready
-        
-        if result and self.calibrating:
-            self.calibrating = False
-        
-        return result
-
-    def is_calibrating(self):
-        if not self.is_connected():
-            return False
-        
-        return self.calibrating
+        return self.left_axis.motor.is_calibrated and self.left_axis.encoder.is_ready and self.right_axis.motor.is_calibrated and self.right_axis.encoder.is_ready
 
 
     def is_engaged(self):
@@ -245,8 +233,8 @@ class ODriveDriver:
             return "Engaged"
         elif self.is_calibrated():
             return "Calibrated"
-        elif self.is_calibrating():
-            return "Calibrating"
+        # ~ elif self.is_calibrating():
+            # ~ return "Calibrating"
         elif self.is_connected():
             return "Connected"
         else:
