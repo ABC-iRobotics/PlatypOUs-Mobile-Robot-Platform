@@ -190,7 +190,7 @@ class ODriveDriver:
         
         errors = self.get_errors()
         
-        return error[0] or error[1] or error[2] or error[3] or error[4] or error[5] or error[6] or error[7] or error[8]
+        return errors[0] or errors[1] or errors[2] or errors[3] or errors[4] or errors[5] or errors[6] or errors[7] or errors[8]
 
 
     def is_calibrated(self):
