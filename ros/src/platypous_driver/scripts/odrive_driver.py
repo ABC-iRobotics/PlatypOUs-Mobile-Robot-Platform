@@ -92,11 +92,11 @@ class ODriveDriver:
         if (not self.is_calibrated()) or self.is_engaged():
             return
         
-        self.left_axis.error = 0
+        self.clear_errors()
+        
         self.left_axis.controller.input_vel = 0
         self.left_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
         
-        self.right_axis.error = 0
         self.right_axis.controller.input_vel = 0
         self.right_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
 
@@ -113,12 +113,15 @@ class ODriveDriver:
         if not self.is_connected():
             return
             
-        self.right_axis.requested_state = AXIS_STATE_IDLE
-        self.left_axis.requested_state = AXIS_STATE_IDLE
-        self.right_axis.config.enable_watchdog = False
-        self.right_axis.config.watchdog_timeout = 0.0
+        self.left_axis.controller.input_vel = 0
         self.left_axis.config.enable_watchdog = False
         self.left_axis.config.watchdog_timeout = 0.0
+        self.left_axis.requested_state = AXIS_STATE_IDLE
+        
+        self.right_axis.controller.input_vel = 0
+        self.right_axis.config.enable_watchdog = False
+        self.right_axis.config.watchdog_timeout = 0.0
+        self.right_axis.requested_state = AXIS_STATE_IDLE
 
 
     def set_velocity(self, left_vel, right_vel):
@@ -185,7 +188,9 @@ class ODriveDriver:
         if not self.is_connected():
             return False
         
-        return self.left_axis.error != 0 or self.right_axis.error != 0
+        errors = self.get_errors()
+        
+        return error[0] or error[1] or error[2] or error[3] or error[4] or error[5] or error[6] or error[7] or error[8]
 
 
     def is_calibrated(self):
@@ -196,7 +201,7 @@ class ODriveDriver:
 
 
     def is_engaged(self):
-        if not (self.is_connected() and self.is_calibrated()):
+        if not self.is_connected():
             return False
         
         return self.left_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL and self.right_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL
@@ -208,9 +213,9 @@ class ODriveDriver:
 
     def get_errors(self):
         if not self.is_connected():
-            return [0, 0, 0, 0, 0, 0, 0, 0]
+            return [0, 0, 0, 0, 0, 0, 0, 0, 0]
         
-        return [self.left_axis.error, self.left_axis.motor.error, self.left_axis.encoder.error, self.left_axis.controller.error, self.right_axis.error, self.right_axis.motor.error, self.right_axis.encoder.error, self.right_axis.controller.error]
+        return [self.odrv.error, self.left_axis.error, self.left_axis.motor.error, self.left_axis.encoder.error, self.left_axis.controller.error, self.right_axis.error, self.right_axis.motor.error, self.right_axis.encoder.error, self.right_axis.controller.error]
 
 
     def clear_errors(self):
