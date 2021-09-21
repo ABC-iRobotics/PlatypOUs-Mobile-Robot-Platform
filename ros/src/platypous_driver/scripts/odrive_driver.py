@@ -78,7 +78,7 @@ class ODriveDriver:
 
     
     def calibrate(self):
-        if (not self.is_connected()) or self.is_calibrating():
+        if (not self.is_connected()) or self.is_calibrating() or self.is_calibrated():
             return
         
         self.clear_errors()
