@@ -65,8 +65,7 @@ class ODriveNode:
         while not rospy.is_shutdown():
             
             try:
-                odrive.make_ready()
-                odrive.clear_errors()
+                odrive.engage()
                 
                 if self.topic_timer < self.topic_timeout:
                     odrive.set_velocity(self.left_speed, self.right_speed)

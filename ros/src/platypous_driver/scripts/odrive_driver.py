@@ -36,7 +36,8 @@ class ODriveDriver:
     
     
     def __init__(self):
-        self.make_ready()
+        self.connect()
+        self.calibrate()
     
     
     def connect(self, timeout=5):
@@ -78,7 +79,7 @@ class ODriveDriver:
 
     
     def calibrate(self):
-        if (not self.is_connected()) or self.is_calibrated():
+        if not self.is_connected():
             return
         
         self.clear_errors()
@@ -171,12 +172,6 @@ class ODriveDriver:
         
         # ~ return self.odrv.right_axis.fet_thermistor.temperature
 
-
-    def make_ready(self):
-        if not self.is_ready():
-            self.connect()
-            self.calibrate()
-            self.engage()
 
 
     def is_connected(self):
