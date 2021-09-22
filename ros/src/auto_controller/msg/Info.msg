@@ -1,0 +1,17 @@
+bool    is_on
+float64 current_x
+float64 current_y
+float64 current_angle
+float64 target_point_x
+float64 target_point_y
+float64 target_point_course
+float64 target_point_angle
+float64 target_point_distance
+float64 target_point_course_deviation_angle
+float64 target_point_cross_track_error
+float64 target_angle
+float64 target_speed
+float64 lin_vel
+float64 ang_vel
+float64 control_target_angle
+float64 control_angle_error
