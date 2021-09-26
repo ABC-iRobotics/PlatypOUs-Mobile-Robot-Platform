@@ -24,6 +24,8 @@ void odom_callback(const nav_msgs::OdometryConstPtr& odom)
 void set_target_angle_callback(const std_msgs::Float64ConstPtr& angle)
 {
     auto_cont.set_target_angle(angle->data);
+
+    auto_cont.set_target_speed(0.0);
 }
 
 void set_target_speed_callback(const std_msgs::Float64ConstPtr& speed)
@@ -33,7 +35,9 @@ void set_target_speed_callback(const std_msgs::Float64ConstPtr& speed)
 
 void set_target_point_callback(const geometry_msgs::PoseStampedConstPtr& target)
 {
-    auto_cont.set_target_point(target->pose.position.x, target->pose.position.y);
+    auto_cont.set_target_point(target->pose.position.x, target->pose.position.y, std::atan2(2 * target->pose.orientation.w * target->pose.orientation.z, 1 - (2 * target->pose.orientation.z * target->pose.orientation.z)));
+
+    auto_cont.set_target_speed(0.0);
 }
 
 void set_on_callback(const std_msgs::BoolConstPtr& on)
@@ -67,6 +71,8 @@ int main(int argc, char **argv)
     n.param("max_speed", auto_controller_conf.max_speed, 0.1);
     n.param("max_ang_vel", auto_controller_conf.max_ang_vel, 0.5);
     n.param("target_point_min_distance", auto_controller_conf.target_point_min_distance, 0.5);
+    n.param("target_point_closing_rate", auto_controller_conf.target_point_closing_rate, 1.0);
+    n.param("move_max_angle_error", auto_controller_conf.move_max_angle_error, 1.0);
     auto_cont.set_config(auto_controller_conf);
     
     ros::Rate loop_rate(100);

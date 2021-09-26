@@ -21,6 +21,8 @@ public:
         double max_speed;
         double max_ang_vel;
         double target_point_min_distance;
+        double target_point_closing_rate;
+        double move_max_angle_error;
         
         Config()
         {
@@ -33,6 +35,8 @@ public:
             max_speed = 0.0;
             max_ang_vel = 0.0;
             target_point_min_distance = 0.0;
+            target_point_closing_rate = 0.0;
+            move_max_angle_error = 0.0;
         }
     };
 
@@ -149,13 +153,18 @@ public:
                 angle_controller_.set_target(target_point_angle_ + cte_controller_.get_output());
                 angle_controller_.update(current_angle_, delta_t);
                 
-                if(target_point_distance_ > config_.target_point_min_distance)
+                if(target_point_distance_ < config_.target_point_min_distance)
                 {
-                    out_lin_vel_ = target_speed_;
+                    out_lin_vel_ = 0.0;
                 }
                 else
                 {
-                    out_lin_vel_ = 0.0;
+                    out_lin_vel_ = target_point_distance_ * config_.target_point_closing_rate;
+                    
+                    if(out_lin_vel_ > target_speed_)
+                    {
+                        out_lin_vel_ = target_speed_;
+                    }
                 }
                 
                 out_ang_vel_ = angle_controller_.get_output();
@@ -168,11 +177,16 @@ public:
                 out_lin_vel_ = target_speed_;
                 out_ang_vel_ = angle_controller_.get_output();
             }
+            
+            if(std::fabs(angle_controller_.get_error()) > config_.move_max_angle_error)
+            {
+                out_lin_vel_ = 0.0;
+            }
         }
         else
         {
-            out_lin_vel_ = 0;
-            out_ang_vel_ = 0;
+            out_lin_vel_ = 0.0;
+            out_ang_vel_ = 0.0;
         }
     }
     
@@ -219,17 +233,8 @@ public:
             target_speed_ = target_speed;
         }
     }
-    
-    void set_target_point(double x, double y)
-    {
-        target_point_x_ = x;
-        target_point_y_ = y;
-        target_point_course_ = std::atan2(target_point_y_ - current_y_, target_point_x_ - current_x_);
-        
-        is_target_point_ = true;
-    }
 
-    void set_target_point_with_course(double x, double y, double course)
+    void set_target_point(double x, double y, double course)
     {
         target_point_x_ = x;
         target_point_y_ = y;
