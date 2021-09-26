@@ -1,0 +1,9 @@
+angle_control_p_gain: 2.5
+angle_control_i_gain: 0.0
+angle_control_d_gain: 0.0
+angle_control_filter_time: 0.0
+cte_control_gain: 0.0
+cte_control_max_angle: 0.0
+max_speed: 0.5
+max_ang_vel: 1.0
+target_point_min_distance: 0.05

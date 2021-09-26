@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="auto_controller_node" pkg="auto_controller" type="auto_controller_node" respawn="true" respawn_delay="5">
+    <rosparam command="load" file="$(find auto_controller)/params/auto_controller.yaml" />
+    <remap from="~/odom" to="/localization/odometry/filtered"/>
+    <remap from="~/cmd_vel" to="/cmd_vel/nav"/>
+  </node>
+
+</launch>
