@@ -19,5 +19,5 @@ include_directories(
 #  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 #)
 
-add_executable(led_driver_node src/led_driver_node.cpp src/lib/serialib.cpp)
+add_executable(led_driver_node src/led_driver_node.cpp src/serialib/serialib.cpp)
 target_link_libraries(led_driver_node ${catkin_LIBRARIES})

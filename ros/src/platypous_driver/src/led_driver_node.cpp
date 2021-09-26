@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <geometry_msgs/Vector3.h>
 
-#include "lib/serialib.h"
+#include "serialib/serialib.h"
 
 serialib serial;
 
