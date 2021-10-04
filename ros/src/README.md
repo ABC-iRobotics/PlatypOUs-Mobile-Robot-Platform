@@ -31,7 +31,7 @@ This guide describes how to use the simulated PlatypOUs robot on your local mach
 - Ubuntu 20.04 Focal Fossa or Debian 10 Buster
 - ROS Noetic
 - Gazebo 11
-- other ROS packages: robot_localization, gmapping
+- other ROS packages: robot_localization, gmapping, twist_mux, move_base
 
 ### Instructions
 
@@ -40,7 +40,7 @@ If you do not have ROS installed, follow the instructions at http://wiki.ros.org
 
 After ROS is installed, install the other needed ROS packages if not installed already:
 ```
-sudo apt install ros-noetic-robot-localization ros-noetic-gmapping
+sudo apt install ros-noetic-robot-localization ros-noetic-gmapping ros-noetic-twist-mux ros-noetic-move-base
 ```
 
 #### 2. Build the workspace
