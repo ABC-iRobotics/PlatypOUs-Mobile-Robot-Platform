@@ -14,6 +14,14 @@
 -->
   
   
+  <!-- LIDAR -->
+  <include file="$(find platypous_launch)/launch/lidar.launch" />
+  
+  
+  <!-- CAMERA -->
+  <include file="$(find platypous_launch)/launch/camera_d455.launch" />
+  
+  
   <!-- STATUS PUBLISHER -->
   <include file="$(find platypous_launch)/launch/status.launch" />
 
