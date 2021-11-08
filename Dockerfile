@@ -38,7 +38,9 @@ RUN apt-get update && \
         ros-noetic-image-transport \
         ros-noetic-compressed-image-transport \
         ros-noetic-realsense2-camera \
-        ros-noetic-imu-filter-madgwick
+        ros-noetic-imu-filter-madgwick \
+        ros-noetic-xacro \
+        ros-noetic-robot-state-publisher
 
 COPY /web /root/web
 RUN cd /root/web && \
