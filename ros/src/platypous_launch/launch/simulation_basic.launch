@@ -23,16 +23,6 @@
 
   <!-- ROBOT STATE PUBLISHER -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-
-
-  <!-- STATIC TRANSFORMS -->
-  <node name="camera_to_optical" ns="static_tf" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 -1.57 0 -1.57 camera_link camera_optical_frame" />
-
-
-  <!-- LOCALIZATION -->
-  <node name="ekf_localization" ns="localization" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
-    <rosparam command="load" file="$(find platypous_gazebo)/params/localization.yaml" />
-  </node>
   
   
   <!-- TWIST MUX -->
@@ -40,9 +30,5 @@
     <rosparam command="load" file="$(find platypous_launch)/params/twist_mux.yaml" />
     <remap from="cmd_vel_out" to="/driver/cmd_vel" />
   </node>
-
-
-  <!-- MOTOR DRIVER DUMMY SENSOR DATA PUBLISHER -->
-  <node name="dummy_motor_driver" ns="driver" pkg="platypous_gazebo" type="dummy_motor_driver.py" />
 
 </launch>

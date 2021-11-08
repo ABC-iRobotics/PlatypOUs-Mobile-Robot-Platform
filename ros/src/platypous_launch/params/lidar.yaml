@@ -1,6 +1,6 @@
 port: /dev/ydlidar  
 baudrate: 128000  
-frame_id: laser_frame
+frame_id: laser_link
 resolution_fixed: true
 auto_reconnect: true
 reversion: false
