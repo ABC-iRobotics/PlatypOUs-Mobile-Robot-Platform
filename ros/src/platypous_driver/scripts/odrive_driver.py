@@ -39,11 +39,11 @@ class ODriveDriver:
         self.update()
     
     
-    def connect(self, timeout=5):
+    def connect(self):
         if self.is_connected():
             return
 
-        self.odrv = odrive.find_any(timeout=timeout)
+        self.odrv = odrive.find_any()
         
         try:
             self.left_axis = self.odrv.axis0
