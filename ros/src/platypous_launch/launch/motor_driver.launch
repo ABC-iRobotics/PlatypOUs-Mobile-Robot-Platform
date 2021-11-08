@@ -2,8 +2,13 @@
 <launch>
   
   <!-- MOTOR DRIVER -->
-  <node name="motor_driver" ns="driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true">
-    <rosparam command="load" file="$(find platypous_launch)/params/odrive.yaml" />
+  <node name="motor_driver" ns="driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true" />
+  
+  
+  <!-- LOCALIZATION -->
+  <node name="ekf_localization" ns="driver" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/localization.yaml" />
+    <remap from="odometry/filtered" to="wheel_odometry" />
   </node>
   
   
