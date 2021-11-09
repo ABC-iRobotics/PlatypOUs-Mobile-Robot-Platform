@@ -40,7 +40,8 @@ RUN apt-get update && \
         ros-noetic-realsense2-camera \
         ros-noetic-imu-filter-madgwick \
         ros-noetic-xacro \
-        ros-noetic-robot-state-publisher
+        ros-noetic-robot-state-publisher \
+        ros-noetic-tf-conversions
 
 COPY /web /root/web
 RUN cd /root/web && \

@@ -11,7 +11,7 @@
 
   
   <!-- GMAPPING -->
-  <include file="$(find platypous_launch)/launch/gmapping.launch" />
+  <include file="$(find platypous_launch)/launch/iris_lama_slam.launch" />
   
   
   <!-- NAVIGATION -->
