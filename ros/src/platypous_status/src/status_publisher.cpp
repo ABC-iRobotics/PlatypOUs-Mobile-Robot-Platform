@@ -68,7 +68,7 @@ int main(int argc, char **argv)
             double r, p;
             tf::Matrix3x3(transform.getRotation()).getEulerYPR(robot_status_msg.robot_heading, p, r);
         }
-        catch(tf::TransformException ex){}
+        catch(tf::TransformException const&){}
         
         robot_status_pub.publish(robot_status_msg);
     

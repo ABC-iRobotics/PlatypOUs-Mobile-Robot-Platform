@@ -31,4 +31,8 @@
     <remap from="cmd_vel_out" to="/driver/cmd_vel" />
   </node>
 
+
+  <!-- ROBOT STATUS PUBLISHER -->
+  <include file="$(find platypous_launch)/launch/status.launch" />
+
 </launch>

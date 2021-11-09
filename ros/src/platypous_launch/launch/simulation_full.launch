@@ -2,7 +2,7 @@
 <launch>
         
   <arg name="world" default="office" />
-  <arg name="gui" default="true" />
+  <arg name="gui"   default="true" />
         
   <include file="$(find platypous_launch)/launch/simulation_basic.launch">
     <arg name="world" value="$(arg world)" />
@@ -16,9 +16,5 @@
   
   <!-- NAVIGATION -->
   <include file="$(find platypous_launch)/launch/navigation.launch" />
-
-
-  <!-- WEB INTERFACE -->
-  <include file="$(find platypous_launch)/launch/status.launch" />
 
 </launch>

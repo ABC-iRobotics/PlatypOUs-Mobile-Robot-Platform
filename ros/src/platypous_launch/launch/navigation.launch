@@ -2,13 +2,13 @@
 <launch>
 
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-        <rosparam file="$(find platypous_launch)/params/costmap_common.yaml" command="load" ns="global_costmap" /> 
-        <rosparam file="$(find platypous_launch)/params/costmap_common.yaml" command="load" ns="local_costmap" />
-        <rosparam file="$(find platypous_launch)/params/costmap_local.yaml" command="load" />
-        <rosparam file="$(find platypous_launch)/params/costmap_global.yaml" command="load" /> 
-        <rosparam file="$(find platypous_launch)/params/local_planner.yaml" command="load" />
+        <rosparam file="$(find platypous_launch)/params/nav_costmap_common.yaml" command="load" ns="global_costmap" /> 
+        <rosparam file="$(find platypous_launch)/params/nav_costmap_common.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find platypous_launch)/params/nav_costmap_local.yaml" command="load" />
+        <rosparam file="$(find platypous_launch)/params/nav_costmap_global.yaml" command="load" /> 
+        <rosparam file="$(find platypous_launch)/params/nav_local_planner.yaml" command="load" />
         <remap from="cmd_vel" to="/cmd_vel/nav" />
-        <remap from="odom" to="/localization/odometry/filtered" />
+        <remap from="odom" to="/driver/wheel_odometry" />
     </node>
 
 </launch> 
