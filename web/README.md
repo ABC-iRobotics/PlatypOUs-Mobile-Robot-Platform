@@ -5,9 +5,6 @@ Web server and client implementation of the PlatypOUs differential drive mobile 
 ## Developer documentation
 
 ### Requirements
-
-- Ubuntu 20.04 Focal Fossa or Debian 10 Buster
-- ROS Noetic
 - npm: 5.8.0
 - Node.js: v10.24.0
 - npm packages:
@@ -15,31 +12,6 @@ Web server and client implementation of the PlatypOUs differential drive mobile 
     - express: v4.17.1
     - rosnodejs: v3.0.2
     - socket.io: v4.0.1
-
-### Instructions
-
-#### Install Node.js
-```bash= !
-curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - &&
-apt-get install -y nodejs
-```
-
-#### Navigate into the *web* directory
-```bash= !
-cd PlatypOUs-Mobile-Robot-Platform/web
-```
-
-#### Initialize node modules
-```bash= !
-npm ci 
-```
-- The *package.json* file contains all the needed components, this command installs all of them with dependencies.
-- The *node_modules* directory holds the installed packages.
-
-#### Start the web server
-```bash= !
-node server.js
-```
 
 ### Server side
 
