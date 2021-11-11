@@ -17,8 +17,8 @@ Vue.component("teleop", {
         <b-col >
           <b-card class="text-center" style="backgroundColor: #1e2b4e; color: #fab001;">
             <canvas id="camera_image" 
-                    width="640" 
-                    height="360"
+                    width="424" 
+                    height="400"
                     style="
                       display: block;
                       padding-left: 0;
@@ -121,7 +121,12 @@ Vue.component("teleop", {
     //~ camera
     renderImage: function(image_data){
       this.img_camera.src = 'data:image/jpeg;base64, ' + image_data;
+      
+      this.ctx_camera.scale(0.5, 0.5);
+      
       this.ctx_camera.drawImage(this.img_camera, 0, 0);
+      
+      this.ctx_camera.scale(2, 2);
     },
     
     resize: function(){

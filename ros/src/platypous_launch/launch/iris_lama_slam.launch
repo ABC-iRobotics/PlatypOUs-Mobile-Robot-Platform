@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>  
+
+  <node name="iris_lama_slam" pkg="iris_lama_ros" type="slam2d_ros" respawn="true">
+    <param name="map_publish_period"  value="0.1" />
+    <param name="a_thresh"            value="0.05" />
+    <param name="transform_tolerance" value="0.3" />
+  </node>
+
+</launch>

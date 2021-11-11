@@ -12,6 +12,7 @@
   "dependencies": {
     "arraybuffer-to-string": "^1.0.2",
     "express": "^4.17.1",
+    "nodemon": "^2.0.9",
     "rosnodejs": "^3.0.2",
     "socket.io": "^4.0.1"
   }

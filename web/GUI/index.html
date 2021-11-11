@@ -31,6 +31,11 @@
             </b-col>
             <b-col></b-col>
             <b-col cols="2" class="text-right">
+              
+              <b-card-text>
+                Delay: {{ (ping_avg * 200).toFixed(0) }} ms
+              </b-card-text>
+              
               <template v-if="ping_timeout < 5">
                 <b-icon  font-scale="3" icon="wifi" class="bg-success rounded"></b-icon>
               </template>
@@ -54,10 +59,6 @@
           <template #title>Battery Voltage</template>
           {{ battery_voltage }} V
         </b-popover>
-          
-<!--
-        </b-toast>
--->
         
         <b-tabs pills card  justified style="font-size: 30px;">
           <b-tab title="Teleoperation" active :title-link-class="'tab-title-class'">

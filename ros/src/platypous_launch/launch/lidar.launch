@@ -1,10 +1,20 @@
 <?xml version="1.0"?>
 <launch>
-
-  <node name="base_to_laser" ns="static_tf" pkg="tf2_ros" type="static_transform_publisher" args="-0.19 0 0.35 0 0 0 base_link laser_frame" />
   
   <node name="ydlidar_node"  pkg="ydlidar_ros"  type="ydlidar_node" output="screen" respawn="false" >
-    <rosparam file="$(find platypous_launch)/params/lidar.yaml" command="load" />
+      <param name="port"             value="/dev/ydlidar" />  
+      <param name="baudrate"         value="128000" />
+      <param name="frame_id"         value="laser_link" />
+      <param name="resolution_fixed" value="true" />
+      <param name="auto_reconnect"   value="true" />
+      <param name="reversion"        value="false" />
+      <param name="angle_min"        value="-180" />
+      <param name="angle_max"        value="180" />
+      <param name="range_min"        value="0.1" />
+      <param name="range_max"        value="12.0" />
+      <param name="frequency"        value="8" />
+      <param name="samp_rate"        value="5" />
+
   </node>
 
 </launch>

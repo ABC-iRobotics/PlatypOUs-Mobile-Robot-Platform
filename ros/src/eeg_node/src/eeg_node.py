@@ -51,6 +51,9 @@ def subscribe(client: mqtt_client):
         
         pub.publish(twist_msg)
 
+        client.publish("response", payload=msg.payload.decode(), qos=0, retain=False)
+
+
     client.subscribe(topic)
     client.on_message = on_message
 
@@ -66,7 +69,7 @@ def run():
         client.loop(.1)
     
 if __name__ == '__main__':
-    try:
+#    try:
         run()
-    except:
-        print("EEG node error.")
+#    except:
+#        print("EEG node error.")

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<launch>
+    
+  <arg name="world"      default="office" />
+  <arg name="gui"        default="true" />
+  <arg name="slam"       default="true" />
+  <arg name="navigation" default="true" />
+
+
+  <param name="use_sim_time" value="true" />
+  
+
+  <!-- LAUNCH GAZEBO -->
+  <node name="gazebo" pkg="gazebo_ros" type="gzserver" output="screen" args="-e ode $(find platypous_gazebo)/worlds/$(arg world).world" />
+
+  <group if="$(arg gui)">
+    <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" output="screen" />
+  </group>
+
+
+  <!-- SPAWN ROBOT -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find platypous_gazebo)/urdf/platypous.xacro'" />
+  <node name="robot_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model platypous -param robot_description"/>
+
+
+  <!-- ROBOT STATE PUBLISHER -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  
+  
+  <!-- TWIST MUX -->
+  <node name="twist_mux" ns="cmd_vel" pkg="twist_mux" type="twist_mux" clear_params="true" respawn="true">
+    <rosparam command="load" file="$(find platypous_launch)/params/twist_mux.yaml" />
+    <remap from="cmd_vel_out" to="/driver/cmd_vel" />
+  </node>
+
+
+  <!-- ROBOT STATUS PUBLISHER -->
+  <include file="$(find platypous_launch)/launch/status.launch" />
+
+
+  <group if="$(arg slam)">
+    <include file="$(find platypous_launch)/launch/iris_lama_slam.launch" />
+  </group>
+  
+  
+  <group if="$(arg navigation)">
+    <include file="$(find platypous_launch)/launch/navigation.launch" />
+  </group>
+
+</launch>

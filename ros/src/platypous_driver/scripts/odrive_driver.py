@@ -12,8 +12,6 @@ class ODriveDriver:
     left_axis  = None
     right_axis = None
     
-    calibrating = False
-    
     brake_resistance = 5
     max_regen_current = 10
     dc_max_negative_current = -10
@@ -38,14 +36,14 @@ class ODriveDriver:
     
     
     def __init__(self):
-        self.make_ready()
+        self.update()
     
     
-    def connect(self, timeout=5):
+    def connect(self):
         if self.is_connected():
             return
 
-        self.odrv = odrive.find_any(timeout=timeout)
+        self.odrv = odrive.find_any()
         
         try:
             self.left_axis = self.odrv.axis0
@@ -53,6 +51,7 @@ class ODriveDriver:
         except:
             return
 
+        self.odrv.config.enable_brake_resistor = True
         self.odrv.config.brake_resistance = self.brake_resistance
         self.odrv.config.max_regen_current = self.max_regen_current
         self.odrv.config.dc_max_negative_current = self.dc_max_negative_current
@@ -79,10 +78,9 @@ class ODriveDriver:
 
     
     def calibrate(self):
-        if (not self.is_connected()) or self.is_calibrated() or self.is_calibrating():
+        if (not self.is_connected()) or self.is_calibrating() or self.is_calibrated():
             return
         
-        self.calibrating = True
         self.clear_errors()
         self.disengage()
         self.left_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
@@ -93,19 +91,20 @@ class ODriveDriver:
         if (not self.is_calibrated()) or self.is_engaged():
             return
         
-        self.right_axis.controller.input_vel = 0
-        self.right_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+        self.clear_errors()
+        
         self.left_axis.controller.input_vel = 0
         self.left_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+        
+        self.right_axis.controller.input_vel = 0
+        self.right_axis.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
 
         self.left_axis.config.enable_watchdog = True
         self.left_axis.config.watchdog_timeout = 0.25
-        self.left_axis.error = 0
         self.left_axis.watchdog_feed()
         
         self.right_axis.config.enable_watchdog = True
         self.right_axis.config.watchdog_timeout = 0.25
-        self.right_axis.error = 0
         self.right_axis.watchdog_feed()
 
 
@@ -113,12 +112,21 @@ class ODriveDriver:
         if not self.is_connected():
             return
             
-        self.right_axis.requested_state = AXIS_STATE_IDLE
-        self.left_axis.requested_state = AXIS_STATE_IDLE
-        self.right_axis.config.enable_watchdog = False
-        self.right_axis.config.watchdog_timeout = 0.0
+        self.left_axis.controller.input_vel = 0
         self.left_axis.config.enable_watchdog = False
         self.left_axis.config.watchdog_timeout = 0.0
+        self.left_axis.requested_state = AXIS_STATE_IDLE
+        
+        self.right_axis.controller.input_vel = 0
+        self.right_axis.config.enable_watchdog = False
+        self.right_axis.config.watchdog_timeout = 0.0
+        self.right_axis.requested_state = AXIS_STATE_IDLE
+
+
+    def update(self):
+        self.connect()
+        self.calibrate()
+        self.engage()
 
 
     def set_velocity(self, left_vel, right_vel):
@@ -173,12 +181,6 @@ class ODriveDriver:
         # ~ return self.odrv.right_axis.fet_thermistor.temperature
 
 
-    def make_ready(self):
-        if not self.is_ready():
-            self.connect()
-            self.calibrate()
-            self.engage()
-
 
     def is_connected(self):
         try:
@@ -191,29 +193,27 @@ class ODriveDriver:
         if not self.is_connected():
             return False
         
-        return self.left_axis.error != 0 or self.right_axis.error != 0
+        errors = self.get_errors()
+        
+        return errors[0] or errors[1] or errors[2] or errors[3] or errors[4] or errors[5] or errors[6] or errors[7] or errors[8]
 
 
     def is_calibrated(self):
         if not self.is_connected():
             return False
         
-        result = self.left_axis.motor.is_calibrated and self.left_axis.encoder.is_ready and self.right_axis.motor.is_calibrated and self.right_axis.encoder.is_ready
-        
-        if result and self.calibrating:
-            self.calibrating = False
-        
-        return result
+        return self.left_axis.motor.is_calibrated and self.left_axis.encoder.is_ready and self.right_axis.motor.is_calibrated and self.right_axis.encoder.is_ready
+
 
     def is_calibrating(self):
         if not self.is_connected():
             return False
         
-        return self.calibrating
+        return (not (self.left_axis.current_state == AXIS_STATE_IDLE or self.left_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL)) or (not (self.right_axis.current_state == AXIS_STATE_IDLE or self.right_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL))
 
 
     def is_engaged(self):
-        if not (self.is_connected() and self.is_calibrated()):
+        if not self.is_connected():
             return False
         
         return self.left_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL and self.right_axis.current_state == AXIS_STATE_CLOSED_LOOP_CONTROL
@@ -225,17 +225,16 @@ class ODriveDriver:
 
     def get_errors(self):
         if not self.is_connected():
-            return [0, 0, 0, 0, 0, 0, 0, 0]
+            return [0, 0, 0, 0, 0, 0, 0, 0, 0]
         
-        return [self.left_axis.error, self.left_axis.motor.error, self.left_axis.encoder.error, self.left_axis.controller.error, self.right_axis.error, self.right_axis.motor.error, self.right_axis.encoder.error, self.right_axis.controller.error]
+        return [self.odrv.error, self.left_axis.error, self.left_axis.motor.error, self.left_axis.encoder.error, self.left_axis.controller.error, self.right_axis.error, self.right_axis.motor.error, self.right_axis.encoder.error, self.right_axis.controller.error]
 
 
     def clear_errors(self):
         if not self.is_connected():
             return
         
-        self.left_axis.clear_errors()
-        self.right_axis.clear_errors()
+        self.odrv.clear_errors()
 
 
     def get_status_string(self):

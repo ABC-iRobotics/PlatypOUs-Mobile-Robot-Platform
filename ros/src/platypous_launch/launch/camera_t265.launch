@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find realsense2_camera)/launch/rs_t265.launch">
+    <arg name="enable_fisheye1" value="true" /> 
+    <arg name="device_type"     value="t265" /> 
+    <arg name="enable_fisheye2" value="true" /> 
+    <arg name="fisheye_width"   value="848" />
+    <arg name="fisheye_height"  value="800" />
+    <arg name="fisheye_fps"     value="30" />
+  </include>
+
+</launch>

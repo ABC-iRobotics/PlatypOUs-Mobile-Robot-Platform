@@ -1,0 +1,71 @@
+#!/bin/bash
+
+if [ "$#" = 1 ] && [ "$1" = "build" ]; then
+    docker build -f docker/Dockerfile -t platypous:latest .
+
+elif [ "$#" = 1 ] && [ "$1" = "start_once" ]; then
+    if docker ps -a | grep -q "platypous_container"; then
+        docker rm -f platypous_container
+    fi
+
+    docker run \
+        -it \
+        --rm \
+        --privileged \
+        -v /dev:/dev \
+        --network host \
+        --name platypous_container \
+        platypous:latest
+
+elif [ "$#" = 1 ] && [ "$1" = "start" ]; then
+    if docker ps -a | grep -q "platypous_container"; then
+        docker rm -f platypous_container
+    fi
+
+    docker run \
+        -d \
+        --restart always \
+        --privileged \
+        -v /dev:/dev \
+        --network host \
+        --name platypous_container \
+        platypous:latest
+    
+    echo ""
+    echo "    PlatypOUs container started."
+    echo ""
+
+elif [ "$#" = 1 ] && [ "$1" = "stop" ]; then
+    if docker ps -a | grep -q "platypous_container"; then
+        docker rm -f platypous_container
+        
+        echo ""
+        echo "    PlatypOUs container stopped and removed."
+        echo ""
+    else
+        echo ""
+        echo "    PlatypOUs container is not running."
+        echo ""
+    fi
+
+
+else
+    echo ""
+    echo "    Wrong/no argument. Usage: ./platypous_robot [option]"
+    echo ""
+    echo "      Please choose one of the following options:"
+    echo ""
+    echo "        build:          builds the docker image from the repository"
+    echo "        start_once:     starts the container in the current terminal"
+    echo "                        (can be stopped by CTRL+C)"
+    echo "        start:          starts the container in the background, and "
+    echo "                        it will automatically restart after that,"
+    echo "                        even after computer restarts"
+    echo "        stop:           stops and removes the container"
+    echo "                        (after that, it won't restart"
+    echo "                        until the next 'start')"
+    echo ""
+    echo "      for example: ./platypous_robot start"
+    echo ""
+fi
+

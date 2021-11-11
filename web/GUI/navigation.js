@@ -137,8 +137,8 @@ Vue.component("navigation", {
     },
     
     resize: function(){
-      this.map_canvas.width = 800;
-      this.map_canvas.height = 800;
+      this.map_canvas.width = 600;
+      this.map_canvas.height = 600;
     },
     
     updateMap: function(image_data){

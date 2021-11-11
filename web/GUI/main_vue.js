@@ -4,6 +4,9 @@ var App = new Vue({
     color_blue: '#1e2b4e',
     color_yellow: '#fab001',
     ping_timeout: 0,
+    ping_sum: 0,
+    ping_count: 0,
+    ping_avg: 0,
     battery_voltage: 0.0,
     meta: {
       requiresAuth: true
@@ -23,6 +26,17 @@ var App = new Vue({
       socket.emit("ping", null);
     },
     
+    calculatePing: function(){
+      this.ping_sum += this.ping_timeout;
+      this.ping_count++;
+      if ( this.ping_count == 100)
+      {
+        this.ping_avg = this.ping_sum / 100;
+        this.ping_sum = 0;
+        this.ping_count = 0;
+      }
+    },
+    
     updateBatteryVoltage: function(voltage){
       this.battery_voltage = voltage.toFixed(2);
     }
@@ -30,3 +44,4 @@ var App = new Vue({
 });
 
 setInterval(App.sendPing, 200);
+setInterval(App.calculatePing, 10);

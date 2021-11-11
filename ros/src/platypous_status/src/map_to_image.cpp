@@ -12,6 +12,9 @@ static cv::Mat image;
 
 static platypous_msgs::MapImageData map_image_data_msg;
 
+static image_transport::Publisher image_pub;
+static ros::Publisher map_image_data_pub;
+
 
 void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
@@ -49,6 +52,11 @@ void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
             image.at<uint8_t>(msg->info.height - y - 1, x) = image_value;
         }
     }
+    
+    
+    image_pub.publish(cv_bridge::CvImage(std_msgs::Header(), "mono8", image).toImageMsg());
+    
+    map_image_data_pub.publish(map_image_data_msg);
 }
 
 
@@ -58,25 +66,13 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     
     image_transport::ImageTransport it(n);
-    image_transport::Publisher image_pub = it.advertise("map_image", 1);
+    image_pub = it.advertise("map_image", 1);
+    
+    map_image_data_pub = n.advertise<platypous_msgs::MapImageData>("map_image_data", 10);
     
     ros::Subscriber map_sub = n.subscribe("map", 10, map_callback);
     
-    ros::Publisher map_image_data_pub = n.advertise<platypous_msgs::MapImageData>("map_image_data", 10);
-
-    
-    ros::Rate loop_rate(10);
-
-    while (ros::ok())
-    {
-        
-        image_pub.publish(cv_bridge::CvImage(std_msgs::Header(), "mono8", image).toImageMsg());
-        
-        map_image_data_pub.publish(map_image_data_msg);
-    
-        ros::spinOnce();
-        loop_rate.sleep();
-    }
+    ros::spin();
     
     return 0;
 }
