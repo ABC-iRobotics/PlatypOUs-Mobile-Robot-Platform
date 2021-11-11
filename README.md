@@ -78,6 +78,7 @@ This can be stopped by removing the container:
 
 ## Using the robot
 For information on the ROS packages, nodes and topics, see the [PlatypOUs ROS workspace](ros/src/README.md).
+
 For information on the web server and GUI, see the [PlatypOUs Web GUI](web/README.md).
 
 ## Issues

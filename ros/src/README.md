@@ -59,7 +59,9 @@ The LIDAR is mounted on the top of the platform, and provides range data in all 
 The camera provides several different topics.
 
 Color image topic: **/camera/color/image_raw** ([**sensor_msgs/Image**](https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html))
+
 Depth image topic: **/camera/aligned_depth_to_color/image_raw** ([**sensor_msgs/Image**](https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html))
+
 Point cloud topic: **/camera/depth/color/points** ([**sensor_msgs/PointCloud2**](http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/PointCloud2.html))
 
 ### SLAM
