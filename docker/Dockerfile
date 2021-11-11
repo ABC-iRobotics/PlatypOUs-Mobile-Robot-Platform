@@ -52,7 +52,6 @@ RUN . /opt/ros/noetic/setup.sh && \
     cd /root/ros_ws && \
     catkin build
 
-COPY /scripts/start_basic.bash /
-RUN chmod +x /start_basic.bash
-COPY /scripts/start_full.bash /
-RUN chmod +x /start_full.bash
+COPY /docker/docker_entrypoint.bash /
+
+ENTRYPOINT ["/docker_entrypoint.bash"]

@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <launch>
     
-  <arg name="world" default="empty" />
-  <arg name="gui" default="true" />
+  <arg name="world"      default="office" />
+  <arg name="gui"        default="true" />
+  <arg name="slam"       default="true" />
+  <arg name="navigation" default="true" />
 
 
   <param name="use_sim_time" value="true" />
@@ -34,5 +36,15 @@
 
   <!-- ROBOT STATUS PUBLISHER -->
   <include file="$(find platypous_launch)/launch/status.launch" />
+
+
+  <group if="$(arg slam)">
+    <include file="$(find platypous_launch)/launch/iris_lama_slam.launch" />
+  </group>
+  
+  
+  <group if="$(arg navigation)">
+    <include file="$(find platypous_launch)/launch/navigation.launch" />
+  </group>
 
 </launch>
