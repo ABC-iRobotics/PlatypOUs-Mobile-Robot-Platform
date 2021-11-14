@@ -25,8 +25,8 @@ Make sure you have the following installed:
 - Ubuntu 20.04 Focal Fossa (recommended) or Debian 10 Buster (either installed natively, or in a virtual machine). See: https://ubuntu.com/tutorials/install-ubuntu-desktop, https://itsfoss.com/install-linux-in-virtualbox/
 - ROS Noetic desktop full version. See: http://wiki.ros.org/noetic/Installation
 - Gazebo 11 (should be already installed if you installed ROS desktop full version)
-- ROS packages: robot_localization, gmapping, twist_mux, move_base:
-`sudo apt install ros-noetic-robot-localization ros-noetic-gmapping ros-noetic-twist-mux ros-noetic-move-base`
+- ROS packages: robot_localization, gmapping, twist_mux, move_base, global_planner, dwa_local_planner:
+`sudo apt install ros-noetic-robot-localization ros-noetic-gmapping ros-noetic-twist-mux ros-noetic-move-base ros-noetic-global-planner ros-noetic-dwa-local-planner`
 - Node.js for the web GUI server:
 `
 curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - &&
