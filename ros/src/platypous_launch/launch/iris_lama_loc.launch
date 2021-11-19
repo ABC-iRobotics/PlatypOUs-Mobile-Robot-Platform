@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>  
+
+  <node name="iris_lama_loc" pkg="iris_lama_ros" type="loc2d_ros" respawn="true">
+    <param name="d_thresh"            value="0.01" />
+    <param name="a_thresh"            value="0.05" />
+    <param name="temporal_update"     value="0.1" />
+    <param name="transform_tolerance" value="0.3" />
+    <param name="do_global_loc"       value="true" />
+  </node>
+
+</launch>

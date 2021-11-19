@@ -51,7 +51,9 @@ lama::Loc2DROS::Loc2DROS()
     pnh_.param("scan_topic", scan_topic_, std::string("scan"));
 
     pnh_.param("transform_tolerance", tmp, 0.1); transform_tolerance_.fromSec(tmp);
+    pnh_.param("temporal_update", temporal_update_, 0.0);
 
+    pnh_.param("publish_tf", publish_tf_, true);
     pnh_.param("use_map_topic", use_map_topic_, false);
     pnh_.param("first_map_only", first_map_only_, false);
     pnh_.param("use_pose_on_new_map", use_pose_on_new_map_, false);
@@ -189,6 +191,7 @@ lama::Loc2DROS::Loc2DROS()
         loc2d_.triggerGlobalLocalization();
     }
 
+
     ROS_INFO("2D Localization node up and running");
 }
 
@@ -264,6 +267,12 @@ void lama::Loc2DROS::onLaserScan(const sensor_msgs::LaserScanConstPtr& laser_sca
     lama::Pose2D odom(odom_tf.getOrigin().x(), odom_tf.getOrigin().y(),
                               tf::getYaw(odom_tf.getRotation()));
 
+
+    // Force an update if the last update was a long time ago.
+    static ros::Time latest_update = laser_scan->header.stamp;
+    if ((not force_update_) and temporal_update_ > 0)
+        force_update_ = (laser_scan->header.stamp - latest_update).toSec() > temporal_update_;
+
     bool update = force_update_ or loc2d_.enoughMotion(odom);
 
     if (update){
@@ -308,6 +317,7 @@ void lama::Loc2DROS::onLaserScan(const sensor_msgs::LaserScanConstPtr& laser_sca
 
         loc2d_.update(cloud, odom, laser_scan->header.stamp.toSec(), force_update_);
         force_update_ = false;
+        latest_update = laser_scan->header.stamp;
 
         // Report global localization if enables
         if (loc2d_.globalLocalizationIsActive()){
@@ -315,30 +325,33 @@ void lama::Loc2DROS::onLaserScan(const sensor_msgs::LaserScanConstPtr& laser_sca
         }
 
         current_orientation_ = tf::createQuaternionFromYaw(loc2d_.getPose().rotation());
-        // subtracting base to odom from map to base and send map to odom instead
-        tf::Stamped<tf::Pose> odom_to_map;
-        try{
-            tf::Transform tmp_tf(current_orientation_, tf::Vector3(loc2d_.getPose().x(), loc2d_.getPose().y(), 0));
-            tf::Stamped<tf::Pose> tmp_tf_stamped (tmp_tf.inverse(), laser_scan->header.stamp, base_frame_id_);
-            tf_->transformPose(odom_frame_id_, tmp_tf_stamped, odom_to_map);
 
-        }catch(tf::TransformException){
-            ROS_WARN("Failed to subtract base to odom transform");
-            return;
+        if (publish_tf_){
+            // subtracting base to odom from map to base and send map to odom instead
+            tf::Stamped<tf::Pose> odom_to_map;
+            try{
+                tf::Transform tmp_tf(current_orientation_, tf::Vector3(loc2d_.getPose().x(), loc2d_.getPose().y(), 0));
+                tf::Stamped<tf::Pose> tmp_tf_stamped (tmp_tf.inverse(), laser_scan->header.stamp, base_frame_id_);
+                tf_->transformPose(odom_frame_id_, tmp_tf_stamped, odom_to_map);
+
+            }catch(tf::TransformException){
+                ROS_WARN("Failed to subtract base to odom transform");
+                return;
+            }
+
+            latest_tf_ = tf::Transform(tf::Quaternion(odom_to_map.getRotation()),
+                    tf::Point(odom_to_map.getOrigin()));
+
+            // We want to send a transform that is good up until a
+            // tolerance time so that odom can be used
+            ros::Time transform_expiration = (laser_scan->header.stamp + transform_tolerance_);
+            tf::StampedTransform tmp_tf_stamped(latest_tf_.inverse(), transform_expiration,
+                    global_frame_id_, odom_frame_id_);
+            tfb_->sendTransform(tmp_tf_stamped);
         }
 
-        latest_tf_ = tf::Transform(tf::Quaternion(odom_to_map.getRotation()),
-                                   tf::Point(odom_to_map.getOrigin()));
-
-        // We want to send a transform that is good up until a
-        // tolerance time so that odom can be used
-        ros::Time transform_expiration = (laser_scan->header.stamp + transform_tolerance_);
-        tf::StampedTransform tmp_tf_stamped(latest_tf_.inverse(),
-                                            transform_expiration,
-                                            global_frame_id_, odom_frame_id_);
-        tfb_->sendTransform(tmp_tf_stamped);
         publishCurrentPose();
-    } else {
+    } else if (publish_tf_) {
         // Nothing has change, therefore, republish the last transform.
         ros::Time transform_expiration = (laser_scan->header.stamp + transform_tolerance_);
         tf::StampedTransform tmp_tf_stamped(latest_tf_.inverse(), transform_expiration,
