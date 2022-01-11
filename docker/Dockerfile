@@ -41,7 +41,9 @@ RUN apt-get update && \
         ros-noetic-imu-filter-madgwick \
         ros-noetic-xacro \
         ros-noetic-robot-state-publisher \
-        ros-noetic-tf-conversions
+        ros-noetic-tf-conversions \
+        ros-noetic-global-planner \
+        ros-noetic-dwa-local-planner
 
 COPY /web /root/web
 RUN cd /root/web && \

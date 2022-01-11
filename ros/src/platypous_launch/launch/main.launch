@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 
+  <arg name="slam"       default="true" />
+  <arg name="navigation" default="true" />
+
   <!-- ROBOT STATE PUBLISHER -->
   <param name="robot_description" command="$(find xacro)/xacro '$(find platypous_gazebo)/urdf/platypous.xacro'" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
@@ -29,5 +32,14 @@
   
   <!-- STATUS PUBLISHER -->
   <include file="$(find platypous_launch)/launch/status.launch" />
+
+  <group if="$(arg slam)">
+    <include file="$(find platypous_launch)/launch/iris_lama_slam.launch" />
+  </group>
+
+
+  <group if="$(arg navigation)">
+    <include file="$(find platypous_launch)/launch/navigation.launch" />
+  </group>
 
 </launch>

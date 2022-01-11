@@ -77,7 +77,7 @@ class ODriveNode:
                 self.topic_timer += 1.0 / self.frequency
 
                 odom_msg.header.stamp = rospy.Time.now()
-                odom_msg.twist.twist.linear.x = (((odrive.get_velocity_right() * 2 * 3.14159265) + (odrive.get_velocity_left() * 2 * 3.14159265)) / 2.0) * self.wheel_radius
+                odom_msg.twist.twist.linear.x = -((((odrive.get_velocity_right() * 2 * 3.14159265) + (odrive.get_velocity_left() * 2 * 3.14159265)) / 2.0) * self.wheel_radius)
                 odom_msg.twist.twist.angular.z = ((((odrive.get_velocity_right() * 2 * 3.14159265) - (odrive.get_velocity_left() * 2 * 3.14159265)) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
                 odom_pub.publish(odom_msg)
                 
@@ -113,8 +113,8 @@ class ODriveNode:
         odrive.disengage()
     
     def cmd_vel_callback(self, msg):
-        self.left_speed  = ((msg.linear.x - (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
-        self.right_speed = ((msg.linear.x + (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
+        self.left_speed  = ((-msg.linear.x - (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
+        self.right_speed = ((-msg.linear.x + (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
         self.topic_timer = 0.0
 
 if __name__ == '__main__':
