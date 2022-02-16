@@ -9,22 +9,13 @@ RUN apt-get update && \
         git \
         curl
 
-RUN python3 -m pip install --upgrade odrive
-
-RUN mkdir -p /root/ros_ws/src && \
-    cd /root/ros_ws/src && \
-    git clone https://github.com/YDLIDAR/ydlidar_ros && \
-    cd ydlidar_ros && \
-    git checkout master && \
-    cd ../.. && \
-    . /opt/ros/noetic/setup.sh && \
-    catkin build
-
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
 
-RUN python3 -m pip install \
-    paho-mqtt
+RUN python3 -m pip install --upgrade \
+        pip \
+        odrive \
+        paho-mqtt
 
 RUN apt-get update && \
     apt-get install -y \
@@ -45,15 +36,6 @@ RUN apt-get update && \
         ros-noetic-global-planner \
         ros-noetic-dwa-local-planner
 
-COPY /web /root/web
-RUN cd /root/web && \
-    npm ci
+COPY /docker/entrypoint.bash /
 
-COPY /ros/src /root/ros_ws/src
-RUN . /opt/ros/noetic/setup.sh && \
-    cd /root/ros_ws && \
-    catkin build
-
-COPY /docker/docker_entrypoint.bash /
-
-ENTRYPOINT ["/docker_entrypoint.bash"]
+ENTRYPOINT ["/entrypoint.bash"]

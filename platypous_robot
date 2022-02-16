@@ -3,7 +3,7 @@
 if [ "$#" = 1 ] && [ "$1" = "build" ]; then
     docker build -f docker/Dockerfile -t platypous:latest .
 
-elif [ "$#" = 1 ] && [ "$1" = "start_once" ]; then
+elif [ "$#" = 2 ] && [ "$1" = "start_once" ]; then
     if docker ps -a | grep -q "platypous_container"; then
         docker rm -f platypous_container
     fi
@@ -11,13 +11,20 @@ elif [ "$#" = 1 ] && [ "$1" = "start_once" ]; then
     docker run \
         -it \
         --rm \
+        --user=$(id -u $USER):$(id -g $USER) \
+        --workdir="/home/$USER" \
+        --volume="/home/$USER:/home/$USER" \
+        --volume="/etc/group:/etc/group:ro" \
+        --volume="/etc/passwd:/etc/passwd:ro" \
+        --volume="/etc/shadow:/etc/shadow:ro" \
+        --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
+        --network host \
         --privileged \
         -v /dev:/dev \
-        --network host \
         --name platypous_container \
-        platypous:latest
+        platypous:latest $2
 
-elif [ "$#" = 1 ] && [ "$1" = "start" ]; then
+elif [ "$#" = 2 ] && [ "$1" = "start" ]; then
     if docker ps -a | grep -q "platypous_container"; then
         docker rm -f platypous_container
     fi
@@ -25,11 +32,18 @@ elif [ "$#" = 1 ] && [ "$1" = "start" ]; then
     docker run \
         -d \
         --restart always \
+        --user=$(id -u $USER):$(id -g $USER) \
+        --workdir="/home/$USER" \
+        --volume="/home/$USER:/home/$USER" \
+        --volume="/etc/group:/etc/group:ro" \
+        --volume="/etc/passwd:/etc/passwd:ro" \
+        --volume="/etc/shadow:/etc/shadow:ro" \
+        --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
+        --network host \
         --privileged \
         -v /dev:/dev \
-        --network host \
         --name platypous_container \
-        platypous:latest
+        platypous:latest $2
     
     echo ""
     echo "    PlatypOUs container started."
