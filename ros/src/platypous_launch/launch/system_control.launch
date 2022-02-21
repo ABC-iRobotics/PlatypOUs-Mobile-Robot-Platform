@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <node name="system_control_node" pkg="platypous_launch" type="system_control_node.py" output="screen" respawn="true">
+      <rosparam file="$(find platypous_launch)/params/system_control.yaml" command="load" />
+  </node>
+
+</launch>

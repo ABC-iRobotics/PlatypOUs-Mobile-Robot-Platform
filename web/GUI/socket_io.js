@@ -21,3 +21,7 @@ socket.on('robot-status', function(msg) {
   App.$refs.navigation_ref.updateRobotStatus(msg);
   App.updateBatteryVoltage(msg.battery_voltage);
 });
+
+socket.on('sys-control-status', function(msg) {
+  App.$refs.diagnostics_ref.updateSysStatus(msg);
+});

@@ -1,0 +1,35 @@
+commands:
+    [
+        {
+            name:    "Joystick",
+            command: "roslaunch platypous_launch joystick_teleop.launch"
+        },
+        {
+            name:    "RealSense D455",
+            command: "roslaunch platypous_launch camera_d455.launch"
+        },
+        {
+            name:    "YDLIDAR",
+            command: "roslaunch platypous_launch lidar.launch"
+        },
+        {
+            name:    "SLAM",
+            command: "roslaunch platypous_launch iris_lama_slam.launch"
+        },
+        {
+            name:    "Localization",
+            command: "roslaunch platypous_launch iris_lama_loc.launch"
+        },
+        {
+            name:    "Navigation",
+            command: "roslaunch platypous_launch navigation.launch"
+        },
+        {
+            name:    "Save map",
+            command: "rosrun map_server map_saver"
+        },
+        {
+            name:    "Load map",
+            command: "rosrun map_server map_server map.yaml"
+        }
+    ]

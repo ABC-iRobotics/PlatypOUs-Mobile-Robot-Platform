@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="slam"       default="true" />
-  <arg name="navigation" default="true" />
-
   <!-- ROBOT STATE PUBLISHER -->
   <param name="robot_description" command="$(find xacro)/xacro '$(find platypous_gazebo)/urdf/platypous.xacro'" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
@@ -13,33 +10,11 @@
   <include file="$(find platypous_launch)/launch/motor_driver.launch" />
   
   
-  <!-- JOYSTICK TELEOP -->
-  <include file="$(find platypous_launch)/launch/joystick_teleop.launch" />
-  
-
-<!--
-  <node name="eeg_node" pkg="eeg_node" type="eeg_node.py" respawn="true" respawn_delay="10"/>
--->
-  
-  
-  <!-- LIDAR -->
-  <include file="$(find platypous_launch)/launch/lidar.launch" />
-  
-  
-  <!-- CAMERA -->
-  <include file="$(find platypous_launch)/launch/camera_d455.launch" />
-  
-  
   <!-- STATUS PUBLISHER -->
   <include file="$(find platypous_launch)/launch/status.launch" />
 
-  <group if="$(arg slam)">
-    <include file="$(find platypous_launch)/launch/iris_lama_slam.launch" />
-  </group>
 
-
-  <group if="$(arg navigation)">
-    <include file="$(find platypous_launch)/launch/navigation.launch" />
-  </group>
+  <!-- SYSTEM CONTROL -->
+  <include file="$(find platypous_launch)/launch/system_control.launch" />
 
 </launch>

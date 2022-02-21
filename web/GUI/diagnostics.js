@@ -38,20 +38,39 @@ Vue.component("diagnostics", {
           Robot angular velocity: {{ round(robot_status.robot_ang_vel, 2) }} rad/s 
         </b-card-text>
       </b-card>
-      
+
+      <li v-for="item in sys_status">
+        {{ item.name }} - {{ item.status }}
+            <b-button v-on:click="start_command(item.name)" style="backgroundColor: #00cc00;">START</b-button>
+            <b-button v-on:click="stop_command(item.name)" style="backgroundColor: #cc0000;">STOP</b-button>
+      </li>
+
     </b-container>
   </div>
   `,
   
   data(){
     return {
-      robot_status: new Object()
+      robot_status: new Object(),
+      sys_status: new Object()
     };
   },
   
   methods: { 
+
+    start_command: function(name){
+        socket.emit('system_control', JSON.stringify({name: name, action: "start"}));
+    },
+    stop_command: function(name){
+        socket.emit('system_control', JSON.stringify({name: name, action: "stop"}));
+    },
+
     updateRobotStatus: function(data){
       this.robot_status = data;
+    },
+
+    updateSysStatus: function(data){
+      this.sys_status = data;
     },
     
     round: function(val, digits) {

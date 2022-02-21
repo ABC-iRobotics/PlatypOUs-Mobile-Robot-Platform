@@ -44,7 +44,8 @@ RUN apt-get update && \
         ros-noetic-dwa-local-planner \
         ros-noetic-effort-controllers \
         ros-noetic-velocity-controllers \
-        ros-noetic-rtabmap-ros
+        ros-noetic-rtabmap-ros \
+        ros-noetic-map-server
 
 COPY /docker/entrypoint.bash /
 

@@ -23,7 +23,6 @@ elif [ "$#" = 2 ] && [ "$1" = "run" ]; then
         --network host \
         --privileged \
         -v /dev:/dev \
-        --name platypous_container \
         platypous:latest $2
 
 elif [ "$#" = 2 ] && [ "$1" = "auto_run" ]; then
