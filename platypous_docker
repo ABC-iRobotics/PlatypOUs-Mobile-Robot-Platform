@@ -3,10 +3,7 @@
 if [ "$#" = 1 ] && [ "$1" = "build" ]; then
     docker build -f docker/Dockerfile -t platypous:latest .
 
-elif [ "$#" = 1 ] && [ "$1" = "clean" ]; then
-    rm -r ros/build ros/devel ros/logs ros/.catkin_tools web/node_modules
-
-elif [ "$#" = 2 ] && [ "$1" = "start_once" ]; then
+elif [ "$#" = 2 ] && [ "$1" = "run" ]; then
     if docker ps -a | grep -q "platypous_container"; then
         docker rm -f platypous_container
     fi
@@ -21,13 +18,15 @@ elif [ "$#" = 2 ] && [ "$1" = "start_once" ]; then
         --volume="/etc/passwd:/etc/passwd:ro" \
         --volume="/etc/shadow:/etc/shadow:ro" \
         --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
+        --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+        --env="DISPLAY" \
         --network host \
         --privileged \
         -v /dev:/dev \
         --name platypous_container \
         platypous:latest $2
 
-elif [ "$#" = 2 ] && [ "$1" = "start" ]; then
+elif [ "$#" = 2 ] && [ "$1" = "auto_run" ]; then
     if docker ps -a | grep -q "platypous_container"; then
         docker rm -f platypous_container
     fi
@@ -49,7 +48,7 @@ elif [ "$#" = 2 ] && [ "$1" = "start" ]; then
         platypous:latest $2
     
     echo ""
-    echo "    PlatypOUs container started."
+    echo "    PlatypOUs container created and started. It will automatically restart on failure/reboot, until stopped with the stop command."
     echo ""
 
 elif [ "$#" = 1 ] && [ "$1" = "stop" ]; then
@@ -57,7 +56,7 @@ elif [ "$#" = 1 ] && [ "$1" = "stop" ]; then
         docker rm -f platypous_container
         
         echo ""
-        echo "    PlatypOUs container stopped and removed."
+        echo "    PlatypOUs container stopped and removed. It will not start automatically anymore."
         echo ""
     else
         echo ""
@@ -68,21 +67,23 @@ elif [ "$#" = 1 ] && [ "$1" = "stop" ]; then
 
 else
     echo ""
-    echo "    Wrong/no argument. Usage: ./platypous_robot [option]"
+    echo "    Usage: ./platypous_docker [option] [command]"
     echo ""
-    echo "      Please choose one of the following options:"
+    echo "      [option] can be:"
     echo ""
     echo "        build:          builds the docker image from the repository"
-    echo "        start_once:     starts the container in the current terminal"
+    echo "        run:            starts the container in the current terminal"
     echo "                        (can be stopped by CTRL+C)"
-    echo "        start:          starts the container in the background, and "
+    echo "        auto_run:       starts the container in the background, and "
     echo "                        it will automatically restart after that,"
     echo "                        even after computer restarts"
     echo "        stop:           stops and removes the container"
     echo "                        (after that, it won't restart"
-    echo "                        until the next 'start')"
+    echo "                        until the next 'auto_run')"
     echo ""
-    echo "      for example: ./platypous_robot start"
+    echo "      for example: ./platypous_docker run [command]"
+    echo ""
+    echo "      [command] is the argument passed to the './platypous' script."
     echo ""
 fi
 

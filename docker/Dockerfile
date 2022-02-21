@@ -1,5 +1,7 @@
 FROM ros:noetic
 
+RUN apt-get update && apt-get install -y --no-install-recommends ros-noetic-desktop-full && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && \
     apt-get install -y \
         libusb-dev \
@@ -7,7 +9,12 @@ RUN apt-get update && \
         python3-pip \
         python3-catkin-tools \
         git \
-        curl
+        curl \
+        libgl1-mesa-glx \
+        libgl1-mesa-dri \
+        mesa-utils \
+    && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
@@ -34,8 +41,15 @@ RUN apt-get update && \
         ros-noetic-robot-state-publisher \
         ros-noetic-tf-conversions \
         ros-noetic-global-planner \
-        ros-noetic-dwa-local-planner
+        ros-noetic-dwa-local-planner \
+        ros-noetic-effort-controllers \
+        ros-noetic-velocity-controllers \
+        ros-noetic-rtabmap-ros
 
 COPY /docker/entrypoint.bash /
 
 ENTRYPOINT ["/entrypoint.bash"]
+
+
+
+
