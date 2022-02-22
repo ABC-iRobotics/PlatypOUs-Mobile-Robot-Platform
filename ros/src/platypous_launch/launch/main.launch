@@ -17,4 +17,8 @@
   <!-- SYSTEM CONTROL -->
   <include file="$(find platypous_launch)/launch/system_control.launch" />
 
+
+  <!-- ROSBRIDGE -->
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
 </launch>

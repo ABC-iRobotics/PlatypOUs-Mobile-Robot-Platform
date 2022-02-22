@@ -45,7 +45,8 @@ RUN apt-get update && \
         ros-noetic-effort-controllers \
         ros-noetic-velocity-controllers \
         ros-noetic-rtabmap-ros \
-        ros-noetic-map-server
+        ros-noetic-map-server \
+        ros-noetic-rosbridge-suite
 
 COPY /docker/entrypoint.bash /
 
