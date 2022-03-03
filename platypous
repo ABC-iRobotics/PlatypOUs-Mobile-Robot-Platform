@@ -43,15 +43,9 @@ elif [ "$#" = 1 ] && [ "$1" = "start_sim" ]; then
 
     wait
 
-
-elif [ "$#" = 1 ] && [ "$1" = "bash" ]; then
-    echo "Starting bash."
-
+else
+    echo "Starting BASH shell. PlatypOUs workspace sourced."
     source ros/devel/setup.bash
     bash
-
-
-else
-    echo "Wrong argument."
+    echo "Exit PlatypOUs workspace BASH."
 fi
-
