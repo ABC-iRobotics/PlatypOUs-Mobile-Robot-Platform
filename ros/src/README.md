@@ -17,23 +17,19 @@ Contains custom message definitions used by some nodes in the system.
 #### platypous_status
 This package contains the sources of custom nodes for the collection of robot status data, as well as the node converting the map to image format.
 
-#### eeg_node
-Node for using the robot with the MindRove EEG headset, getting commands from MQTT topics, and publishing velocity commands to the motor controller based on the information.
-
 
 ## Topics
-The robot has 2 wheels that can be controlled to move the platform. The wheels produce encoder-like odometry. The robot has a LIDAR on the top, and a depth camera on the front.
+The robot has 2 wheels that can be controlled to move the platform. The wheels produce encoder odometry. The robot has a LIDAR on the top, and a depth camera on the front.
 
 This is a list of the most important topics for using the robot, like data from the sensors, and movement control. The topic names and types are the same for the real and the simulated robot.
 
 ### Robot control
-Topic: **/driver/cmd_vel** ([**geometry_msgs/Twist**](http://docs.ros.org/en/melodic/api/geometry_msgs/html/msg/Twist.html))
+Topic: **/cmd_vel** ([**geometry_msgs/Twist**](http://docs.ros.org/en/melodic/api/geometry_msgs/html/msg/Twist.html))
 
 ***You shouldn't directly publish to this topic***, as there is a [**twist_mux**](http://wiki.ros.org/twist_mux) node running, which is listening to several other topics and prioritize between them. The topics are, in priority order:
 - **/cmd_vel/joy_teleop**: used by the joystick
 - **/cmd_vel/web_teleop**: used by the web GUI teleop function
 - **/cmd_vel/nav**: used by the navigation algorithm
-- **/cmd_vel/eeg**: used by the eeg node
 - **/cmd_vel/other**: can be used for any other purpose
 
 For manual control, you can use any of them, for example the **/cmd_vel/joy_teleop** even if you don't have a joystick connected. Some examples:
@@ -44,7 +40,7 @@ For manual control, you can use any of them, for example the **/cmd_vel/joy_tele
 If you use your own(or any other) control/navigation algorithm, you should use the **/cmd_vel/nav** topic, because then you can override its commands by the manual/web GUI controls.
 
 ### Wheel odometry
-Topic: **/driver/wheel_odometry** ([**nav_msgs/Odometry**](http://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Odometry.html))
+Topic: **/odometry/wheel** ([**nav_msgs/Odometry**](http://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Odometry.html))
 
 Wheel odometry is the estimation of the robot's current position and velocity based on the turning of the wheels.
 
