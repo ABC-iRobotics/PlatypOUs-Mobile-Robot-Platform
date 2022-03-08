@@ -2,14 +2,16 @@
 <launch>
   
   <!-- MOTOR DRIVER -->
-  <node name="motor_driver" ns="driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true" />
+  <node name="motor_driver" pkg="platypous_driver" type="odrive_node.py" output="screen" respawn="true">
+    <remap from="~cmd_vel" to="/cmd_vel" />
+  </node>
   
   
   <!-- WHEEL ODOMETRY EKF LOCALIZATION -->
-  <node name="wheel_odom_ekf" ns="driver" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
+  <node name="wheel_odom_ekf" pkg="robot_localization" type="ekf_localization_node" clear_params="true" respawn="true">
     <rosparam command="load" file="$(find platypous_launch)/params/wheel_odom_ekf.yaml" />
     
-    <remap from="odometry/filtered" to="wheel_odometry" />
+    <remap from="odometry/filtered" to="/odometry/wheel" />
   </node>
   
   
@@ -17,7 +19,7 @@
   <node name="twist_mux" ns="cmd_vel" pkg="twist_mux" type="twist_mux" clear_params="true" respawn="true">
     <rosparam command="load" file="$(find platypous_launch)/params/twist_mux.yaml" />
     
-    <remap from="cmd_vel_out" to="/driver/cmd_vel" />
+    <remap from="cmd_vel_out" to="/cmd_vel" />
   </node>
 
 </launch>

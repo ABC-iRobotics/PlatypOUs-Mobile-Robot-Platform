@@ -28,7 +28,7 @@
   <!-- TWIST MUX -->
   <node name="twist_mux" ns="cmd_vel" pkg="twist_mux" type="twist_mux" clear_params="true" respawn="true">
     <rosparam command="load" file="$(find platypous_launch)/params/twist_mux.yaml" />
-    <remap from="cmd_vel_out" to="/driver/cmd_vel" />
+    <remap from="cmd_vel_out" to="/cmd_vel" />
   </node>
 
 

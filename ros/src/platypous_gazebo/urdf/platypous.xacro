@@ -250,8 +250,8 @@
 
             <wheelAcceleration>0.0</wheelAcceleration>
             <wheelTorque>${wheelTorque}</wheelTorque>
-            <commandTopic>/driver/cmd_vel</commandTopic>
-            <odometryTopic>/driver/wheel_odometry</odometryTopic>
+            <commandTopic>/cmd_vel</commandTopic>
+            <odometryTopic>/odometry/wheel</odometryTopic>
             <odometryFrame>odom</odometryFrame>
             <robotBaseFrame>base_link</robotBaseFrame>
 
@@ -269,7 +269,7 @@
         <plugin name="ground_truth" filename="libgazebo_ros_p3d.so">
             <frameName>map</frameName>
             <bodyName>base_link</bodyName>
-            <topicName>/groundtruth/odom</topicName>
+            <topicName>/odometry/groundtruth</topicName>
             <updateRate>30.0</updateRate>
         </plugin>
     </gazebo>

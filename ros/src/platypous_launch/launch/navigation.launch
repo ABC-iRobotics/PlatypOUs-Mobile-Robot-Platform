@@ -10,7 +10,7 @@
         <rosparam file="$(find platypous_launch)/params/nav_global_planner.yaml" command="load" />
         <rosparam file="$(find platypous_launch)/params/nav_move_base.yaml" command="load" />
         <remap from="cmd_vel" to="/cmd_vel/nav" />
-        <remap from="odom" to="/driver/wheel_odometry" />
+        <remap from="odom" to="/odometry/wheel" />
     </node>
 
 </launch> 

@@ -46,10 +46,10 @@ int main(int argc, char **argv)
     
     ros::Subscriber odom_sub = n.subscribe("odom", 10, odom_callback);
     
-    ros::Subscriber voltage_sub = n.subscribe("/driver/status/voltage", 10, voltage_callback);
-    ros::Subscriber current_sub = n.subscribe("/driver/status/current", 10, current_callback);
-    ros::Subscriber status_sub = n.subscribe("/driver/status/status",  10, status_callback);
-    ros::Subscriber errors_sub = n.subscribe("/driver/status/errors",  10, errors_callback);
+    ros::Subscriber voltage_sub = n.subscribe("/motor_driver/status/voltage", 10, voltage_callback);
+    ros::Subscriber current_sub = n.subscribe("/motor_driver/status/current", 10, current_callback);
+    ros::Subscriber status_sub = n.subscribe("/motor_driver/status/status",  10, status_callback);
+    ros::Subscriber errors_sub = n.subscribe("/motor_driver/status/errors",  10, errors_callback);
     
     tf::TransformListener listener;
     

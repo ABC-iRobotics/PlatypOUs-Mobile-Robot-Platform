@@ -34,28 +34,28 @@ class ODriveNode:
     
     def __init__(self):
         rospy.init_node("odrive")
-        rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
+        rospy.Subscriber("~cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
         
-        odom_pub = rospy.Publisher("odom", TwistWithCovarianceStamped, queue_size=2)
+        odom_pub = rospy.Publisher("~measured_vel", TwistWithCovarianceStamped, queue_size=2)
         odom_msg = TwistWithCovarianceStamped()
         odom_msg.header.frame_id = "base_link"
         
-        voltage_pub = rospy.Publisher("status/voltage", Float64, queue_size=2)
+        voltage_pub = rospy.Publisher("~status/voltage", Float64, queue_size=2)
         voltage_msg = Float64()
         
-        current_pub = rospy.Publisher("status/current", Float64, queue_size=2)
+        current_pub = rospy.Publisher("~status/current", Float64, queue_size=2)
         current_msg = Float64()
         
-        # ~ temp_l_pub = rospy.Publisher("status/temperature_left", Float64, queue_size=2)
+        # ~ temp_l_pub = rospy.Publisher("~status/temperature_left", Float64, queue_size=2)
         # ~ temp_l_msg = Float64()
         
-        # ~ temp_r_pub = rospy.Publisher("status/temperature_right", Float64, queue_size=2)
+        # ~ temp_r_pub = rospy.Publisher("~status/temperature_right", Float64, queue_size=2)
         # ~ temp_r_msg = Float64()
         
-        status_pub = rospy.Publisher("status/status", String, queue_size=2)
+        status_pub = rospy.Publisher("~status/status", String, queue_size=2)
         status_msg = String()
         
-        error_pub = rospy.Publisher("status/errors", String, queue_size=2)
+        error_pub = rospy.Publisher("~status/errors", String, queue_size=2)
         error_msg = String()
 
         odrive = ODriveDriver()
