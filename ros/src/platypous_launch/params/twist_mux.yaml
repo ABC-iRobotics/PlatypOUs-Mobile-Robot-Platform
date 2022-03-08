@@ -14,11 +14,6 @@ topics:
   timeout : 1.0
   priority: 50
 
-- name    : eeg
-  topic   : eeg
-  timeout : 1.0
-  priority: 40
-
 - name    : other
   topic   : other
   timeout : 1.0
@@ -30,8 +25,3 @@ locks:
   topic   : disable_nav
   timeout : 0.0
   priority: 60
-
-- name    : stop_eeg
-  topic   : disable_eeg
-  timeout : 0.0
-  priority: 45
