@@ -114,6 +114,7 @@ Vue.component("teleop", {
     
     //~ camera
     this.ctx_camera = document.getElementById('camera_image').getContext('2d');
+    socket.emit('img_received');
   },
   
   methods: {
@@ -123,10 +124,10 @@ Vue.component("teleop", {
       this.img_camera.src = 'data:image/jpeg;base64, ' + image_data;
       
       this.ctx_camera.scale(0.5, 0.5);
-      
       this.ctx_camera.drawImage(this.img_camera, 0, 0);
-      
       this.ctx_camera.scale(2, 2);
+
+      socket.emit('img_received');
     },
     
     resize: function(){

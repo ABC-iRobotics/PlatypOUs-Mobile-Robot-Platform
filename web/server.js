@@ -13,6 +13,8 @@ var cmd_vel_pub;
 var nav_goal_pub;
 var system_control_command_pub;
 
+var send_img = true;
+
 io.on('connection', (socket) => {
   socket.on('twist_message', (msg) => {
     var twist = new geoMsgs.msg.Twist();
@@ -36,6 +38,9 @@ io.on('connection', (socket) => {
   socket.on('ping', (msg) => {
     socket.emit('pong', null);
   });
+  socket.on("img_received", (err) => {
+    send_img = true;
+  });
   socket.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
   });
@@ -45,9 +50,12 @@ rosnodejs.initNode('/my_node')
 .then(() => {
     const nh = rosnodejs.nh;
         
-    nh.subscribe("/depth_camera/color/image_raw/compressed", "sensor_msgs/CompressedImage", (msg) => {
-      let base64Encoded = ab2str(msg.data, 'base64');
-      io.emit("robot-camera", base64Encoded);
+    nh.subscribe("/camera/color/image_raw/compressed", "sensor_msgs/CompressedImage", (msg) => {
+      if(send_img){
+        let base64Encoded = ab2str(msg.data, 'base64');
+        io.emit("robot-camera", base64Encoded);
+        send_img = false;
+      }
     });
     
     nh.subscribe("/map_image/compressed", "sensor_msgs/CompressedImage", (msg) => {
