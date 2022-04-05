@@ -3,14 +3,14 @@
 
   <node name="mobile_controller" pkg="ros_mobile_controller" type="mobile_controller_node" respawn="true" respawn_delay="5" output="screen">
     <param name="frequency"                 value="100" />
-    <param name="angle_control_p_gain"      value="1.5" />
+    <param name="angle_control_p_gain"      value="2.0" />
     <param name="angle_control_i_gain"      value="0.0" />
     <param name="angle_control_d_gain"      value="0.0" />
     <param name="angle_control_filter_time" value="0.0" />
     <param name="cte_control_gain"          value="0.5" />
-    <param name="max_speed"                 value="0.5" />
-    <param name="max_ang_vel"               value="0.6" />
-    <param name="distance_gain"             value="1.0" />
+    <param name="max_speed"                 value="0.3" />
+    <param name="max_ang_vel"               value="0.7" />
+    <param name="distance_gain"             value="0.75" />
     <param name="goal_distance_tolerance"   value="0.05" />
     <param name="goal_angle_tolerance"      value="0.02" />
     <param name="move_max_angle_error"      value="0.8" />
