@@ -31,5 +31,13 @@ commands:
         {
             name:    "Load map",
             command: "rosrun map_server map_server map.yaml"
+        },
+        {
+            name:    "Mobile controller",
+            command: "roslaunch platypous_launch mobile_controller.launch"
+        },
+        {
+            name:    "EKF",
+            command: "roslaunch platypous_launch ekf.launch"
         }
     ]
