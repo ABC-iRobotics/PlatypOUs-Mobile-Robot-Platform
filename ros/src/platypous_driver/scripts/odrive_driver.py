@@ -31,8 +31,8 @@ class ODriveDriver:
     controller_vel_integrator_gain = 0
     controller_control_mode = CONTROL_MODE_VELOCITY_CONTROL
     
-    left_vel_multiplier  =  2
-    right_vel_multiplier = -2
+    left_vel_multiplier  = -2
+    right_vel_multiplier =  2
     
     
     def __init__(self):
@@ -46,8 +46,8 @@ class ODriveDriver:
         self.odrv = odrive.find_any()
         
         try:
-            self.left_axis = self.odrv.axis0
-            self.right_axis = self.odrv.axis1
+            self.left_axis = self.odrv.axis1
+            self.right_axis = self.odrv.axis0
         except:
             return
 
@@ -85,6 +85,9 @@ class ODriveDriver:
         self.disengage()
         self.left_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
         self.right_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+
+        while(self.is_calibrating()):
+            time.sleep(0.1)
 
 
     def engage(self):
@@ -130,9 +133,6 @@ class ODriveDriver:
 
 
     def set_velocity(self, left_vel, right_vel):
-        if not self.is_ready():
-            return
-
         self.left_axis.controller.input_vel = left_vel * self.left_vel_multiplier
         self.right_axis.controller.input_vel = right_vel * self.right_vel_multiplier
         self.left_axis.watchdog_feed()
@@ -140,23 +140,21 @@ class ODriveDriver:
 
 
     def get_velocity_left(self):
-        if not self.is_ready():
-            return 0.0
-        
         return (self.left_axis.encoder.vel_estimate / self.left_vel_multiplier)
 
 
     def get_velocity_right(self):
-        if not self.is_ready():
-            return 0.0
-        
         return (self.right_axis.encoder.vel_estimate / self.right_vel_multiplier)
 
 
+    def get_encoder_left(self):
+        return self.left_axis.encoder.shadow_count
+
+    def get_encoder_right(self):
+        return self.right_axis.encoder.shadow_count
+
+
     def get_voltage(self):
-        if not self.is_connected():
-            return 0
-        
         return self.odrv.vbus_voltage
 
 
