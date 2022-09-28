@@ -62,7 +62,7 @@ class ODriveNode:
         
         rate = rospy.Rate(self.frequency)
 
-        f = open("odometry_data.csv", "w")
+        f = open("odometry_data_" + str(time.time_ns()) + ".csv", "w")
         f.write("t,R,L\n")
 
         prev_time = time.time_ns()
@@ -89,7 +89,7 @@ class ODriveNode:
                     v_l = odrive.get_velocity_left() * 2 * 3.14159265
 
                     odom_msg.header.stamp = rospy.Time.now()
-                    odom_msg.twist.twist.linear.x = -(((v_r + v_l) / 2.0) * self.wheel_radius)
+                    odom_msg.twist.twist.linear.x = (((v_r + v_l) / 2.0) * self.wheel_radius)
                     odom_msg.twist.twist.angular.z = (((v_r - v_l) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
                     odom_pub.publish(odom_msg)
 
@@ -135,8 +135,8 @@ class ODriveNode:
         f.close()
     
     def cmd_vel_callback(self, msg):
-        self.left_speed  = ((-msg.linear.x - (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
-        self.right_speed = ((-msg.linear.x + (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
+        self.left_speed  = ((msg.linear.x - (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
+        self.right_speed = ((msg.linear.x + (msg.angular.z * self.wheel_separation / 2)) / self.wheel_radius) / (2 * 3.14159265)
         self.topic_timer = 0.0
 
 if __name__ == '__main__':

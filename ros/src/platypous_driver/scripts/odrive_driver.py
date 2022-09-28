@@ -31,8 +31,8 @@ class ODriveDriver:
     controller_vel_integrator_gain = 0
     controller_control_mode = CONTROL_MODE_VELOCITY_CONTROL
     
-    left_vel_multiplier  = -2
-    right_vel_multiplier =  2
+    left_vel_multiplier  =  2
+    right_vel_multiplier = -2
     
     
     def __init__(self):
