@@ -2,5 +2,5 @@
 
 source /opt/ros/noetic/setup.bash
 
-cd ~/PlatypOUs-Mobile-Robot-Platform
-exec ./platypous $1
+cd $1
+exec ./platypous $2
