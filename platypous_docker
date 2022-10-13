@@ -19,7 +19,7 @@ elif [ "$1" = "run" ]; then
         --network host \
         --privileged \
         -v /dev:/dev \
-        platypous:latest $2
+        platypous:latest $(pwd) $2
 
 elif [ "$1" = "auto_run" ]; then
     if docker ps -a | grep -q "platypous_container"; then
@@ -40,7 +40,7 @@ elif [ "$1" = "auto_run" ]; then
         --privileged \
         -v /dev:/dev \
         --name platypous_container \
-        platypous:latest $2
+        platypous:latest $(pwd) $2
     
     echo ""
     echo "    PlatypOUs container created and started. It will automatically restart on failure/reboot, until stopped with the stop command."
