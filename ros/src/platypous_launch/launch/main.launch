@@ -7,7 +7,7 @@
   
   
   <!-- MOTOR DRIVER -->
-  <include file="$(find platypous_launch)/launch/motor_driver.launch" />
+  <!--<include file="$(find platypous_launch)/launch/motor_driver.launch" />-->
   
   
   <!-- STATUS PUBLISHER -->

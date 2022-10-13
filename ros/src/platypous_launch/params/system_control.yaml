@@ -1,6 +1,10 @@
 commands:
     [
         {
+            name:    "Motor driver",
+            command: "roslaunch platypous_launch motor_driver.launch"
+        },
+        {
             name:    "Joystick",
             command: "roslaunch platypous_launch joystick_teleop.launch"
         },
