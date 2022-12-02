@@ -9,15 +9,19 @@
     <arg name="device_type"      value="d455" /> 
     <arg name="filters"          value="pointcloud" />
     <arg name="unite_imu_method" value="copy" />
+    <arg name="color_width"      value="848" />
+    <arg name="color_height"     value="480" />
+    <arg name="color_fps"        value="5" />
+    <arg name="depth_fps"        value="5" />
   </include>
   
   <!-- IMU MADGWICK FILTER -->
-  <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node">
+  <!--<node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node">
     <remap from="imu/data_raw" to="/camera/imu" />
     <remap from="imu/data"     to="/imu/data" />
     
     <param name="use_mag"    value="false" />
     <param name="publish_tf" value="false" />
-  </node>
+  </node>-->
 
 </launch>

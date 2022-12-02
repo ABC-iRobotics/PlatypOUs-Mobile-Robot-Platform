@@ -11,7 +11,8 @@ import rospy
 from std_msgs.msg import Float64
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import TwistWithCovarianceStamped
+from nav_msgs.msg import Odometry
+import numpy as np
 
 import time
 import sys
@@ -34,13 +35,14 @@ class ODriveNode:
     
     def __init__(self):
         rospy.init_node("odrive")
-        rospy.Subscriber("~cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
+        rospy.Subscriber("~cmd_vel", Twist, self.cmd_vel_callback, queue_size=1)
         
-        odom_pub = rospy.Publisher("~measured_vel", TwistWithCovarianceStamped, queue_size=2)
-        odom_msg = TwistWithCovarianceStamped()
-        odom_msg.header.frame_id = "base_link"
+        odom_pub = rospy.Publisher("/odometry/wheel", Odometry, queue_size=1)
+        odom_msg = Odometry()
+        odom_msg.header.frame_id = "odom"
+        odom_msg.child_frame_id = "base_link"
         
-        voltage_pub = rospy.Publisher("~status/voltage", Float64, queue_size=2)
+        voltage_pub = rospy.Publisher("~status/voltage", Float64, queue_size=1)
         voltage_msg = Float64()
         
         #current_pub = rospy.Publisher("~status/current", Float64, queue_size=2)
@@ -62,11 +64,16 @@ class ODriveNode:
         
         rate = rospy.Rate(self.frequency)
 
-        f = open("odometry_data_" + str(time.time_ns()) + ".csv", "w")
-        f.write("t,R,L\n")
+        # f = open("odometry_data_" + str(time.time_ns()) + ".csv", "w")
+        # f.write("t,R,L\n")
 
         prev_time = time.time_ns()
         
+        rp = -odrive.get_encoder_right()
+        lp = odrive.get_encoder_left()
+
+        x = y = theta = v = omega = 0.0
+
         while not rospy.is_shutdown():
             try:
                 odrive.update()
@@ -82,15 +89,44 @@ class ODriveNode:
 
                     self.topic_timer += 1.0 / self.frequency
 
-                    e_r = odrive.get_encoder_right()
+                    e_r = -odrive.get_encoder_right()
                     e_l = odrive.get_encoder_left()
 
-                    v_r = odrive.get_velocity_right() * 2 * 3.14159265
-                    v_l = odrive.get_velocity_left() * 2 * 3.14159265
+                    delta_r = e_r - rp
+                    delta_l = e_l - lp
+
+                    rp = e_r
+                    lp = e_l
+
+                    dt = time.time_ns() - prev_time
+                    hz = 1000000000 / dt
+                    prev_time += dt
+
+                    delta_t = dt / 1000000000
+                    delta_r = delta_r * 0.00153398078788564123
+                    delta_l = delta_l * 0.00153398078788564123
+
+                    delta_d = self.wheel_radius * (delta_r + delta_l) / 2.0
+                    delta_theta = self.wheel_radius * (delta_r - delta_l) / self.wheel_separation
+
+                    v = delta_d / delta_t
+                    omega = delta_theta / delta_t
+
+                    x += delta_d * np.cos(theta + delta_theta / 2.0)
+                    y += delta_d * np.sin(theta + delta_theta / 2.0)
+                    theta += delta_theta
+
+
+                    # v_r = odrive.get_velocity_right() * 2 * 3.14159265
+                    # v_l = odrive.get_velocity_left() * 2 * 3.14159265
 
                     odom_msg.header.stamp = rospy.Time.now()
-                    odom_msg.twist.twist.linear.x = (((v_r + v_l) / 2.0) * self.wheel_radius)
-                    odom_msg.twist.twist.angular.z = (((v_r - v_l) / 2.0) / (self.wheel_separation / 2)) * self.wheel_radius
+                    odom_msg.pose.pose.position.x = x
+                    odom_msg.pose.pose.position.y = y
+                    odom_msg.pose.pose.orientation.z = np.sin(theta / 2.0)
+                    odom_msg.pose.pose.orientation.w = np.cos(theta / 2.0)
+                    odom_msg.twist.twist.linear.x = v
+                    odom_msg.twist.twist.angular.z = omega
                     odom_pub.publish(odom_msg)
 
                     voltage_msg.data = odrive.get_voltage()
@@ -117,13 +153,8 @@ class ODriveNode:
 
                     rate.sleep()
 
-                    ts = time.time_ns()
-                    dt = ts - prev_time
-                    hz = 1000000000 / dt
-                    prev_time += dt
-
                     #print("{:.2f} ms ({:.2f} hz)  e_r = {}  e_l = {}  v_r = {:.2f}  v_l = {:.2f}".format(dt / 1000000, hz, e_r, e_l, v_r, v_l))
-                    f.write("{},{},{}\n".format(ts, -e_r, e_l))
+                    # f.write("{},{},{}\n".format(ts, -e_r, e_l))
 
 
             except Exception as e:
