@@ -290,7 +290,7 @@ bool lama::Slam2DROS::OccupancyMsgFromOccupancyMap(nav_msgs::OccupancyGrid& msg)
 
     Image image;
     image.alloc(width, height, 1);
-    image.fill(50);
+    image.fill(-1);
 
     map->visit_all_cells([&image, &map, &imin](const Vector3ui& coords){
         Vector3ui adj_coords = coords - imin;

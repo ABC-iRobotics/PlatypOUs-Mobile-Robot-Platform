@@ -14,9 +14,11 @@ var nav_goal_pub;
 var system_control_command_pub;
 
 var send_img = true;
+var ready = false;
 
 io.on('connection', (socket) => {
   socket.on('twist_message', (msg) => {
+    if (!ready) return;
     var twist = new geoMsgs.msg.Twist();
     twist.angular.z = JSON.parse(msg).ang;
     twist.linear.x = JSON.parse(msg).lin;
@@ -46,7 +48,7 @@ io.on('connection', (socket) => {
   });
 });
 
-rosnodejs.initNode('/my_node')
+rosnodejs.initNode('/web_gui_node')
 .then(() => {
     const nh = rosnodejs.nh;
         
@@ -78,6 +80,7 @@ rosnodejs.initNode('/my_node')
     cmd_vel_pub = nh.advertise('/cmd_vel/web_teleop', "geometry_msgs/Twist");
     nav_goal_pub = nh.advertise('/move_base_simple/goal', "geometry_msgs/PoseStamped");
     system_control_command_pub = nh.advertise('/system_control_node/command', "std_msgs/String");
+    ready = true;
   });
   
 http.listen(3000, () => {

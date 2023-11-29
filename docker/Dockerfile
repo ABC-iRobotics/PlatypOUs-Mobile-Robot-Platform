@@ -16,7 +16,10 @@ RUN apt-get update && \
     && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && \
     apt-get install -y nodejs
 
 RUN python3 -m pip install --upgrade \
@@ -46,7 +49,8 @@ RUN apt-get update && \
         ros-noetic-velocity-controllers \
         ros-noetic-rtabmap-ros \
         ros-noetic-map-server \
-        ros-noetic-rosbridge-suite
+        ros-noetic-rosbridge-suite \
+        ros-noetic-explore-lite
 
 COPY /docker/entrypoint.bash /
 

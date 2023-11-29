@@ -29,6 +29,10 @@ commands:
             command: "roslaunch platypous_launch navigation.launch"
         },
         {
+            name:    "Exploration",
+            command: "roslaunch platypous_launch explore.launch"
+        },
+        {
             name:    "Save map",
             command: "rosrun map_server map_saver"
         },
