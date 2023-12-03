@@ -5,14 +5,14 @@ DWAPlannerROS:
     max_vel_trans: 0.5
     min_vel_trans: 0.0
     max_vel_x: 0.5
-    min_vel_x: -0.1
+    min_vel_x: -0.05
     max_vel_y: 0.0
     min_vel_y: 0.0
     max_vel_theta: 1.2
-    min_vel_theta: 0.0
+    min_vel_theta: 0.1
     
     xy_goal_tolerance: 0.05
-    yaw_goal_tolerance: 0.1
+    yaw_goal_tolerance: 10.0
 
     holonomic_robot: false
     
@@ -29,5 +29,5 @@ DWAPlannerROS:
     occdist_scale: 0.01
     publish_cost_grid_pc: true
     
-    oscillation_reset_dist: 0.05
-    oscillation_reset_angle: 0.1
+    oscillation_reset_dist: 0.1
+    oscillation_reset_angle: 0.2
